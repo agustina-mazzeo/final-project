@@ -10,7 +10,7 @@ function SideBar({ isOpen, closeSideBar }: SideBarProps) {
   const widthBar = isOpen ? "250px" : "0px";
   return (
     <div style={{ width: widthBar }} className={classes.sidenav}>
-      <span className={classes.closebtn} onClick={closeSideBar}>
+      <span style={{color: "white"}}className={classes.closebtn} onClick={closeSideBar}>
         X
       </span>
       <Link to={ROUTE_INDEX} onClick={closeSideBar}>
