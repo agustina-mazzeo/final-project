@@ -10,9 +10,9 @@ export const axiosClient = axios.create({
 });
 
 export function setAuthorizationToken(token: string) {
-    if (token) {
-      axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    } else {
-      delete axiosClient.defaults.headers.common["Authorization"];
-    }
+  if (token) {
+    axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axiosClient.defaults.headers.common["Authorization"];
   }
+}

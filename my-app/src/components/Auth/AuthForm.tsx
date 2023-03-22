@@ -5,9 +5,12 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { userData, signup, login } from "../../service/userAuth";
 import { ROUTE_HOME, ROUTE_INDEX } from "../../routes/routes";
 import { setAuthorizationToken } from "../../service";
+import { useDispatch } from 'react-redux';
+import { authActions } from "../../store/auth";
 
 function AuthForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     value: nameValue,
     isValid: nameIsValid,
@@ -72,7 +75,7 @@ function AuthForm() {
         window.alert("User created with success!");
       }
       navigate(ROUTE_INDEX);
-    } else {
+    } else { //login
       const data: userData = {
         email: emailValue,
         password: passwordValue,
@@ -84,6 +87,7 @@ function AuthForm() {
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);
+        dispatch(authActions.login({name:response.name}))
         window.alert("User logged with success!");
         navigate(ROUTE_HOME);
       }

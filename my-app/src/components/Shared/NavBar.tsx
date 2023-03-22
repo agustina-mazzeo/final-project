@@ -1,13 +1,15 @@
 import classes from "./NavBar.module.css";
 import { NavLink } from "react-router-dom";
 import { ROUTE_HOME } from "../../routes/routes";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 type NavBarProps = {
   openSideBar: () => void;
   closeSideBar: () => void;
   isOpen: boolean;
 };
 function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
+  const loggedName = useSelector((state:RootState)=> state.auth.name)
   return (
     <header className={classes.header}>
       <div style={{ textAlign: "left" }}>
@@ -23,6 +25,10 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
         onClick={isOpen ? closeSideBar : openSideBar}
       >
         ☰
+      </span>
+      <span
+       >
+        {loggedName}
       </span>
       <nav>
         <ul className={classes.list}>
