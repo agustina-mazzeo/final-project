@@ -1,15 +1,28 @@
 import classes from "./NavBar.module.css";
-import { NavLink } from "react-router-dom";
-import { ROUTE_HOME } from "../../routes/routes";
-import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { ROUTE_HOME, ROUTE_INDEX } from "../../routes/routes";
 import { RootState } from "../../store";
+import Button from "../UI/Button";
+import { authActions } from "../../store/auth";
 type NavBarProps = {
   openSideBar: () => void;
   closeSideBar: () => void;
   isOpen: boolean;
 };
 function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
-  const loggedName = useSelector((state:RootState)=> state.auth.name)
+  const loggedName = useSelector((state: RootState) => state.auth.name);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiration")
+    navigate(ROUTE_INDEX)
+    dispatch(authActions.logout())
+  }
+  
   return (
     <header className={classes.header}>
       <div style={{ textAlign: "left" }}>
@@ -26,10 +39,7 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
       >
         ☰
       </span>
-      <span
-       >
-        {loggedName}
-      </span>
+      <span>{loggedName}</span>
       <nav>
         <ul className={classes.list}>
           <li>
@@ -42,6 +52,9 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
             >
               Home
             </NavLink>
+          </li>
+          <li>
+          {isLoggedIn && <Button type="button" buttonLabel="Logout" onClick={logoutHandler} />}
           </li>
         </ul>
       </nav>
