@@ -3,7 +3,7 @@ import Input from "../UI/Input";
 import useInput from "../../hooks/use-input";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { userData, signup, login } from "../../service/userAuth";
-import { home, index } from "../../routes/routes";
+import { ROUTE_HOME, ROUTE_INDEX } from "../../routes/routes";
 import { setAuthorizationToken } from "../../service";
 
 function AuthForm() {
@@ -71,7 +71,7 @@ function AuthForm() {
       } else {
         window.alert("User created with success!");
       }
-      navigate(index);
+      navigate(ROUTE_INDEX);
     } else {
       const data: userData = {
         email: emailValue,
@@ -80,12 +80,12 @@ function AuthForm() {
       const response = await login(data);
       if (response.error) {
         window.alert(response.error);
-        navigate(index)
+        navigate(ROUTE_INDEX);
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);
         window.alert("User logged with success!");
-        navigate(home);
+        navigate(ROUTE_HOME);
       }
     }
 
@@ -97,7 +97,7 @@ function AuthForm() {
   return (
     <form onSubmit={submitHandler}>
       <h4>{isLogin ? "LogIn" : "SignUp"}</h4>
-      {!isLogin ? (
+      {!isLogin && (
         <>
           <Input
             value={nameValue}
@@ -105,27 +105,20 @@ function AuthForm() {
             onBlur={nameBlurHandler}
             label="Name"
             id="name"
+            hasError={nameHasError}
+            errorMessage="Please enter a Name"
           />
-          {nameHasError ? (
-            <p style={{ color: "red" }}>Please enter a Name</p>
-          ) : (
-            <></>
-          )}
+
           <Input
             value={lastNameValue}
             onChange={lastNameChangeHandler}
             onBlur={lastNameBlurHandler}
             label="Last Name"
             id="last-name"
+            hasError={lastNameHasError}
+            errorMessage="Please enter a Last Name"
           />
-          {lastNameHasError ? (
-            <p style={{ color: "red" }}>Please enter a Last Name</p>
-          ) : (
-            <></>
-          )}
         </>
-      ) : (
-        <></>
       )}
       <Input
         value={emailValue}
@@ -133,26 +126,20 @@ function AuthForm() {
         onBlur={emailBlurHandler}
         label="Email"
         id="email"
+        hasError={emailHasError}
+        errorMessage="Please enter a valid email"
         required
       />
-      {emailHasError ? (
-        <p style={{ color: "red" }}>Please enter a valid email</p>
-      ) : (
-        <></>
-      )}
       <Input
         value={passwordValue}
         onChange={passChangeHandler}
         onBlur={passBlurHandler}
         label="Password"
         id="password"
+        hasError={passHasError}
+        errorMessage="Please enter a password with +8 chars"
         required
       />
-      {passHasError ? (
-        <p style={{ color: "red" }}>Please enter a password with +8 chars</p>
-      ) : (
-        <></>
-      )}
       <Button
         disabled={!formIsValid}
         type="submit"
