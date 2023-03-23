@@ -43,17 +43,6 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
       <nav>
         <ul className={classes.list}>
           <li>
-            <NavLink
-              to={ROUTE_HOME}
-              className={({ isActive }) =>
-                isActive ? classes.active : undefined
-              }
-              end
-            >
-              Home
-            </NavLink>
-          </li>
-          <li>
           {isLoggedIn && <Button type="button" buttonLabel="Logout" onClick={logoutHandler} />}
           </li>
         </ul>
