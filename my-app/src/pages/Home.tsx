@@ -1,5 +1,5 @@
 import { getAccounts } from "../service/accounts";
-import { useNavigation, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
 
 export type AccountType = {
@@ -13,10 +13,9 @@ export type AccountType = {
 };
 
 function HomePage() {
-  
   const myAccounts = useLoaderData() as AccountType[];
   return (
-    <div style={{textAlign: "center"}}>
+    <div style={{ textAlign: "center" }}>
       <h4>Your Accounts</h4>
       <Accounts accounts={myAccounts} />
     </div>

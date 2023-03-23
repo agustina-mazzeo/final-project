@@ -3,7 +3,7 @@ import Button from "../components/UI/Button";
 import { redirect, useNavigate } from "react-router-dom";
 import { getAuthToken } from "../utils/token";
 import { setAuthorizationToken } from "../service";
-import { ROUTE_HOME } from "../routes/routes";
+import { ROUTE_HOME, ROUTE_AUTH } from "../routes/routes";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -15,12 +15,12 @@ function AuthPage() {
       <Button
         type="button"
         buttonLabel="Signup"
-        onClick={() => onRegisterHandler("/?mode=signup")}
+        onClick={() => onRegisterHandler(`${ROUTE_AUTH}/?mode=signup`)}
       />
       <Button
         type="button"
         buttonLabel="Login"
-        onClick={() => onRegisterHandler("/?mode=login")}
+        onClick={() => onRegisterHandler(`${ROUTE_AUTH}/?mode=login`)}
       />
       <AuthForm />
     </>

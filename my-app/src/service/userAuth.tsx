@@ -36,3 +36,15 @@ export async function login(data: userData) {
     }
   }
 }
+export async function getLoggedUser() {
+  try {
+    const response = await axiosClient.get("/users/me");
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return { error: error.response!.data.errors[0] };
+    } else {
+      return { error: "An unexpected error occurred" };
+    }
+  }
+}
