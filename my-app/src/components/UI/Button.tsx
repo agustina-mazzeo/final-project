@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 type ButtonProps = {
   type?: "button" | "submit" | "reset" | undefined;
   onClick?: () => void;
@@ -6,12 +6,9 @@ type ButtonProps = {
   buttonLabel: string;
   style?: React.CSSProperties;
 };
-const Button = ({buttonLabel, type="button", ...props}: ButtonProps) => {
+const Button = ({ buttonLabel, type = "button", ...props }: ButtonProps) => {
   return (
-    <button
-      {...props}
-      type={type}
-    >
+    <button {...props} type={type}>
       {buttonLabel}
     </button>
   );

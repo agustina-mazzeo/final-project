@@ -1,6 +1,5 @@
 import axios from "axios";
 import { axiosClient } from ".";
-
 export type userData = {
   name?: string;
   email: string;
