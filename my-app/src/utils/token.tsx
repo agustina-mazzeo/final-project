@@ -16,8 +16,14 @@ export function getAuthToken() {
     return "";
   }
   const tokenDuration = getTokenDuration();
-  if (tokenDuration < 0) {
+  if (tokenDuration <= 0) {
+    logout()
     return "";
   }
   return token;
+}
+
+export function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("tokenExpiration");
 }

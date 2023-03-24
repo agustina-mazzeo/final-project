@@ -1,5 +1,5 @@
 import { useNavigation } from "react-router-dom";
-import { AccountType } from "../../pages/Home";
+import { AccountType } from "../../utils/types";
 
 type AccountsProps = {
   accounts: AccountType[];

@@ -1,5 +1,5 @@
-import Button from "../UI/Button";
-import Input from "../UI/Input";
+import Button from "../Shared/UI/Button";
+import Input from "../Shared/UI/Input";
 import useInput from "../../hooks/use-input";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { userData, signup, login } from "../../service/userAuth";

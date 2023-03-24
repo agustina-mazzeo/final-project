@@ -5,8 +5,8 @@ import {
   useLoaderData,
   useNavigation,
 } from "react-router-dom";
-import NavBar from "../components/Shared/NavBar";
-import SideBar from "../components/Shared/SideBar";
+import NavBar from "../components/Shared/Bar/NavBar";
+import SideBar from "../components/Shared/Bar/SideBar";
 import { ROUTE_AUTH } from "../routes/routes";
 import { setAuthorizationToken } from "../service";
 import { getLoggedUser } from "../service/userAuth";
