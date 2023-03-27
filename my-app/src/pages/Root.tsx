@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Outlet,
   redirect,
@@ -20,8 +20,9 @@ function RootLayout() {
   const dispatch = useDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-
-  dispatch(authActions.login({ name: data.name }));
+  useEffect(() => {
+    dispatch(authActions.login({ name: data.name }));
+  }, []);
 
   const openSideBar = () => {
     setIsOpen(true);
@@ -31,9 +32,9 @@ function RootLayout() {
   };
   return (
     <>
-        {navigation.state === "loading" && (
-          <p style={{ textAlign: "center" }}>Loading...</p>
-        )}
+      {navigation.state === "loading" && (
+        <p style={{ textAlign: "center" }}>Loading...</p>
+      )}
       <NavBar
         isOpen={isOpen}
         openSideBar={openSideBar}
