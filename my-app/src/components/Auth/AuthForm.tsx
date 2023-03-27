@@ -3,7 +3,7 @@ import Input from "../UI/Input";
 import useInput from "../../hooks/use-input";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { userData, signup, login } from "../../service/userAuth";
-import { ROUTE_HOME, ROUTE_INDEX } from "../../routes/routes";
+import { ROUTE_HOME, ROUTE_AUTH } from "../../routes/routes";
 import { setAuthorizationToken } from "../../service";
 import { useDispatch } from 'react-redux';
 import { authActions } from "../../store/auth";
@@ -74,7 +74,7 @@ function AuthForm() {
       } else {
         window.alert("User created with success!");
       }
-      navigate(ROUTE_INDEX);
+      navigate(ROUTE_AUTH);
     } else { //login
       const data: userData = {
         email: emailValue,
@@ -83,7 +83,7 @@ function AuthForm() {
       const response = await login(data);
       if (response.error) {
         window.alert(response.error);
-        navigate(ROUTE_INDEX);
+        navigate(ROUTE_AUTH);
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);

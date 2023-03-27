@@ -1,16 +1,30 @@
-import { redirect } from "react-router-dom";
-import { ROUTE_INDEX } from "../routes/routes";
-import { getAuthToken } from "../utils/token";
+import { getAccounts } from "../service/accounts";
+import { useLoaderData } from "react-router-dom";
+import Accounts from "../components/Accounts/Accounts";
+
+export type AccountType = {
+  id: number;
+  balance: number;
+  owner_id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  currency_id: number;
+  currency: { name: string };
+};
 
 function HomePage() {
-  return <div>Home Page</div>;
+  const myAccounts = useLoaderData() as AccountType[];
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h4>Your Accounts</h4>
+      <Accounts accounts={myAccounts} />
+    </div>
+  );
 }
 
 export default HomePage;
 
-export const loaderRouteProtection = () => {
-  if (!getAuthToken()) {
-    return redirect(ROUTE_INDEX);
-  }
-  return null;
-};
+export async function loader() {
+  const response = await getAccounts();
+  return response.data;
+}

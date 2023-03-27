@@ -9,6 +9,19 @@ export const axiosClient = axios.create({
   },
 });
 
+axiosClient.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    if (axios.isAxiosError(error)) {
+      return Promise.reject({ error: error.response!.data.errors[0] });
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
+
 export function setAuthorizationToken(token: string) {
   if (token) {
     axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;

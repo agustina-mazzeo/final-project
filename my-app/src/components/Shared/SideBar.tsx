@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ROUTE_HOME, ROUTE_INDEX } from "../../routes/routes";
+import { ROUTE_HOME, ROUTE_AUTH, ROUTE_TRANSACTIONS } from "../../routes/routes";
 import classes from "./SideBar.module.css";
 
 type SideBarProps = {
@@ -13,8 +13,8 @@ function SideBar({ isOpen, closeSideBar }: SideBarProps) {
       <span style={{color: "white"}}className={classes.closebtn} onClick={closeSideBar}>
         X
       </span>
-      <Link to={ROUTE_INDEX} onClick={closeSideBar}>
-        Login Page
+      <Link to={ROUTE_TRANSACTIONS} onClick={closeSideBar}>
+        Transactions
       </Link>
       <Link to={ROUTE_HOME} onClick={closeSideBar}>
         Home Page

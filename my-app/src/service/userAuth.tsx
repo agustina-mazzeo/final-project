@@ -11,11 +11,7 @@ export async function signup(data: userData) {
     const response = await axiosClient.post("/users", data);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return { error: error.response!.data.errors[0] };
-    } else {
-      return { error: "An unexpected error occurred" };
-    }
+    return error;
   }
 }
 export async function login(data: userData) {
@@ -29,10 +25,14 @@ export async function login(data: userData) {
     localStorage.setItem("tokenExpiration", expiration.toISOString());
     return response.data.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return { error: error.response!.data.errors[0] };
-    } else {
-      return { error: "An unexpected error occurred" };
-    }
+    return error;
+  }
+}
+export async function getLoggedUser() {
+  try {
+    const response = await axiosClient.get("/users/me");
+    return response.data.data;
+  } catch (error) {
+    return error;
   }
 }
