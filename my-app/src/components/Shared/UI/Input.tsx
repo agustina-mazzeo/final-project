@@ -1,3 +1,5 @@
+import { ChangeEventHandler } from "react";
+
 type InputProps = {
   label?: string;
   placeholder?: string;
@@ -6,7 +8,7 @@ type InputProps = {
   style?: React.CSSProperties;
   required?: boolean;
   disabled?: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: ChangeEventHandler<HTMLInputElement>
   onClick?: (event:React.MouseEvent<HTMLDivElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   value?: string;

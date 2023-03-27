@@ -21,7 +21,18 @@ export type Transaction = {
   to_account_id: number;
 };
 export type TransactionKeys = keyof Transaction;
-export type Order = "asc" | "desc"
+
+export type Pagination = {
+  hasMorePages: boolean;
+  pageSize: number;
+  currentPage: number;
+  totalRows: number;
+  totalPages: number;
+};
+export type PaginationKeys = keyof Pagination;
+
+
+export type Order = "asc" | "desc";
 export type Params = {
   from?: string;
   to?: string;
