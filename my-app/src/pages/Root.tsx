@@ -18,10 +18,11 @@ function RootLayout() {
   const navigation = useNavigation();
   const data = useLoaderData() as { name: string };
   const dispatch = useDispatch();
-
+  const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     dispatch(authActions.login({ name: data.name }));
+    setIsLoading(false);
   }, []);
 
   const openSideBar = () => {
@@ -32,7 +33,7 @@ function RootLayout() {
   };
   return (
     <>
-      {navigation.state === "loading" && (
+      {(navigation.state === "loading" || isLoading) && (
         <p style={{ textAlign: "center" }}>Loading...</p>
       )}
       <NavBar
