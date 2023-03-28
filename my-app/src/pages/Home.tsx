@@ -1,12 +1,12 @@
 import { getAccounts } from "../service/accounts";
 import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
-import { AccountType } from "../utils/types";
+import { Account } from "../utils/types";
 import { getAuthToken } from "../utils/token";
 import { setAuthorizationToken } from "../service";
 
 function HomePage() {
-  const myAccounts = useLoaderData() as AccountType[];
+  const myAccounts = useLoaderData() as Account[];
   return (
     <div style={{ textAlign: "center" }}>
       <h4>Your Accounts</h4>

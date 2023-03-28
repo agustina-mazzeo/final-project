@@ -32,8 +32,8 @@ function TransactionsTable() {
 
   useEffect(() => {
     const intervalId = setInterval(()=>{
-      window.location.reload()
-    }, 1000*10)
+     // window.location.reload()
+    }, 1000*60)
     setIsLoading(true);
     const timeoutId = setTimeout(async () => {
       const response = await getTransactions(queryParams);

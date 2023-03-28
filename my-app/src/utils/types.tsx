@@ -1,13 +1,3 @@
-export type AccountType = {
-  id: number;
-  balance: number;
-  owner_id: number;
-  createdAt: string;
-  updatedAt: string;
-  currency_id: number;
-  currency: { name: string };
-};
-
 export type Transaction = {
   id: number;
   description: string;
@@ -31,7 +21,6 @@ export type Pagination = {
 };
 export type PaginationKeys = keyof Pagination;
 
-
 export type Order = "asc" | "desc";
 export type Params = {
   from?: string;
@@ -41,4 +30,16 @@ export type Params = {
   page_size?: number;
   sort_by?: TransactionKeys;
   order_by?: Order;
+};
+export type Currency = "USD" | "URU" | "EU";
+export type Account = {
+  id: number;
+  balance: number;
+  owner_id: number;
+  createdAt: string;
+  updatedAt: string;
+  currency_id: number;
+  currency: {
+    name: Currency;
+  };
 };

@@ -8,7 +8,7 @@ type InputProps = {
   style?: React.CSSProperties;
   required?: boolean;
   disabled?: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>
+  onChange?: ChangeEventHandler<HTMLInputElement>
   onClick?: (event:React.MouseEvent<HTMLDivElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   value?: string;
