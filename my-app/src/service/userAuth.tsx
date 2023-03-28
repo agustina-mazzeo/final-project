@@ -19,9 +19,7 @@ export async function login(data: userData) {
     const response = await axiosClient.post("/users/login", data);
     localStorage.setItem("token", response.data.data.token);
     const expiration = new Date();
-    expiration.setTime(
-      expiration.getTime() + response.data.data.tokenExpiration
-    );
+    expiration.setTime(response.data.data.tokenExpiration);
     localStorage.setItem("tokenExpiration", expiration.toISOString());
     return response.data.data;
   } catch (error) {
@@ -36,3 +34,4 @@ export async function getLoggedUser() {
     return error;
   }
 }
+

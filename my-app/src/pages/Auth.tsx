@@ -1,5 +1,5 @@
 import AuthForm from "../components/Auth/AuthForm";
-import Button from "../components/UI/Button";
+import Button from "../components/Shared/UI/Button";
 import { redirect, useNavigate } from "react-router-dom";
 import { getAuthToken } from "../utils/token";
 import { setAuthorizationToken } from "../service";
@@ -28,11 +28,11 @@ function AuthPage() {
 }
 
 export const loaderRouteAuthenticated = () => {
-  const token = getAuthToken()
-if (token) {
-  setAuthorizationToken(token)
-  return redirect(ROUTE_HOME);
-}
-return null;
+  const token = getAuthToken();
+  if (token) {
+    setAuthorizationToken(token);
+    return redirect(ROUTE_HOME);
+  }
+  return null;
 };
 export default AuthPage;

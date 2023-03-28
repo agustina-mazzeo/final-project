@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ROUTE_HOME, ROUTE_AUTH, ROUTE_TRANSACTIONS } from "../../routes/routes";
+import { ROUTE_HOME, ROUTE_AUTH, ROUTE_TRANSACTIONS } from "../../../routes/routes";
 import classes from "./SideBar.module.css";
 
 type SideBarProps = {

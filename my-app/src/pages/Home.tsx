@@ -1,16 +1,9 @@
 import { getAccounts } from "../service/accounts";
 import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
-
-export type AccountType = {
-  id: number;
-  balance: number;
-  owner_id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  currency_id: number;
-  currency: { name: string };
-};
+import { AccountType } from "../utils/types";
+import { getAuthToken } from "../utils/token";
+import { setAuthorizationToken } from "../service";
 
 function HomePage() {
   const myAccounts = useLoaderData() as AccountType[];
@@ -25,6 +18,11 @@ function HomePage() {
 export default HomePage;
 
 export async function loader() {
-  const response = await getAccounts();
-  return response.data;
+  const token = getAuthToken();
+  if (token) {
+    setAuthorizationToken(token);
+    const response = await getAccounts();
+    return response.data;
+  }
+  return null;
 }

@@ -1,0 +1,10 @@
+.transactionsTable {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+.transactionsCell {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: auto;
+}
