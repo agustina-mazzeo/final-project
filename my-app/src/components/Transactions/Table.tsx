@@ -28,22 +28,24 @@ function TransactionsTable() {
   const [sortKey, setSortKey] = useState<TransactionKeys>("createdAt");
   const [sortOrder, setSortOrder] = useState<Order>("desc");
 
-  useEffect(()=>{}, [])
+  const fetchTransactions = async (params: Params) => {
+    setIsLoading(true);
+    const response = await getTransactions(params);
+    setTransactions(response.data);
+    setPagination(response.pagination);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const intervalId = setInterval(()=>{
-     // window.location.reload()
-    }, 1000*60)
-    setIsLoading(true);
+    const intervalId = setInterval(async () => {
+      fetchTransactions({});
+    }, 1000 * 60);
     const timeoutId = setTimeout(async () => {
-      const response = await getTransactions(queryParams);
-      setTransactions(response.data);
-      setPagination(response.pagination);
-      setIsLoading(false);
+      fetchTransactions(queryParams);
     }, 500);
     return () => {
       clearTimeout(timeoutId);
-      clearInterval(intervalId)
+      clearInterval(intervalId);
     };
   }, [queryParams]);
 
