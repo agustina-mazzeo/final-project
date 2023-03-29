@@ -43,3 +43,11 @@ export type Account = {
     name: Currency;
   };
 };
+
+export type TransferData = {
+  account_from: string;
+  account_to: string;
+  amount: string;
+  currency_name: string;
+  description?: string;
+};

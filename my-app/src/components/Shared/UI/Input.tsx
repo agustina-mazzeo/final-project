@@ -1,26 +1,44 @@
+import { UseFormRegister } from "react-hook-form";
 import { ChangeEventHandler } from "react";
 
 type InputProps = {
   label?: string;
-  placeholder?: string;
-  type?: string;
-  id?: string;
   style?: React.CSSProperties;
+  id?: string;
+  name?:string
+  type?: string;
+  placeholder?: string;
   required?: boolean;
   disabled?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement>
-  onClick?: (event:React.MouseEvent<HTMLDivElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   value?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  step?: string;
+  register?: UseFormRegister<any>;
+  rules?:any
   hasError?: boolean;
   errorMessage?: string;
 };
-const Input = ({onClick, hasError, errorMessage, label, ...props }: InputProps) => {
+const Input = ({
+  onClick,
+  hasError,
+  errorMessage,
+  label,
+  register,
+  name,
+  rules,
+  ...props
+}: InputProps) => {
+
   return (
     <div onClick={onClick}>
-      {label && <label htmlFor={props.id}>{label}</label>}
-      <br/>
-      <input {...props} />
+      {label && (
+        <label style={{ textAlign: "left" }} htmlFor={props.id}>
+          {label}
+        </label>
+      )}
+      <input {...((register && name) && register(name, rules))} {...props} />
       {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
