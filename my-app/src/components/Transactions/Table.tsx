@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTransactions } from "../../service/transactions";
+import { getTransactions } from "../../service/transactions/transactions";
 import classes from "./transactionsTable.module.css";
 import {
   Order,

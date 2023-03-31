@@ -1,4 +1,4 @@
-import { getAccounts } from "../service/accounts";
+import { getAccounts } from "../service/users/accounts";
 import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
 import { Account } from "../utils/types";

@@ -4,9 +4,8 @@ import {
   Control,
   RegisterOptions,
 } from "react-hook-form";
-import { SingleValue } from "react-select";
-import Select from "react-select";
-type SelectProps = {
+import { NumericFormat } from "react-number-format";
+type InputNumericProps = {
   register: UseFormRegister<any>;
   rules: Pick<
     RegisterOptions<any>,
@@ -14,43 +13,40 @@ type SelectProps = {
   >;
   hasError: boolean;
   errorMessage: string;
-  options: { value: string; label: string }[];
-  className: string;
+
   name: string;
   placeholder: string;
   control: Control<any>;
 };
-function SelectInput({
+function InputNumberFormat({
   register,
   rules,
-  options,
   hasError,
   errorMessage,
-  className,
   name,
   placeholder,
   control,
-}: SelectProps) {
+}: InputNumericProps) {
   const {
     field: { value: field_value, onChange: OnChangeField, ...restLangField },
   } = useController({ name, control });
+  const { ref, ...otherProps} = register(name, rules);
   return (
     <>
-      <Select
-        {...register(name, rules)}
-        {...{ options, className, placeholder }}
-        isSearchable={false}
-        isClearable
-        value={
-          field_value
-            ? options.find((x) => x.value === field_value)
-            : field_value
-        }
-        onChange={(option) => OnChangeField(option ? option.value : option)}
-        {...restLangField}
+      <NumericFormat
+        {...otherProps}
+        {...{ placeholder }}
+        getInputRef={ref}
+        thousandSeparator={true}
+        decimalScale={2}
+        allowNegative={false}
+        onValueChange={(value) => {
+          OnChangeField(value.floatValue);
+        }}
+        value={field_value}
       />
       {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
     </>
   );
 }
-export default SelectInput;
+export default InputNumberFormat;

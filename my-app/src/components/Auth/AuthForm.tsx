@@ -2,7 +2,7 @@ import Button from "../Shared/UI/Button";
 import Input from "../Shared/UI/Input";
 import useInput from "../../hooks/use-input";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { userData, signup, login } from "../../service/userAuth";
+import { userData, signup, login } from "../../service/users/userAuth";
 import { ROUTE_HOME, ROUTE_AUTH } from "../../routes/routes";
 import { setAuthorizationToken } from "../../service";
 import { useDispatch } from 'react-redux';
@@ -139,6 +139,7 @@ function AuthForm() {
         onChange={passChangeHandler}
         onBlur={passBlurHandler}
         label="Password"
+        type="password"
         id="password"
         hasError={passHasError}
         errorMessage="Please enter a password with +8 chars"

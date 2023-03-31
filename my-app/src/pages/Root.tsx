@@ -9,7 +9,7 @@ import NavBar from "../components/Shared/Bar/NavBar";
 import SideBar from "../components/Shared/Bar/SideBar";
 import { ROUTE_AUTH } from "../routes/routes";
 import { setAuthorizationToken } from "../service";
-import { getLoggedUser } from "../service/userAuth";
+import { getLoggedUser } from "../service/users/userAuth";
 import { getAuthToken } from "../utils/token";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";

@@ -3,7 +3,7 @@ import AuthPage, { loaderRouteAuthenticated } from "../pages/Auth";
 import HomePage, { loader as accountsLoader } from "../pages/Home";
 import NewTransferPage from "../pages/NewTransfer";
 import RootLayout, { loaderRouteNotAuthenticated } from "../pages/Root";
-import TransactionsPage, {loader as txnLoader}from "../pages/Transactions";
+import TransactionsPage, { loader as txnLoader } from "../pages/Transactions";
 import { loaderErrorPage } from "../utils/loaders";
 
 export const ROUTE_AUTH = "/authentication";
@@ -36,7 +36,6 @@ export const router = createBrowserRouter([
       {
         path: ROUTE_TRANSFER_FORM,
         element: <NewTransferPage />,
-        loader: accountsLoader,
       },
     ],
   },

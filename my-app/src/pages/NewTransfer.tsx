@@ -1,9 +1,10 @@
-import { SubmitHandler, useForm, useController } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { TransferData } from "../utils/types";
 
 import NewTransferForm from "../components/Transfer/NewTransferForm";
 
-const defaultValues = {
+
+export const defaultValues = {
   account_from: "",
   currency_name: "",
   account_to: "",
@@ -19,7 +20,7 @@ function NewTransferPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<TransferData>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const onSubmitHandler: SubmitHandler<TransferData> = (data: TransferData) => {
@@ -32,10 +33,11 @@ function NewTransferPage() {
     >
       <h3>New Transfer</h3>
       <NewTransferForm
-        {...{ register, handleSubmit, errors, control }}
+        {...{ register, handleSubmit, errors, control, reset }}
         onSubmit={onSubmitHandler}
       />
     </div>
   );
 }
 export default NewTransferPage;
+
