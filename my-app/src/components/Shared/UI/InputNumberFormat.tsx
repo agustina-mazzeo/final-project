@@ -7,20 +7,14 @@ import {
 import { NumericFormat } from "react-number-format";
 type InputNumericProps = {
   register: UseFormRegister<any>;
-  rules: Pick<
-    RegisterOptions<any>,
-    "maxLength" | "minLength" | "validate" | "required"
-  >;
   hasError: boolean;
-  errorMessage: string;
-
+  errorMessage?: string;
   name: string;
   placeholder: string;
   control: Control<any>;
 };
 function InputNumberFormat({
   register,
-  rules,
   hasError,
   errorMessage,
   name,
@@ -30,7 +24,7 @@ function InputNumberFormat({
   const {
     field: { value: field_value, onChange: OnChangeField, ...restLangField },
   } = useController({ name, control });
-  const { ref, ...otherProps} = register(name, rules);
+  const { ref, ...otherProps } = register(name);
   return (
     <>
       <NumericFormat
@@ -45,7 +39,9 @@ function InputNumberFormat({
         }}
         value={field_value}
       />
-      {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {hasError && errorMessage && (
+        <p style={{ color: "red" }}>{errorMessage}</p>
+      )}
     </>
   );
 }

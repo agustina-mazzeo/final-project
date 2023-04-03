@@ -5,8 +5,9 @@ type InputProps = {
   label?: string;
   style?: React.CSSProperties;
   id?: string;
-  name?:string
+  name?: string;
   type?: string;
+  min?: string;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
@@ -16,7 +17,6 @@ type InputProps = {
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   step?: string;
   register?: UseFormRegister<any>;
-  rules?:any
   hasError?: boolean;
   errorMessage?: string;
 };
@@ -27,10 +27,8 @@ const Input = ({
   label,
   register,
   name,
-  rules,
   ...props
 }: InputProps) => {
-
   return (
     <div onClick={onClick}>
       {label && (
@@ -38,7 +36,7 @@ const Input = ({
           {label}
         </label>
       )}
-      <input {...((register && name) && register(name, rules))} {...props} />
+      <input {...props} {...(register && name && register(name))} />
       {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );

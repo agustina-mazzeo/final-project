@@ -1,12 +1,8 @@
-import { getAccounts } from "../service/users/accounts";
-import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
-import { Account } from "../utils/types";
-import { getAuthToken } from "../utils/token";
-import { setAuthorizationToken } from "../service";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 function HomePage() {
-  const myAccounts = useLoaderData() as Account[];
+  const myAccounts = useSelector((state: RootState) => state.myAccounts);
   return (
     <div style={{ textAlign: "center" }}>
       <h4>Your Accounts</h4>
@@ -17,12 +13,11 @@ function HomePage() {
 
 export default HomePage;
 
-export async function loader() {
+/*export async function loader() {
   const token = getAuthToken();
   if (token) {
-    setAuthorizationToken(token);
     const response = await getAccounts();
     return response.data;
   }
   return null;
-}
+}*/

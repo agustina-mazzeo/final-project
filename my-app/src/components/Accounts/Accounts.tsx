@@ -1,4 +1,3 @@
-import { useNavigation } from "react-router-dom";
 import { Account } from "../../utils/types";
 
 type AccountsProps = {
@@ -6,8 +5,6 @@ type AccountsProps = {
 };
 
 function Accounts({ accounts }: AccountsProps) {
-    const navigation = useNavigation();
-  const isLoading = navigation.state === "loading";
   return (
     <div>
       <ul>

@@ -1,19 +1,9 @@
-import {
-  UseFormRegister,
-  useController,
-  Control,
-  RegisterOptions,
-} from "react-hook-form";
-import { SingleValue } from "react-select";
+import { UseFormRegister, useController, Control } from "react-hook-form";
 import Select from "react-select";
 type SelectProps = {
   register: UseFormRegister<any>;
-  rules: Pick<
-    RegisterOptions<any>,
-    "maxLength" | "minLength" | "validate" | "required"
-  >;
   hasError: boolean;
-  errorMessage: string;
+  errorMessage?: string;
   options: { value: string; label: string }[];
   className: string;
   name: string;
@@ -22,7 +12,6 @@ type SelectProps = {
 };
 function SelectInput({
   register,
-  rules,
   options,
   hasError,
   errorMessage,
@@ -37,7 +26,7 @@ function SelectInput({
   return (
     <>
       <Select
-        {...register(name, rules)}
+        {...register(name)}
         {...{ options, className, placeholder }}
         isSearchable={false}
         isClearable
@@ -49,7 +38,9 @@ function SelectInput({
         onChange={(option) => OnChangeField(option ? option.value : option)}
         {...restLangField}
       />
-      {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {hasError && errorMessage && (
+        <p style={{ color: "red" }}>{errorMessage}</p>
+      )}
     </>
   );
 }

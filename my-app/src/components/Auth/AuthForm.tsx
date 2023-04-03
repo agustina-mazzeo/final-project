@@ -83,7 +83,7 @@ function AuthForm() {
       const response = await login(data);
       if (response.error) {
         window.alert(response.error);
-        navigate(ROUTE_AUTH);
+        navigate(ROUTE_AUTH); //revise
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);

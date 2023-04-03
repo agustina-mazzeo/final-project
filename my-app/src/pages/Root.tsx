@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Outlet,
-  redirect,
-  useLoaderData,
-  useNavigation,
-} from "react-router-dom";
+import { Outlet, redirect, useNavigation } from "react-router-dom";
 import NavBar from "../components/Shared/Bar/NavBar";
 import SideBar from "../components/Shared/Bar/SideBar";
 import { ROUTE_AUTH } from "../routes/routes";
@@ -13,16 +8,27 @@ import { getLoggedUser } from "../service/users/userAuth";
 import { getAuthToken } from "../utils/token";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";
+import { accountsActions } from "../store/accounts";
+import { getAccounts } from "../service/users/accounts";
 
 function RootLayout() {
   const navigation = useNavigation();
-  const data = useLoaderData() as { name: string };
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    dispatch(authActions.login({ name: data.name }));
-    setIsLoading(false);
+    const reset = async () => {
+      const [loggedUser, accounts] = await Promise.all([
+        getLoggedUser(),
+        getAccounts(),
+      ]);
+      if (loggedUser.error || accounts.error)
+        window.alert("An unexpected error ocurred");
+      dispatch(accountsActions.addAccounts({accounts}));
+      dispatch(authActions.login({ name: loggedUser.name }));
+      setIsLoading(false);
+    };
+    reset();
   }, []);
 
   const openSideBar = () => {
@@ -50,12 +56,12 @@ function RootLayout() {
 }
 
 export const loaderRouteNotAuthenticated = async () => {
+  console.log("running root loader")
   const token = getAuthToken();
   if (!token) {
     return redirect(ROUTE_AUTH);
   }
   setAuthorizationToken(token);
-  const response = await getLoggedUser();
-  return response;
+  return null;
 };
 export default RootLayout;

@@ -45,9 +45,9 @@ export type Account = {
 };
 
 export type TransferData = {
-  account_from: string;
-  account_to: string;
-  amount: string;
+  account_from: string | number;
+  account_to: string | number;
+  amount: string | number;
   currency_name: string;
   description?: string;
 };
