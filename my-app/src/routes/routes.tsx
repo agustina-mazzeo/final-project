@@ -26,14 +26,17 @@ export const router = createBrowserRouter([
         index: true,
         id: ROUTE_HOME,
         element: <HomePage />,
+        loader: loaderRouteNotAuthenticated,
       },
       {
         path: ROUTE_TRANSACTIONS,
         element: <TransactionsPage />,
+        loader: loaderRouteNotAuthenticated,
       },
       {
         path: ROUTE_TRANSFER_FORM,
         element: <NewTransferPage />,
+        loader: loaderRouteNotAuthenticated,
       },
     ],
   },

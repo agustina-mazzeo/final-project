@@ -8,8 +8,6 @@ import { getLoggedUser } from "../service/users/userAuth";
 import { getAuthToken } from "../utils/token";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";
-import { accountsActions } from "../store/accounts";
-import { getAccounts } from "../service/users/accounts";
 
 function RootLayout() {
   const navigation = useNavigation();
@@ -18,16 +16,12 @@ function RootLayout() {
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     const reset = async () => {
-      const [loggedUser, accounts] = await Promise.all([
-        getLoggedUser(),
-        getAccounts(),
-      ]);
-      if (loggedUser.error || accounts.error)
-        window.alert("An unexpected error ocurred");
-      dispatch(accountsActions.addAccounts({accounts}));
+      const loggedUser = await getLoggedUser();
+      if (loggedUser.error) window.alert("An unexpected error ocurred");
       dispatch(authActions.login({ name: loggedUser.name }));
       setIsLoading(false);
     };
+    console.log("useEffect root layout running")
     reset();
   }, []);
 
@@ -56,7 +50,6 @@ function RootLayout() {
 }
 
 export const loaderRouteNotAuthenticated = async () => {
-  console.log("running root loader")
   const token = getAuthToken();
   if (!token) {
     return redirect(ROUTE_AUTH);

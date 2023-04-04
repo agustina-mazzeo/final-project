@@ -19,6 +19,7 @@ type InputProps = {
   register?: UseFormRegister<any>;
   hasError?: boolean;
   errorMessage?: string;
+  rules?: any
 };
 const Input = ({
   onClick,
@@ -27,6 +28,7 @@ const Input = ({
   label,
   register,
   name,
+  rules, 
   ...props
 }: InputProps) => {
   return (
@@ -36,7 +38,7 @@ const Input = ({
           {label}
         </label>
       )}
-      <input {...props} {...(register && name && register(name))} />
+      <input {...props} {...(register && name && register(name, rules))} />
       {hasError && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );

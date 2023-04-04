@@ -9,6 +9,8 @@ type SelectProps = {
   name: string;
   placeholder: string;
   control: Control<any>;
+
+  rules?:any
 };
 function SelectInput({
   register,
@@ -19,6 +21,7 @@ function SelectInput({
   name,
   placeholder,
   control,
+  rules
 }: SelectProps) {
   const {
     field: { value: field_value, onChange: OnChangeField, ...restLangField },
@@ -26,7 +29,7 @@ function SelectInput({
   return (
     <>
       <Select
-        {...register(name)}
+        {...register(name, rules)}
         {...{ options, className, placeholder }}
         isSearchable={false}
         isClearable

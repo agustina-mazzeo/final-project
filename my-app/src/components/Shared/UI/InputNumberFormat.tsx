@@ -2,7 +2,6 @@ import {
   UseFormRegister,
   useController,
   Control,
-  RegisterOptions,
 } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 type InputNumericProps = {
@@ -12,6 +11,7 @@ type InputNumericProps = {
   name: string;
   placeholder: string;
   control: Control<any>;
+  rules?:any
 };
 function InputNumberFormat({
   register,
@@ -20,11 +20,12 @@ function InputNumberFormat({
   name,
   placeholder,
   control,
+  rules
 }: InputNumericProps) {
   const {
     field: { value: field_value, onChange: OnChangeField, ...restLangField },
   } = useController({ name, control });
-  const { ref, ...otherProps } = register(name);
+  const { ref, ...otherProps } = register(name, rules);
   return (
     <>
       <NumericFormat

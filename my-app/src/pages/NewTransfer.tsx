@@ -1,42 +1,18 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TransferData } from "../utils/types";
+import { Rates, TransferData } from "../utils/types";
 import NewTransferForm from "../components/Transfer/NewTransferForm";
 import Confirmation from "../components/Transfer/Confirmation";
-import { useState } from "react";
-import { postTransaction } from "../service/transactions/transfer";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getRates } from "../service/transactions/transfer";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ROUTE_HOME } from "../routes/routes";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store";
+import { getExchangeRate, numWithoutCommas } from "../utils/auxFunctions";
+import { getAccounts } from "../service/users/accounts";
+import { accountsActions } from "../store/accounts";
 
-const customError: z.ZodErrorMap = (error, ctx) => {
-  if (error.code === z.ZodIssueCode.invalid_type) {
-    if (error.expected === "string") {
-      return { message: `This field is required` };
-    }
-  }
-  return { message: ctx.defaultError };
-};
-
-const transferSchema = z
-  .object({
-    account_from: z
-      .string({ errorMap: customError })
-      .min(1, { message: "This field is required" }),
-    currency_name: z
-      .string({ errorMap: customError })
-      .min(1, { message: "This field is required" }),
-    amount: z.string().min(1, { message: "This field is required" }),
-    account_to: z.string().min(1, { message: "This field is required" }),
-    description: z
-      .string()
-      .max(128, { message: "Max length is 128 chars" })
-      .optional(),
-  })
-  .refine((data) => data.account_from !== data.account_to, {
-    path: ["account_to"],
-    message: "Please enter a different account",
-  });
+let render = 0;
 
 export const defaultValues: TransferData = {
   account_from: "",
@@ -47,10 +23,67 @@ export const defaultValues: TransferData = {
 };
 
 function NewTransferPage() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isShown, setIsShown] = useState(false);
+  const [rates, setRates] = useState<Rates>({
+    usd: 0,
+    eu: 0,
+  });
   const [data, setData] = useState<TransferData>(defaultValues);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const reset = async () => {
+      const [rates, accounts] = await Promise.all([getRates(), getAccounts()]);
+      if (rates.error || accounts.error) {
+        window.alert("An unexpected error ocurred");
+        return;
+      }
+      setRates(rates.data);
+      dispatch(accountsActions.addAccounts({ accounts }));
+      setIsLoading(false);
+    };
+    console.log("running useEffect from NewTransferPage");
+    reset();
+  }, []);
+  const accounts = useSelector((state: RootState) => state.myAccounts);
+  const transferSchema = z
+    .object({
+      account_from: z
+        .string({
+          invalid_type_error: "This field is required",
+        })
+        .min(1, { message: "This field is required" }),
+      currency_name: z
+        .string({ invalid_type_error: "This field is required" })
+        .min(1, { message: "This field is required" }),
+      amount: z.coerce.string().min(1, { message: "This field is required" }),
+      account_to: z.string().min(1, { message: "This field is required" }),
+      description: z.string().max(128, { message: "Max length is 128 chars" }),
+    })
+    .refine((data) => data.account_from !== data.account_to, {
+      path: ["account_to"],
+      message: "Please enter a different account",
+    })
+    .refine(
+      (data) => {
+        const account = accounts.find(({ id }) => id == +data.account_from);
+        const currency_from = account?.currency.name;
+        let exchangeRate, toBeDebited;
+        if (currency_from && data.currency_name)
+          exchangeRate = getExchangeRate(
+            currency_from,
+            data.currency_name,
+            rates
+          );
+        if (exchangeRate)
+          toBeDebited = exchangeRate * numWithoutCommas(data.amount);
+        return (
+          !account ||
+          (account && toBeDebited && account.balance - toBeDebited >= 0)
+        );
+      },
+      { path: ["amount"], message: "Not enough funds!" }
+    );
   const {
     register,
     reset,
@@ -68,40 +101,33 @@ function NewTransferPage() {
       ...data,
       account_from: +data.account_from,
       account_to: +data.account_to,
-      amount: +data.amount,
+      amount: numWithoutCommas(`${data.amount}`),
     };
     setData(dataNum);
     setIsShown(true);
   };
 
-  const send = async (data: TransferData) => {
-    setIsLoading(true);
-    console.log(data);
-    const response = await postTransaction(data);
-    setIsLoading(false);
-    if (response.error) {
-      console.log(response.error);
-      //handle the error
-      return;
-    }
-    reset(defaultValues);
-    setIsShown(false);
-    console.log("transfer successful");
-    navigate(ROUTE_HOME);
-  };
-
+  render++;
   return (
     <div
       style={{ position: "relative", width: "100%", justifyContent: "center" }}
     >
       <h3>New Transfer</h3>
-
+      <p>Render count: {render}</p>
       <NewTransferForm
-        {...{ register, handleSubmit, errors, control, reset }}
+        {...{
+          register,
+          handleSubmit,
+          errors,
+          control,
+          reset,
+          rates,
+          isLoading,
+        }}
         onSubmit={onSubmitHandler}
       />
       {isShown && (
-        <Confirmation onClose={setIsShown} {...{ data, send, isLoading }} />
+        <Confirmation {...{ data, reset, defaultValues, setIsShown }} />
       )}
     </div>
   );

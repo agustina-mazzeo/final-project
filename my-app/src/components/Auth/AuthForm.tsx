@@ -83,12 +83,12 @@ function AuthForm() {
       const response = await login(data);
       if (response.error) {
         window.alert(response.error);
-        navigate(ROUTE_AUTH); //revise
+        navigate(ROUTE_AUTH);
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);
         dispatch(authActions.login({name:response.name}))
-        window.alert("User logged with success!");
+        //window.alert("User logged with success!");
         navigate(ROUTE_HOME);
       }
     }

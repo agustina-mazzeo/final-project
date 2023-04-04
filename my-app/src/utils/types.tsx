@@ -51,3 +51,21 @@ export type TransferData = {
   currency_name: string;
   description?: string;
 };
+
+export type Rates = {
+  eu: number;
+  usd: number;
+};
+
+export type TransferVoucher = {
+  amount: number;
+  amount_from: number;
+  amount_to: number;
+  createdAt: string;
+  currency_name: Currency;
+  description: string;
+  from_account_id: number;
+  id: number;
+  to_account_id: number;
+  updatedAt: string;
+};

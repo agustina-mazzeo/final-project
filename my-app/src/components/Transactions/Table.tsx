@@ -107,7 +107,7 @@ function TransactionsTable() {
           {...{ columns, sortHandler, filterHandler, sortKey, sortOrder }}
         />
         <Body {...{ transactions, columns }} />
-        {pagination && <Foot {...{ pagination, changePageHandler }} />}
+        {pagination && <Foot {...{ pagination, changePageHandler, isLoading }} />}
       </table>
     </>
   );

@@ -11,11 +11,14 @@ import Input from "../Shared/UI/Input";
 import SelectInput from "../Shared/UI/Select";
 import Button from "../Shared/UI/Button";
 import { defaultValues } from "../../pages/NewTransfer";
-import { useEffect, useState } from "react";
-import { getRates } from "../../service/transactions/transfer";
 import InputNumberFormat from "../Shared/UI/InputNumberFormat";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import {
+  getExchangeRate,
+  numWithCommas,
+  numWithoutCommas,
+} from "../../utils/auxFunctions";
 
 const currency_options = [
   { value: "URU", label: "$ (URU)" },
@@ -23,9 +26,7 @@ const currency_options = [
   { value: "EU", label: "EUR (EU)" },
 ];
 
-function formatNum(num: number): string {
-  return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
-}
+let render = 0;
 
 type NTFormProps = {
   onSubmit: SubmitHandler<TransferData>;
@@ -34,6 +35,8 @@ type NTFormProps = {
   handleSubmit: UseFormHandleSubmit<any>;
   errors: FieldErrors<any>;
   reset: (values: TransferData) => void;
+  rates: { usd: number; eu: number };
+  isLoading: boolean;
 };
 function NewTransferForm({
   onSubmit,
@@ -42,29 +45,13 @@ function NewTransferForm({
   handleSubmit,
   errors,
   reset,
+  rates,
+  isLoading,
 }: NTFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [rates, setRates] = useState<{ usd: number; eu: number }>({
-    usd: 0,
-    eu: 0,
-  });
   const accounts = useSelector((state: RootState) => state.myAccounts);
   const account_options = accounts.map(({ id }) => {
     return { value: `${id}`, label: `${id}` };
   });
-
-  useEffect(() => {
-    const reset = async () => {
-      const rates = await getRates();
-      if (rates.error) {
-        window.alert(rates.error);
-        return;
-      }
-      setRates(rates.data);
-      setIsLoading(false);
-    };
-    reset();
-  }, []);
 
   const currency_watched = useWatch({
     control,
@@ -84,44 +71,19 @@ function NewTransferForm({
 
   const account = accounts.find(({ id }) => id == account_from_watched);
   const currency_from = account?.currency.name;
-  const account_from_balance = account?.balance;
   let exchangeRate, toBeDebited;
-  let hasFunds = true;
-  if (currency_watched && currency_from !== currency_watched) {
-    switch (currency_from) {
-      case "URU":
-        if (currency_watched === "USD") exchangeRate = rates.usd;
-        else exchangeRate = rates.eu;
-
-        break;
-      case "USD":
-        if (currency_watched === "URU") exchangeRate = 1 / rates.usd;
-        else exchangeRate = rates.eu / rates.usd;
-
-        break;
-      case "EU":
-        if (currency_watched === "USD") exchangeRate = rates.usd / rates.eu;
-        else exchangeRate = 1 / rates.eu;
-    }
-    if (amount_watched && exchangeRate)
-      toBeDebited =
-        exchangeRate * parseFloat(amount_watched.replaceAll(",", ""));
+  if (currency_watched && currency_from && currency_from !== currency_watched) {
+    exchangeRate = getExchangeRate(currency_from, currency_watched, rates);
+    if (amount_watched)
+      toBeDebited = exchangeRate * numWithoutCommas(amount_watched);
   }
-
-  if (amount_watched && account_from_balance) {
-    if (toBeDebited) hasFunds = account_from_balance - toBeDebited >= 0;
-    else
-      hasFunds =
-        account_from_balance - parseFloat(amount_watched.replaceAll(",", "")) >=
-        0;
-  }
-  
+  render++;
   return (
     <>
       {isLoading && <p>Loading...</p>}
+      <p>{`Render count: ${render}`}</p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <fieldset style={{ border: "0" }} disabled={isLoading}>
-   
           <SelectInput
             register={register}
             options={account_options}
@@ -142,7 +104,7 @@ function NewTransferForm({
             errorMessage={errors.currency_name?.message?.toString()}
           />
           {currency_from && exchangeRate && (
-            <p>{`Exchange rate: ${formatNum(
+            <p>{`Exchange rate: ${numWithCommas(
               exchangeRate
             )} ${currency_from}`}</p>
           )}
@@ -154,9 +116,10 @@ function NewTransferForm({
             placeholder="Amount"
           />
           {currency_from && toBeDebited && (
-            <p>{`To be Debited: ${formatNum(toBeDebited)} ${currency_from}`}</p>
+            <p>{`To be Debited: ${numWithCommas(
+              toBeDebited
+            )} ${currency_from}`}</p>
           )}
-          {!hasFunds && <p style={{ color: "red" }}>Not enough funds!</p>}
           <Input
             register={register}
             name="account_to"
