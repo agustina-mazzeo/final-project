@@ -81,7 +81,7 @@ function NewTransferForm({
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      <p>{`Render count: ${render}`}</p>
+      {/*<p>{`Render count: ${render}`}</p>*/}
       <form onSubmit={handleSubmit(onSubmit)}>
         <fieldset style={{ border: "0" }} disabled={isLoading}>
           <SelectInput

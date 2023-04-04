@@ -20,13 +20,13 @@ function Foot({ pagination, changePageHandler, isLoading }: FootProps) {
             <th style={{ textAlign: "center" }} colSpan={5}>
               <Button
                 disabled={
-                  !pagination || pagination.currentPage === 1 || isLoading
+                  isLoading || !pagination || pagination.currentPage === 1
                 }
                 buttonLabel="Previous Page"
                 onClick={() => changePageHandler("prev")}
               />
               <Button
-                disabled={!pagination || !pagination.hasMorePages || isLoading}
+                disabled={isLoading || !pagination || !pagination.hasMorePages}
                 buttonLabel="Next Page"
                 onClick={() => changePageHandler("next")}
               />

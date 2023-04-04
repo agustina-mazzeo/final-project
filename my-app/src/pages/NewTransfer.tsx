@@ -42,7 +42,6 @@ function NewTransferPage() {
       dispatch(accountsActions.addAccounts({ accounts }));
       setIsLoading(false);
     };
-    console.log("running useEffect from NewTransferPage");
     reset();
   }, []);
   const accounts = useSelector((state: RootState) => state.myAccounts);
@@ -113,7 +112,7 @@ function NewTransferPage() {
       style={{ position: "relative", width: "100%", justifyContent: "center" }}
     >
       <h3>New Transfer</h3>
-      <p>Render count: {render}</p>
+      {/*<p>Render count: {render}</p>*/}
       <NewTransferForm
         {...{
           register,

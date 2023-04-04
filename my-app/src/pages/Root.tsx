@@ -21,7 +21,6 @@ function RootLayout() {
       dispatch(authActions.login({ name: loggedUser.name }));
       setIsLoading(false);
     };
-    console.log("useEffect root layout running")
     reset();
   }, []);
 
