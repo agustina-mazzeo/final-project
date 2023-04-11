@@ -67,6 +67,7 @@ function Confirmation({
       )}
       {showVoucher && voucher && (
         <div>
+          <span>Transfer Successful!</span>
           <ul>
             <li>{`Account From: ${voucher.from_account_id}`}</li>
             <li>{`Account To: ${voucher.to_account_id}`}</li>

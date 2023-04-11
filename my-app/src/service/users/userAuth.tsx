@@ -20,7 +20,7 @@ export async function login(data: userData) {
     const expiration = new Date();
     expiration.setTime(response.data.data.tokenExpiration);
     /*expiration.setTime(
-      response.data.data.tokenExpiration - 4 * 60 * 60 * 1000 + 1 * 60 * 1000
+      response.data.data.tokenExpiration - 4 * 60 * 60 * 1000 + 1 * 30 * 1000
     );*/
     localStorage.setItem("tokenExpiration", expiration.toISOString());
     return response.data.data;

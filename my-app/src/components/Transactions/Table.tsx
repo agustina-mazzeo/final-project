@@ -19,12 +19,12 @@ const columns: { label: string; key: TransactionKeys }[] = [
   { label: "Amount", key: "amount" },
   { label: "Date", key: "createdAt" },
 ];
-
+const defaultParams: Params = { page_size: 12 };
 function TransactionsTable() {
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [pagination, setPagination] = useState<Pagination>();
-  const [queryParams, setQueryParams] = useState<Params>({});
+  const [queryParams, setQueryParams] = useState<Params>(defaultParams);
   const [sortKey, setSortKey] = useState<TransactionKeys>("createdAt");
   const [sortOrder, setSortOrder] = useState<Order>("desc");
 
@@ -38,7 +38,7 @@ function TransactionsTable() {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      fetchTransactions({});
+      fetchTransactions(queryParams);
     }, 1000 * 60);
     const timeoutId = setTimeout(async () => {
       fetchTransactions(queryParams);
@@ -106,8 +106,10 @@ function TransactionsTable() {
         <Header
           {...{ columns, sortHandler, filterHandler, sortKey, sortOrder }}
         />
-        <Body {...{ transactions, columns }} />
-        {pagination && <Foot {...{ pagination, changePageHandler, isLoading }} />}
+        {!isLoading && <Body {...{ transactions, columns }} />}
+        {!isLoading && pagination && (
+          <Foot {...{ pagination, changePageHandler, isLoading }} />
+        )}
       </table>
     </>
   );

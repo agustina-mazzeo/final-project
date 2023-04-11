@@ -20,11 +20,9 @@ export const router = createBrowserRouter([
   {
     path: ROUTE_HOME,
     element: <RootLayout />,
-    loader: loaderRouteNotAuthenticated,
     children: [
       {
         index: true,
-        id: ROUTE_HOME,
         element: <HomePage />,
         loader: loaderRouteNotAuthenticated,
       },

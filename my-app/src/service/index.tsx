@@ -15,9 +15,9 @@ axiosClient.interceptors.response.use(
   },
   function (error) {
     if (axios.isAxiosError(error)) {
-      return Promise.reject({ error: error.response!.data.errors[0] });
+      return Promise.reject({ error: error.response?.data.errors[0] ?? error.message });
     } else {
-      return Promise.reject(error);
+      return Promise.reject({ error });
     }
   }
 );

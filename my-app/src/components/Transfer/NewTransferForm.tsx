@@ -132,7 +132,9 @@ function NewTransferForm({
           <textarea {...register("description")} placeholder="Reference" />
           {errors.description && (
             <>
-              <p>{errors.description.message?.toString()}</p>
+              <p style={{ color: "red" }}>
+                {errors.description.message?.toString()}
+              </p>
               <br />
             </>
           )}

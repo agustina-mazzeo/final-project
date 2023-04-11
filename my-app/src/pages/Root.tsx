@@ -49,6 +49,7 @@ function RootLayout() {
 }
 
 export const loaderRouteNotAuthenticated = async () => {
+
   const token = getAuthToken();
   if (!token) {
     return redirect(ROUTE_AUTH);

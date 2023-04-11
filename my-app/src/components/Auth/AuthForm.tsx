@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { userData, signup, login } from "../../service/users/userAuth";
 import { ROUTE_HOME, ROUTE_AUTH } from "../../routes/routes";
 import { setAuthorizationToken } from "../../service";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { authActions } from "../../store/auth";
 
 function AuthForm() {
@@ -73,21 +73,23 @@ function AuthForm() {
         window.alert(response.error);
       } else {
         window.alert("User created with success!");
+        navigate(ROUTE_AUTH);
       }
-      navigate(ROUTE_AUTH);
-    } else { //login
+    } else {
+      //login
       const data: userData = {
         email: emailValue,
         password: passwordValue,
       };
       const response = await login(data);
+      console.log(response);
       if (response.error) {
         window.alert(response.error);
-        navigate(ROUTE_AUTH);
+        //navigate(ROUTE_AUTH);
       } else {
         const token: string = response.token;
         setAuthorizationToken(token);
-        dispatch(authActions.login({name:response.name}))
+        dispatch(authActions.login({ name: response.name }));
         //window.alert("User logged with success!");
         navigate(ROUTE_HOME);
       }

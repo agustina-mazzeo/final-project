@@ -6,6 +6,7 @@ import { RootState } from "../../../store";
 import Button from "../UI/Button";
 import { authActions } from "../../../store/auth";
 import { logout } from "../../../utils/token";
+import { accountsActions } from "../../../store/accounts";
 type NavBarProps = {
   openSideBar: () => void;
   closeSideBar: () => void;
@@ -21,6 +22,7 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
     logout()
     navigate(ROUTE_AUTH)
     dispatch(authActions.logout())
+    dispatch(accountsActions.removeAccounts())
   }
   
   return (

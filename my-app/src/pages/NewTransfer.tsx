@@ -57,7 +57,7 @@ function NewTransferPage() {
         .min(1, { message: "This field is required" }),
       amount: z.coerce.string().min(1, { message: "This field is required" }),
       account_to: z.string().min(1, { message: "This field is required" }),
-      description: z.string().max(128, { message: "Max length is 128 chars" }),
+      description: z.string().max(20, { message: "Max length is 128 chars" }),
     })
     .refine((data) => data.account_from !== data.account_to, {
       path: ["account_to"],

@@ -10,6 +10,9 @@ const accountsSlice = createSlice({
     addAccounts(state, action) {
       return action.payload.accounts
     },
+    removeAccounts(state) {
+      return initialAccounts
+    },
   },
 });
 export const accountsActions = accountsSlice.actions;
