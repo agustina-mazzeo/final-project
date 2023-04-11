@@ -1,28 +1,40 @@
-import { getAccounts } from "../service/accounts";
-import { useLoaderData } from "react-router-dom";
 import Accounts from "../components/Accounts/Accounts";
-import { AccountType } from "../utils/types";
-import { getAuthToken } from "../utils/token";
-import { setAuthorizationToken } from "../service";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useEffect, useState } from "react";
+import { getAccounts } from "../service/users/accounts";
+import { accountsActions } from "../store/accounts";
 function HomePage() {
-  const myAccounts = useLoaderData() as AccountType[];
+  const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(true)
+  useEffect(() => {
+    const reset = async () => {
+      const  accounts = await  getAccounts();
+      if (accounts.error) {
+        window.alert(accounts.error);
+        return;
+      }
+      dispatch(accountsActions.addAccounts({ accounts }));
+      setIsLoading(false)
+    };
+    reset();
+  }, []);
+  const myAccounts = useSelector((state: RootState) => state.myAccounts);
   return (
     <div style={{ textAlign: "center" }}>
       <h4>Your Accounts</h4>
-      <Accounts accounts={myAccounts} />
+      {!isLoading ? <Accounts accounts={myAccounts} />: <p>Loading...</p>}
     </div>
   );
 }
 
 export default HomePage;
 
-export async function loader() {
+/*export async function loader() {
   const token = getAuthToken();
   if (token) {
-    setAuthorizationToken(token);
     const response = await getAccounts();
     return response.data;
   }
   return null;
-}
+}*/

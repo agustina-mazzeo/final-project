@@ -17,7 +17,8 @@ export function getAuthToken() {
   }
   const tokenDuration = getTokenDuration();
   if (tokenDuration <= 0) {
-    logout()
+    logout();
+    window.alert("Session expired")
     return "";
   }
   return token;

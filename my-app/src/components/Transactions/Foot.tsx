@@ -3,8 +3,9 @@ import Button from "../Shared/UI/Button";
 type FootProps = {
   pagination: Pagination;
   changePageHandler: (action: string) => void;
+  isLoading: boolean;
 };
-function Foot({ pagination, changePageHandler }: FootProps) {
+function Foot({ pagination, changePageHandler, isLoading }: FootProps) {
   return (
     <>
       {pagination.totalPages !== 0 && (
@@ -18,12 +19,14 @@ function Foot({ pagination, changePageHandler }: FootProps) {
           <tr>
             <th style={{ textAlign: "center" }} colSpan={5}>
               <Button
-                disabled={!pagination || pagination.currentPage === 1}
+                disabled={
+                  isLoading || !pagination || pagination.currentPage === 1
+                }
                 buttonLabel="Previous Page"
                 onClick={() => changePageHandler("prev")}
               />
               <Button
-                disabled={!pagination || !pagination.hasMorePages}
+                disabled={isLoading || !pagination || !pagination.hasMorePages}
                 buttonLabel="Next Page"
                 onClick={() => changePageHandler("next")}
               />

@@ -1,13 +1,3 @@
-export type AccountType = {
-  id: number;
-  balance: number;
-  owner_id: number;
-  createdAt: string;
-  updatedAt: string;
-  currency_id: number;
-  currency: { name: string };
-};
-
 export type Transaction = {
   id: number;
   description: string;
@@ -31,7 +21,6 @@ export type Pagination = {
 };
 export type PaginationKeys = keyof Pagination;
 
-
 export type Order = "asc" | "desc";
 export type Params = {
   from?: string;
@@ -41,4 +30,42 @@ export type Params = {
   page_size?: number;
   sort_by?: TransactionKeys;
   order_by?: Order;
+};
+export type Currency = "USD" | "URU" | "EU";
+export type Account = {
+  id: number;
+  balance: number;
+  owner_id: number;
+  createdAt: string;
+  updatedAt: string;
+  currency_id: number;
+  currency: {
+    name: Currency;
+  };
+};
+
+export type TransferData = {
+  account_from: string | number;
+  account_to: string | number;
+  amount: string | number;
+  currency_name: string;
+  description?: string;
+};
+
+export type Rates = {
+  eu: number;
+  usd: number;
+};
+
+export type TransferVoucher = {
+  amount: number;
+  amount_from: number;
+  amount_to: number;
+  createdAt: string;
+  currency_name: Currency;
+  description: string;
+  from_account_id: number;
+  id: number;
+  to_account_id: number;
+  updatedAt: string;
 };

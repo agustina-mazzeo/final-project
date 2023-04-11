@@ -1,11 +1,12 @@
 import classes from "./NavBar.module.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { ROUTE_HOME, ROUTE_AUTH } from "../../../routes/routes";
+import { ROUTE_AUTH } from "../../../routes/routes";
 import { RootState } from "../../../store";
 import Button from "../UI/Button";
 import { authActions } from "../../../store/auth";
 import { logout } from "../../../utils/token";
+import { accountsActions } from "../../../store/accounts";
 type NavBarProps = {
   openSideBar: () => void;
   closeSideBar: () => void;
@@ -21,6 +22,7 @@ function NavBar({ openSideBar, closeSideBar, isOpen }: NavBarProps) {
     logout()
     navigate(ROUTE_AUTH)
     dispatch(authActions.logout())
+    dispatch(accountsActions.removeAccounts())
   }
   
   return (
