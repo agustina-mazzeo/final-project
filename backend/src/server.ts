@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import validateEnv from './utils/validateEnv';
-import { App } from './app';
+import { App } from './api/app';
 
 // App Variables
 dotenv.config();

@@ -1,5 +1,7 @@
 import cors from 'cors';
 import express from 'express';
+import errorManager from './middleware/errorManager';
+import { transactionsRouter, userRouter } from './routes';
 
 export class App {
   public app: express.Application;
@@ -8,7 +10,8 @@ export class App {
     this.app = express();
     this.port = process.env.PORT || 3000;
     this.setMiddleware();
-    //this.setRoutes();
+    this.setRoutes();
+    this.setErrorManager();
   }
 
   private setMiddleware() {
@@ -16,7 +19,15 @@ export class App {
     this.app.use(express.json());
   }
 
-  //private setRoutes() {}
+  private setRoutes() {
+    this.app.use(transactionsRouter);
+    this.app.use(userRouter);
+  }
+
+  private setErrorManager() {
+    //this.app.use(()=>{})
+    this.app.use(errorManager);
+  }
 
   public start() {
     this.app.listen(this.port, () => {
