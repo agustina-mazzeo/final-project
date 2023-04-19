@@ -3,19 +3,22 @@ import validateRequest from '../middleware/validateRequest';
 import { TransactionsController } from '../transactions/transactions.controller';
 import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
 import { TransactionsService } from '../../services/transactions.service';
-import { TxnsRepository } from '../../repositories/transactions.repository';
+import { TransactionsRepository } from '../../repositories/transactions.repository';
+import { authJwt } from '../middleware/authPassport';
+
 export class TransactionsRoutes {
-  public pathTransacions = '/transactions';
+  public path = '/transactions';
   public pathTransfer = '/transfer';
   public router = Router();
-  public tcontroller = new TransactionsController(new TransactionsService(new TxnsRepository()));
+  public transactionsController = new TransactionsController(new TransactionsService(new TransactionsRepository()));
 
   constructor() {
     this.initializeRoutes();
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.pathTransacions}`, validateRequest(transactionsSchema), this.tcontroller.getTransactions);
-    this.router.post(`${this.pathTransfer}`, validateRequest(transferSchema), this.tcontroller.createTransfer);
+    this.router.use(authJwt);
+    this.router.get(`${this.path}`, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
+    this.router.post(`${this.pathTransfer}`, validateRequest(transferSchema), this.transactionsController.createTransfer);
   }
 }

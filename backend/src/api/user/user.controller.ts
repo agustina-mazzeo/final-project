@@ -1,11 +1,35 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { User, createToken } from '../../interfaces/user.interface';
+import { SignUserBody, LoginUserBody } from './user.schema';
+import { userToResponseDTO } from './user.dto';
+import { usersRepository } from '../../repositories/users.repository';
+
 class UserController {
-  public createUser = async (req: Request, res: Response): Promise<void> => {
+  //check if this works then see if you have to call the repository or the service
+  //constructor(private userService: IService<User>) {}
+  public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.body;
-      res.status(200).send(user);
+      res.status(200).json(await usersRepository.getAll());
+    } catch (error) {
+      next(error);
+    }
+  };
+  public createUser = async (req: Request<{}, {}, SignUserBody>, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const user = req.user as User | undefined;
+      if (user) res.status(200).send({ data: userToResponseDTO(user) });
+      else throw new Error('An unexpected error ocurred');
     } catch (error: any) {
-      res.status(500).send(error.message);
+      next(error);
+    }
+  };
+
+  public login = async (req: Request<{}, {}, LoginUserBody>, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const user = req.user as User;
+      res.status(200).json({ data: { user: userToResponseDTO(user), token: createToken(user) } });
+    } catch (error) {
+      next(error);
     }
   };
 }

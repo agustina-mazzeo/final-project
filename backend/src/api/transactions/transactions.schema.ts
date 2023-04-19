@@ -1,4 +1,4 @@
-import { object, string, coerce, z } from 'zod';
+import { object, string, coerce, TypeOf } from 'zod';
 
 export const transactionsSchema = object({
   query: object({
@@ -8,7 +8,7 @@ export const transactionsSchema = object({
   }),
 });
 
-export type TransactionsQuery = z.infer<typeof transactionsSchema>['query'];
+export type TransactionsQuery = TypeOf<typeof transactionsSchema>['query'];
 
 export const transferSchema = object({
   body: object({
@@ -21,7 +21,6 @@ export const transferSchema = object({
     amount: coerce
       .number({ invalid_type_error: 'Amount must be a positive number', required_error: 'Amount From is required' })
       .positive({ message: 'Invalid Amount' }),
-    //date: string({required_error: 'Date is required'}).datetime({ message: 'Expected a DateString' }),
     description: string().optional(),
   }).refine(data => data.account_from !== data.account_to, {
     message: 'Please select a different account',
@@ -29,4 +28,4 @@ export const transferSchema = object({
   }),
 });
 
-export type TransferBody = z.infer<typeof transferSchema>['body'];
+export type TransferBody = TypeOf<typeof transferSchema>['body'];

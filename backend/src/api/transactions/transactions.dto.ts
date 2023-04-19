@@ -1,1 +1,5 @@
-//transactions dto response it will be a class
+export interface QueryParams {
+  from?: string;
+  to: string;
+  account_from: number;
+}
