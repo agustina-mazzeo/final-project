@@ -5,6 +5,8 @@ import { accountsRepository } from '../repositories/accounts.repository';
 import { accountsService } from './accounts.service';
 import { transactionsRepository } from '../repositories/transactions.repository';
 import { ITransactionsRepository } from '../repositories/interfaces/ITansactionsRepository';
+import { ratesService } from './rates.service';
+import { addOnePercent } from '../utils/helpers';
 
 class TransactionsService implements IService<Transaction> {
   constructor(private transactionsRepository: ITransactionsRepository) {}
@@ -33,11 +35,32 @@ class TransactionsService implements IService<Transaction> {
   public async create(transfer: Transfer, id: number): Promise<Transaction> {
     const userAccounts = await accountsService.getUserAccounts(id);
     const account_from = userAccounts.find(({ id }) => transfer.account_from === id);
-    const account_to = accountsRepository.getByID(transfer.account_to);
-    if (!account_from || !account_to || account_from.balance - transfer.amount < 0) {
-      throw new Error('Cannot make transfer');
+    const account_to = await accountsRepository.getByID(transfer.account_to);
+    if (!account_from || !account_to) {
+      throw new Error('Could not make transfer');
     }
-    //make transfer ie update account from and account to (take into account the currencies and fees)
+
+    let amount_from = transfer.amount;
+    //add comission
+    if (account_to.id_user !== id) {
+      amount_from = addOnePercent(transfer.amount);
+    }
+    //check balance
+    if (account_from.balance - amount_from < 0) {
+      throw new Error('Insufficient funds');
+    }
+    //substract funds
+    account_from.balance = account_from.balance - amount_from;
+    //convert the amount
+    const currency_to = await accountsService.getAccountCurrency(account_to.id);
+    const currency_from = await accountsService.getAccountCurrency(account_from.id);
+    const multiplier = await ratesService.getMultiplier(currency_from, currency_to);
+    const amount_to = transfer.amount * multiplier;
+    //deposit funds
+    account_to.balance = account_to.balance + amount_to;
+    //update accounts
+    accountsRepository.update(account_from);
+    accountsRepository.update(account_to);
 
     const newTransfer = await this.transactionsRepository.create(transfer);
     return newTransfer;

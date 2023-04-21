@@ -28,6 +28,12 @@ export class AccountsRepository implements IRepository<Account> {
     this.accounts.push(newAccount);
     return newAccount;
   };
+
+  public update = async (account: Account): Promise<Account> => {
+    const index = this.accounts.findIndex(({ id }) => account.id === id);
+    this.accounts[index] = account;
+    return account;
+  };
 }
 
 export const accountsRepository = new AccountsRepository();

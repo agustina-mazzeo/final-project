@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { IService } from '../../services/interfaces/IService';
 import { ExchangeRate } from 'interfaces/rates.interface';
+import { IRatesService } from 'services/interfaces/IRatesService';
 
 export class RatesController {
-  constructor(private ratesService: IService<ExchangeRate>) {}
+  constructor(private ratesService: IRatesService) {}
   public getRates = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const rates = (await this.ratesService.getAll?.()) as ExchangeRate[];
