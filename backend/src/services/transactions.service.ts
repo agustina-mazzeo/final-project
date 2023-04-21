@@ -1,38 +1,37 @@
-import { IService } from './IService';
+import { IService } from './interfaces/IService';
 import { Transaction, Transfer } from '../interfaces/transaction.interface';
-import { IRepository } from '../repositories/interfaces/IRepository';
-import { QueryParams } from 'api/transactions/transactions.dto';
+import { QueryParams } from '../api/transactions/transactions.dto';
 import { accountsRepository } from '../repositories/accounts.repository';
+import { accountsService } from './accounts.service';
+import { transactionsRepository } from '../repositories/transactions.repository';
+import { ITransactionsRepository } from '../repositories/interfaces/ITansactionsRepository';
 
-export class TransactionsService implements IService<Transaction> {
-  constructor(private transactionsRepository: IRepository<Transaction>) {}
+class TransactionsService implements IService<Transaction> {
+  constructor(private transactionsRepository: ITransactionsRepository) {}
 
-  public async getAll(id: number, params: QueryParams): Promise<Transaction[]> {
+  public async getAll(params: QueryParams, id: number): Promise<Transaction[]> {
     if (!id) {
       throw new Error("Couldn't get user's transactions");
     }
-    let transactions = await this.transactionsRepository.getAll();
-    const userAccounts = await accountsRepository.getUserAccounts(id);
+    const userAccounts = await accountsService.getUserAccounts(id);
     if (userAccounts.length === 0) {
-      throw new Error("Couldn't get user's accounts");
+      throw new Error("Couldn't get user's transactions");
     }
-    //filter transactions by users accounts
-    transactions = transactions.filter(({ account_from, account_to }) => {
-      return userAccounts.some(({ id }) => id === account_from || id === account_to);
+    const usersAccountsID = userAccounts.map(({ id }) => {
+      return id;
     });
-    if (Object.keys(params).length !== 0) {
-      transactions = transactions.filter(({ account_from, createdAt }) => {
-        return (
-          (!params.account_from || account_from === params.account_from) &&
-          (!params.from || createdAt >= params.from) &&
-          (!params.to || createdAt <= params.to)
-        );
-      });
-    }
-    return transactions;
+    let usersTransactions = await this.transactionsRepository.getUsersTransactions(usersAccountsID);
+    usersTransactions = usersTransactions.filter(({ account_from, createdAt }) => {
+      return (
+        (!params.account_from || account_from === params.account_from) &&
+        (!params.from || createdAt >= params.from) &&
+        (!params.to || createdAt <= params.to)
+      );
+    });
+    return usersTransactions;
   }
-  public async create(id: number, transfer: Transfer): Promise<Transaction> {
-    const userAccounts = await accountsRepository.getUserAccounts(id);
+  public async create(transfer: Transfer, id: number): Promise<Transaction> {
+    const userAccounts = await accountsService.getUserAccounts(id);
     const account_from = userAccounts.find(({ id }) => transfer.account_from === id);
     const account_to = accountsRepository.getByID(transfer.account_to);
     if (!account_from || !account_to || account_from.balance - transfer.amount < 0) {
@@ -44,3 +43,5 @@ export class TransactionsService implements IService<Transaction> {
     return newTransfer;
   }
 }
+
+export const transactionsService = new TransactionsService(transactionsRepository);

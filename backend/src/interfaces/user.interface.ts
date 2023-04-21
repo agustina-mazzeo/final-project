@@ -20,10 +20,6 @@ export interface Account {
   currency: string;
   balance: number;
 }
-export interface Currency {
-  name: string;
-}
-export const currencies: Currency[] = [{ name: 'USD' }, { name: 'UYU' }, { name: 'EU' }];
 
 export interface TokenData {
   token: string;

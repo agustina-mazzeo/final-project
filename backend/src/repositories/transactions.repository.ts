@@ -1,7 +1,6 @@
 import { Transaction, Transfer } from '../interfaces/transaction.interface';
-import { IRepository } from './interfaces/IRepository';
-
-export class TransactionsRepository implements IRepository<Transaction> {
+import { ITransactionsRepository } from './interfaces/ITansactionsRepository';
+class TransactionsRepository implements ITransactionsRepository {
   private transactions: Transaction[];
   constructor() {
     this.transactions = [
@@ -18,10 +17,21 @@ export class TransactionsRepository implements IRepository<Transaction> {
       { id: 10, account_from: 66666, account_to: 55555, amount: 50, createdAt: '2023-04-04T19:30:00.000Z', description: 'Transaction 10' },
     ];
   }
-  public async getAll(): Promise<Transaction[]> {
-    return this.transactions;
-  }
-  public async create(transfer: Transfer): Promise<Transaction> {
+  public getAll = async (filter?: { filterBy: keyof Transaction; value: any }[]): Promise<Transaction[]> => {
+    if (!filter) return this.transactions;
+    return this.transactions.filter(txn =>
+      filter.every(({ filterBy, value }) => {
+        return txn[filterBy] === value;
+      }),
+    );
+  };
+
+  public getUsersTransactions = async (usersAccounts: number[]): Promise<Transaction[]> => {
+    return this.transactions.filter(({ account_from, account_to }) => {
+      return usersAccounts.some(id => id === account_from || id === account_to);
+    });
+  };
+  public create = async (transfer: Transfer): Promise<Transaction> => {
     const newTransfer: Transaction = {
       id: Math.random(),
       createdAt: new Date().toISOString(),
@@ -29,5 +39,7 @@ export class TransactionsRepository implements IRepository<Transaction> {
     };
     this.transactions.push(newTransfer);
     return newTransfer;
-  }
+  };
 }
+
+export const transactionsRepository = new TransactionsRepository();

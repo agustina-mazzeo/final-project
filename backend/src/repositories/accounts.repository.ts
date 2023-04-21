@@ -1,37 +1,33 @@
-import { Account, currencies } from '../interfaces/user.interface';
+import { Account } from '../interfaces/user.interface';
+import { IRepository } from './interfaces/IRepository';
 
-import { IAccountsRepository } from './interfaces/IAccountsRepository';
-
-export class AccountsRepository implements IAccountsRepository {
+let acc_id = 0;
+export class AccountsRepository implements IRepository<Account> {
   private accounts: Account[];
   constructor() {
     this.accounts = [];
   }
-  public async getAll(): Promise<Account[]> {
-    return this.accounts;
+  public async getAll(filter?: { filterBy: keyof Account; value: any }[]): Promise<Account[]> {
+    if (!filter) {
+      return this.accounts;
+    }
+    return this.accounts.filter(acc => filter.every(({ filterBy, value }) => acc[filterBy] === value));
   }
 
-  public async getByID(id: number): Promise<Account | undefined> {
+  public getByID = async (id: number): Promise<Account | undefined> => {
     return this.accounts.find(acc => acc.id === id);
-  }
-  public async create({ userId, currency }: { userId: number; currency: string }): Promise<Account> {
+  };
+
+  public create = async ({ userId, currency }: { userId: number; currency: string }): Promise<Account> => {
     const newAccount: Account = {
-      id: Math.floor(Math.random() * 3),
+      id: ++acc_id,
       id_user: userId,
       currency,
       balance: Math.floor(Math.random() * 100),
     };
     this.accounts.push(newAccount);
     return newAccount;
-  }
-
-  public async createUserAccounts(userId: number): Promise<void> {
-    currencies.map(curr => this.create({ userId, currency: curr.name }));
-  }
-  public async getUserAccounts(userId: number): Promise<Account[]> {
-    const userAccounts = await this.getAll();
-    return userAccounts.filter(({ id_user }) => id_user === userId);
-  }
+  };
 }
 
 export const accountsRepository = new AccountsRepository();

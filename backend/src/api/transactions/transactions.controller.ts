@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Transaction } from '../../interfaces/transaction.interface';
 import { TransactionsQuery, TransferBody } from './transactions.schema';
-import { IService } from '../../services/IService';
+import { IService } from '../../services/interfaces/IService';
 import { User } from '../../interfaces/user.interface';
 
 export class TransactionsController {
@@ -10,7 +10,7 @@ export class TransactionsController {
     try {
       const user = req.user as User;
       const queryParams = req.query;
-      const transactions: Transaction[] = await this.transactionsService.getAll(user.id, queryParams);
+      const transactions = (await this.transactionsService.getAll?.(queryParams, user.id)) as Transaction[];
       res.status(200).json({ data: transactions });
     } catch (error: any) {
       next(error);
@@ -20,7 +20,7 @@ export class TransactionsController {
     try {
       const user = req.user as User;
       const newTransfer = req.body;
-      const transaction: Transaction = await this.transactionsService.create(user.id, newTransfer);
+      const transaction = (await this.transactionsService.create?.(newTransfer, user.id)) as Transaction;
       res.status(200).json({ data: transaction });
     } catch (error: any) {
       next(error);

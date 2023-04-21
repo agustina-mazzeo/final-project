@@ -4,6 +4,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { usersRepository } from '../../repositories/users.repository';
 import * as dotenv from 'dotenv';
+import { usersService } from '../../services/user.service';
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
@@ -13,7 +14,7 @@ const signupOpts = {
 };
 const signupStrategy = new LocalStrategy(signupOpts, async (email, password, done) => {
   try {
-    const user = await usersRepository.create({ email, password });
+    const user = await usersService.create({ email, password });
     return done(null, user);
   } catch (error) {
     done(error);
