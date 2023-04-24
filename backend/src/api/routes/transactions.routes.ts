@@ -16,8 +16,9 @@ export class TransactionsRoutes {
   }
 
   private initializeRoutes = () => {
-    // this.router.use(authJwt);
-    this.router.get(`${this.path}`, authJwt, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
-    this.router.post(`${this.pathTransfer}`, authJwt, validateRequest(transferSchema), this.transactionsController.createTransfer);
+    this.router.use('/transactions', authJwt);
+    this.router.use('/transfer', authJwt);
+    this.router.get(`${this.path}`, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
+    this.router.post(`${this.pathTransfer}`, validateRequest(transferSchema), this.transactionsController.createTransfer);
   };
 }

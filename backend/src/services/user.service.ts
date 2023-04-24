@@ -19,9 +19,16 @@ class UsersService implements IService<User> {
     const password = await hash(user.password, 10);
     const newUser: User = await this.usersRepository.create({ ...user, password });
     //create user's accounts
-    accountsService.createUserAccounts(newUser.id);
+    accountsService.create(newUser.id);
     return newUser;
   }
+
+  public getByID = (): Promise<User> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
+  public update = (): Promise<User> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
 }
 
 export const usersService = new UsersService(usersRepository);

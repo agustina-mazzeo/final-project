@@ -9,7 +9,7 @@ export class TransactionsController {
     try {
       const user = req.user as User;
       const queryParams = req.query;
-      const transactions = (await this.transactionsService.getAll?.(queryParams, user.id)) as Transaction[];
+      const transactions: Transaction[] = await this.transactionsService.getAll(queryParams, user.id);
       res.status(200).json({ data: transactions });
     } catch (error: any) {
       next(error);
@@ -19,7 +19,7 @@ export class TransactionsController {
     try {
       const user = req.user as User;
       const newTransfer = req.body;
-      const transaction = (await this.transactionsService.create?.(newTransfer, user.id)) as Transaction;
+      const transaction: Transaction = await this.transactionsService.create(newTransfer, user.id);
       res.status(200).json({ data: transaction });
     } catch (error: any) {
       next(error);

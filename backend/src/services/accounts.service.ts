@@ -1,15 +1,16 @@
-import { IAccountsService } from './interfaces/IAccountsService';
 import { IRepository } from '../repositories/interfaces/IRepository';
 import { accountsRepository } from '../repositories/accounts.repository';
-import { Account, currencies, CustomError } from '../interfaces';
+import { Account, CustomError } from '../interfaces';
+import { IService } from './interfaces/IService';
+import { currencies } from '../utils/helpers';
 
-class AccountsService implements IAccountsService {
+class AccountsService implements IService<Account> {
   constructor(private accountsRepository: IRepository<Account>) {}
 
-  public createUserAccounts = async (userId: number): Promise<void> => {
-    currencies.map(curr => this.accountsRepository.create({ userId, currency: curr }));
+  public create = async (userId: number): Promise<any> => {
+    currencies.map(currency => this.accountsRepository.create({ userId, currency }));
   };
-  public getUserAccounts = async (userId: number): Promise<Account[]> => {
+  public getAll = async (userId: number): Promise<Account[]> => {
     return this.accountsRepository.getAll([{ filterBy: 'id_user', value: userId }]);
   };
 
@@ -17,6 +18,13 @@ class AccountsService implements IAccountsService {
     const account = await this.accountsRepository.getByID?.(accountId);
     if (!account) throw new CustomError('NOT_FOUND_ERROR', ['Could not fetch account']);
     return account.currency;
+  };
+
+  public getByID = (): Promise<Account> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
+  public update = (): Promise<Account> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
   };
 }
 

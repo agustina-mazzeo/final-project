@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { User, createToken } from '../../interfaces';
+import { Account, User } from '../../interfaces';
 import { SignUserBody, LoginUserBody } from './user.schema';
 import { userToResponseDTO } from './user.dto';
 import { usersRepository } from '../../repositories/users.repository';
-import { IAccountsService } from 'services/interfaces/IAccountsService';
+import { IService } from '../../services/interfaces/IService';
+import { createToken } from '../../utils/helpers';
 
 class UserController {
-  constructor(private accountsService: IAccountsService) {}
-  //check if this works then see if you have to call the repository or the service
-  //constructor(private userService: IService<User>) {}
+  constructor(private accountsService: IService<Account>) {}
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       res.status(200).json(await usersRepository.getAll());
@@ -18,7 +17,7 @@ class UserController {
   };
   public createUser = async (req: Request<{}, {}, SignUserBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User | undefined;
+      const user = req.user as User;
       if (user) res.status(200).send({ data: userToResponseDTO(user) });
       else throw new Error('An unexpected error ocurred');
     } catch (error: any) {
@@ -38,7 +37,7 @@ class UserController {
   public getAccounts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const user = req.user as User;
-      const userAccounts = await this.accountsService.getUserAccounts(user.id);
+      const userAccounts = await this.accountsService.getAll(user.id);
       res.status(200).json({ data: userAccounts });
     } catch (error) {
       next(error);

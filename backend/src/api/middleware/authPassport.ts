@@ -1,11 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { compare } from 'bcrypt';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { usersRepository } from '../../repositories/users.repository';
-import * as dotenv from 'dotenv';
 import { usersService } from '../../services/user.service';
-dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
