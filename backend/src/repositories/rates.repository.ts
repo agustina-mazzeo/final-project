@@ -1,4 +1,4 @@
-import { ExchangeRate } from 'interfaces/rates.interface';
+import { ExchangeRate } from 'interfaces';
 import { IRepository } from './interfaces/IRepository';
 
 export class RatesRepository implements IRepository<ExchangeRate> {

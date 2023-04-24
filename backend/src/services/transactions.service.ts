@@ -1,5 +1,5 @@
 import { IService } from './interfaces/IService';
-import { Transaction, Transfer } from '../interfaces/transaction.interface';
+import { CustomError, Transaction, Transfer } from '../interfaces';
 import { QueryParams } from '../api/transactions/transactions.dto';
 import { accountsRepository } from '../repositories/accounts.repository';
 import { accountsService } from './accounts.service';
@@ -13,11 +13,11 @@ class TransactionsService implements IService<Transaction> {
 
   public async getAll(params: QueryParams, id: number): Promise<Transaction[]> {
     if (!id) {
-      throw new Error("Couldn't get user's transactions");
+      throw new CustomError('VALIDATION_ERROR', ["Couldn't get user's transactions"]);
     }
     const userAccounts = await accountsService.getUserAccounts(id);
     if (userAccounts.length === 0) {
-      throw new Error("Couldn't get user's transactions");
+      throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);
     }
     const usersAccountsID = userAccounts.map(({ id }) => {
       return id;
@@ -37,7 +37,7 @@ class TransactionsService implements IService<Transaction> {
     const account_from = userAccounts.find(({ id }) => transfer.account_from === id);
     const account_to = await accountsRepository.getByID(transfer.account_to);
     if (!account_from || !account_to) {
-      throw new Error('Could not make transfer');
+      throw new CustomError('VALIDATION_ERROR', ['Could not make transfer']);
     }
 
     let amount_from = transfer.amount;
@@ -47,7 +47,7 @@ class TransactionsService implements IService<Transaction> {
     }
     //check balance
     if (account_from.balance - amount_from < 0) {
-      throw new Error('Insufficient funds');
+      throw new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
     }
     //substract funds
     account_from.balance = account_from.balance - amount_from;

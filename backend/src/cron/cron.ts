@@ -1,6 +1,6 @@
 import cron, { ScheduleOptions } from 'node-cron';
 import { getRates } from '../service/rates';
-import { Rates, currencies } from '../interfaces/rates.interface';
+import { Rates, currencies } from '../interfaces';
 import { ratesService } from '../services/rates.service';
 
 const options: ScheduleOptions = {

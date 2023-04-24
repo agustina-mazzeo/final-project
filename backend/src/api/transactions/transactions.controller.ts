@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { Transaction } from '../../interfaces/transaction.interface';
+import { Transaction, User } from '../../interfaces';
 import { TransactionsQuery, TransferBody } from './transactions.schema';
 import { IService } from '../../services/interfaces/IService';
-import { User } from '../../interfaces/user.interface';
 
 export class TransactionsController {
   constructor(private transactionsService: IService<Transaction>) {}

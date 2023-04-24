@@ -5,8 +5,7 @@ import errorManager from './middleware/errorManager';
 import { ratesRouter, transactionsRouter, userRouter } from './routes';
 import { cronJob } from '../cron/cron';
 import { getRates } from '../service/rates';
-import { Rates } from '../interfaces/rates.interface';
-import { currencies } from '../interfaces/rates.interface';
+import { Rates, currencies } from '../interfaces';
 import { ratesService } from '../services/rates.service';
 
 export class App {

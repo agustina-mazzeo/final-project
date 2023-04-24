@@ -1,4 +1,4 @@
-import { Transaction, Transfer } from '../interfaces/transaction.interface';
+import { Transaction, Transfer } from '../interfaces';
 import { ITransactionsRepository } from './interfaces/ITansactionsRepository';
 class TransactionsRepository implements ITransactionsRepository {
   private transactions: Transaction[];

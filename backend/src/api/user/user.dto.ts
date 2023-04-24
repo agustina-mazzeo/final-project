@@ -1,4 +1,4 @@
-import { User } from '../../interfaces/user.interface';
+import { User } from '../../interfaces';
 export interface UserResponseDTO {
   name?: string;
   email: string;

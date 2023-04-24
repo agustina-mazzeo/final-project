@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ExchangeRate } from 'interfaces/rates.interface';
+import { ExchangeRate } from 'interfaces';
 import { IRatesService } from 'services/interfaces/IRatesService';
 
 export class RatesController {

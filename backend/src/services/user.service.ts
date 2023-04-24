@@ -1,7 +1,7 @@
-import { IService } from './interfaces/IService';
-import { User, UserData } from 'interfaces/user.interface';
-import { usersRepository } from '../repositories/users.repository';
 import { hash } from 'bcrypt';
+import { IService } from './interfaces/IService';
+import { CustomError, User, UserData } from '../interfaces';
+import { usersRepository } from '../repositories/users.repository';
 import { IUsersRepository } from 'repositories/interfaces/IUsersRepository';
 import { accountsService } from './accounts.service';
 
@@ -14,7 +14,7 @@ class UsersService implements IService<User> {
 
   public async create(user: UserData): Promise<User> {
     const findUser: User | undefined = await this.usersRepository.getByEmail(user.email);
-    if (findUser) throw new Error(`This email ${user.email} already exists`);
+    if (findUser) throw new CustomError('VALIDATION_ERROR', [`This email ${user.email} already exists`]);
 
     const password = await hash(user.password, 10);
     const newUser: User = await this.usersRepository.create({ ...user, password });

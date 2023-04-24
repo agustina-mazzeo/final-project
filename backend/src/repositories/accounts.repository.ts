@@ -1,4 +1,4 @@
-import { Account } from '../interfaces/user.interface';
+import { Account } from '../interfaces';
 import { IRepository } from './interfaces/IRepository';
 
 let acc_id = 0;

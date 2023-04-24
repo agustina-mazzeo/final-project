@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { User, createToken } from '../../interfaces/user.interface';
+import { User, createToken } from '../../interfaces';
 import { SignUserBody, LoginUserBody } from './user.schema';
 import { userToResponseDTO } from './user.dto';
 import { usersRepository } from '../../repositories/users.repository';

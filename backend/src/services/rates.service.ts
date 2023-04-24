@@ -1,8 +1,8 @@
 import { IRepository } from '../repositories/interfaces/IRepository';
-import { ExchangeRate, Rates } from 'interfaces/rates.interface';
 import { ratesRepository } from '../repositories/rates.repository';
-import * as dotenv from 'dotenv';
 import { IRatesService } from './interfaces/IRatesService';
+import * as dotenv from 'dotenv';
+import { CustomError, ExchangeRate, Rates } from '../interfaces';
 dotenv.config();
 const BASE = process.env.BASE as string;
 
@@ -27,7 +27,7 @@ class RatesService implements IRatesService {
     const rate_from = await this.ratesRepository.getByID?.(currency_from);
     const rate_to = await this.ratesRepository.getByID?.(currency_to);
     if (rate_from && rate_to) return rate_from.rates.USD_FROM * rate_to.rates.USD_TO;
-    else throw new Error('Could not make transfer');
+    else throw new CustomError('VALIDATION_ERROR', ['Could not make transfer']);
   };
 
   private createExchangeRate = (referenceRate: Rates, name: string): ExchangeRate => {

@@ -1,8 +1,7 @@
 import { IAccountsService } from './interfaces/IAccountsService';
 import { IRepository } from '../repositories/interfaces/IRepository';
 import { accountsRepository } from '../repositories/accounts.repository';
-import { Account } from '../interfaces/user.interface';
-import { currencies } from '../interfaces/rates.interface';
+import { Account, currencies, CustomError } from '../interfaces';
 
 class AccountsService implements IAccountsService {
   constructor(private accountsRepository: IRepository<Account>) {}
@@ -16,7 +15,7 @@ class AccountsService implements IAccountsService {
 
   public getAccountCurrency = async (accountId: number): Promise<string> => {
     const account = await this.accountsRepository.getByID?.(accountId);
-    if (!account) throw new Error('Could not fetch account');
+    if (!account) throw new CustomError('NOT_FOUND_ERROR', ['Could not fetch account']);
     return account.currency;
   };
 }
