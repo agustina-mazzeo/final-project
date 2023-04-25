@@ -6,8 +6,8 @@ import { transactionsService } from '../../services/transactions.service';
 import { authJwt } from '../middleware/authPassport';
 
 export class TransactionsRoutes {
-  public path = '/transactions';
-  public pathTransfer = '/transfer';
+  private path = '/transactions';
+  private pathTransfer = '/transfer';
   public router = Router();
   public transactionsController = new TransactionsController(transactionsService);
 
@@ -16,8 +16,8 @@ export class TransactionsRoutes {
   }
 
   private initializeRoutes = () => {
-    this.router.use('/transactions', authJwt);
-    this.router.use('/transfer', authJwt);
+    this.router.use(this.path, authJwt);
+    this.router.use(this.pathTransfer, authJwt);
     this.router.get(`${this.path}`, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
     this.router.post(`${this.pathTransfer}`, validateRequest(transferSchema), this.transactionsController.createTransfer);
   };
