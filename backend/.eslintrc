@@ -20,5 +20,6 @@
         "endOfLine": "crlf"
       }
     ]
-  }
+  },
+  "env": { "node": true, "mocha": true }
 }
