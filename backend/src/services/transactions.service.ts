@@ -15,7 +15,7 @@ class TransactionsService implements IService<Transaction> {
     if (!id) {
       throw new CustomError('VALIDATION_ERROR', ["Couldn't get user's transactions"]);
     }
-    const userAccounts = await accountsService.getUserAccounts(id);
+    const userAccounts = await accountsService.getAll(id);
     if (userAccounts.length === 0) {
       throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);
     }
@@ -33,7 +33,7 @@ class TransactionsService implements IService<Transaction> {
     return usersTransactions;
   }
   public async create(transfer: Transfer, id: number): Promise<Transaction> {
-    const userAccounts = await accountsService.getUserAccounts(id);
+    const userAccounts = await accountsService.getAll(id);
     const account_from = userAccounts.find(({ id }) => transfer.account_from === id);
     const account_to = await accountsRepository.getByID(transfer.account_to);
     if (!account_from || !account_to) {
@@ -65,6 +65,13 @@ class TransactionsService implements IService<Transaction> {
     const newTransfer = await this.transactionsRepository.create(transfer);
     return newTransfer;
   }
+
+  public getByID = (): Promise<Transaction> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
+  public update = (): Promise<Transaction> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
 }
 
 export const transactionsService = new TransactionsService(transactionsRepository);

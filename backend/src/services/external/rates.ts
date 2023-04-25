@@ -1,4 +1,4 @@
-import { axiosClient } from './index';
+import { axiosClient } from './rates.index';
 import * as dotenv from 'dotenv';
 dotenv.config();
 const SYMBOLS = process.env.SYMBOLS as string;

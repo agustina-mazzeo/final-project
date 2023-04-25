@@ -37,6 +37,10 @@ class RatesService implements IRatesService {
       return newExchangeRate;
     }
   };
+
+  public getByID = (): Promise<ExchangeRate> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
 }
 
 export const ratesService = new RatesService(ratesRepository);

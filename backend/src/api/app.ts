@@ -2,11 +2,12 @@ import cors from 'cors';
 import express from 'express';
 import passport from 'passport';
 import errorManager from './middleware/errorManager';
-import { ratesRouter, transactionsRouter, userRouter } from './routes';
+import { setRoutes } from './routes';
 import { cronJob } from '../cron/cron';
-import { getRates } from '../service/rates';
-import { Rates, currencies } from '../interfaces';
+import { getRates } from '../services/external/rates';
+import { Rates } from '../interfaces';
 import { ratesService } from '../services/rates.service';
+import { currencies } from '../utils/helpers';
 
 export class App {
   public app: express.Application;
@@ -16,7 +17,7 @@ export class App {
     this.port = process.env.PORT || 3000;
     this.startCronJob();
     this.setMiddleware();
-    this.setRoutes();
+    setRoutes(this.app);
     this.setErrorManager();
   }
   private startCronJob = () => {
@@ -26,12 +27,6 @@ export class App {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(passport.initialize());
-  };
-
-  private setRoutes = () => {
-    this.app.use(userRouter);
-    this.app.use(transactionsRouter);
-    this.app.use(ratesRouter);
   };
 
   private setErrorManager = () => {

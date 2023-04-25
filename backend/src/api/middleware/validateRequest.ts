@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CustomError } from '../../interfaces';
 import { AnyZodObject } from 'zod';
+
 const validateRequest = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
   try {
     const parsed = schema.parse({

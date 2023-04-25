@@ -4,6 +4,7 @@ import { CustomError, User, UserData } from '../interfaces';
 import { usersRepository } from '../repositories/users.repository';
 import { IUsersRepository } from 'repositories/interfaces/IUsersRepository';
 import { accountsService } from './accounts.service';
+import { currencies } from '../utils/helpers';
 
 class UsersService implements IService<User> {
   constructor(private usersRepository: IUsersRepository) {}
@@ -19,9 +20,16 @@ class UsersService implements IService<User> {
     const password = await hash(user.password, 10);
     const newUser: User = await this.usersRepository.create({ ...user, password });
     //create user's accounts
-    accountsService.createUserAccounts(newUser.id);
+    accountsService.createUsersAccounts(newUser.id);
     return newUser;
   }
+
+  public getByID = (): Promise<User> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
+  public update = (): Promise<User> => {
+    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+  };
 }
 
 export const usersService = new UsersService(usersRepository);
