@@ -1,15 +1,19 @@
 import { IRepository } from '../repositories/interfaces/IRepository';
 import { accountsRepository } from '../repositories/accounts.repository';
 import { Account, CustomError } from '../interfaces';
-import { IService } from './interfaces/IService';
 import { currencies } from '../utils/helpers';
+import { IAccountService } from './interfaces/IAccountService';
 
-class AccountsService implements IService<Account> {
+class AccountsService implements IAccountService {
   constructor(private accountsRepository: IRepository<Account>) {}
 
-  public create = async (userId: number): Promise<any> => {
+  public create = async (currency: string, userId: number): Promise<Account> => {
+    return this.accountsRepository.create({ userId, currency });
+  };
+  public createUsersAccounts = async (userId: number): Promise<void> => {
     currencies.map(currency => this.accountsRepository.create({ userId, currency }));
   };
+
   public getAll = async (userId: number): Promise<Account[]> => {
     return this.accountsRepository.getAll([{ filterBy: 'id_user', value: userId }]);
   };

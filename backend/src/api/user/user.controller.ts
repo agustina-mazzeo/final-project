@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { Account, User } from '../../interfaces';
+import { User } from '../../interfaces';
 import { SignUserBody, LoginUserBody } from './user.schema';
 import { userToResponseDTO } from './user.dto';
 import { usersRepository } from '../../repositories/users.repository';
-import { IService } from '../../services/interfaces/IService';
-import { createToken } from '../../utils/helpers';
+import { IAccountService } from '../../services/interfaces/IAccountService';
+import { createToken } from '../utils/helpers';
 
 class UserController {
-  constructor(private accountsService: IService<Account>) {}
+  constructor(private accountsService: IAccountService) {}
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       res.status(200).json(await usersRepository.getAll());

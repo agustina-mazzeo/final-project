@@ -1,5 +1,5 @@
 export interface IRepository<T> {
-  create(obj: any): Promise<any>;
+  create(obj: any): Promise<T>;
   getByID?(id: string | number): Promise<T | undefined>;
   getAll(filter?: { filterBy: keyof T; value: any }[]): Promise<T[]>;
   update?(obj: any): Promise<T>;
