@@ -1,9 +1,9 @@
 import { Application } from 'express';
-import { TransactionsRoutes } from './transactions.routes';
+import { TransactionRoutes } from './transaction.routes';
 import { UserRoutes } from './user.routes';
 import { RatesRoutes } from './rates.routes';
 
-const transactionsRouter = new TransactionsRoutes().router;
+const transactionsRouter = new TransactionRoutes().router;
 const userRouter = new UserRoutes().router;
 const ratesRouter = new RatesRoutes().router;
 

@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { RatesController } from '../rates/rates.controller';
-import { ratesService } from '../../services/rates.service';
+import { RateService } from '../../services/rate.service';
+import { RateRepository } from '../../repositories/rate.repository';
+
+const ratesService = new RateService(new RateRepository());
 
 export class RatesRoutes {
   public path = '/rates';

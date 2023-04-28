@@ -1,8 +1,12 @@
 import cron, { ScheduleOptions } from 'node-cron';
 import { getRates } from '../services/external/rates';
 import { Rates } from '../interfaces';
-import { ratesService } from '../services/rates.service';
+import { RateService } from '../services/rate.service';
 import { currencies } from '../utils/helpers';
+import { rateRepository } from '../repositories/rate.repository';
+
+//create service instance
+const ratesService = new RateService(rateRepository);
 
 const options: ScheduleOptions = {
   scheduled: false,

@@ -4,8 +4,16 @@ import { compare } from 'bcrypt';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
-import { usersRepository } from '../../repositories/users.repository';
-import { usersService } from '../../services/user.service';
+import { UserRepository } from '../../repositories/user.repository';
+import { UserService } from '../../services/user.service';
+import { AccountService } from '../../services/account.service';
+import { AccountRepository } from '../../repositories/account.repository';
+import { RateService } from 'services/rate.service';
+import { RateRepository } from 'repositories/rate.repository';
+
+const rateService = new RateService(new RateRepository());
+const accountsService = new AccountService(new AccountRepository(), new UserRepository(), rateService);
+const usersService = new UserService(new UserRepository(), accountsService);
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
@@ -27,7 +35,7 @@ const loginOpts = {
 
 const loginStrategy = new LocalStrategy(loginOpts, async (email, password, done) => {
   try {
-    const user = await usersRepository.getByEmail(email);
+    const user = await usersService.getByEmail(email);
     if (!user || !(await compare(password, user.password))) {
       return done(new Error('Incorrect email or password'));
     }
@@ -43,7 +51,7 @@ const jwtOpts = {
 };
 
 const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
-  const user = await usersRepository.getByID(token.id);
+  const user = await usersService.getByID(token.id);
   if (user) {
     return done(null, user);
   }
