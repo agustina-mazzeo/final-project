@@ -13,7 +13,9 @@ export class AccountService implements IAccountService {
   };
   public createUsersAccounts = async (userId: number): Promise<void> => {
     try {
-      currencies.map(currency => this.create(currency, userId));
+      for (const currency of currencies) {
+        await this.create(currency, userId);
+      }
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);
     }
