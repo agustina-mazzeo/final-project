@@ -1,31 +1,40 @@
 import sinon from 'sinon';
 import should from 'should';
 import { hash } from 'bcrypt';
-import { CustomError, User, UserData } from '../../src/interfaces';
-import { IAccountService, IUserService } from '../../src/services/interfaces';
-import { UserService } from '../../src/services/user.service';
-import { AccountService } from '../../src/services/account.service';
-import { RateService } from '../../src/services/rate.service';
-import { IUserRepository } from '../../src/repositories/interfaces';
-import { UserRepository } from '../../src/repositories/user.repository';
-import { AccountRepository } from '../../src/repositories/account.repository';
-import { RateRepository } from '../../src/repositories/rate.repository';
+import { CustomError } from '../../src/interfaces';
+import { IAccountWriteService, IUserReadService, IUserWriteService } from '../../src/services/interfaces';
+import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';
+import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../src/services';
+import { AccountReadRepository, AccountWriteRepository, RateReadRepository, UserReadRepository, UserWriteRepository } from '../../src/repositories';
+import { UserOutputDTO } from '../../src/services/data-transfer-objects';
+import { UserCreateInputDTO } from '../../src/repositories/data-transfer-objects';
 
 describe('UserService', () => {
-  const rateService = new RateService(new RateRepository());
-  const userRepository = new UserRepository();
-  const accountService = new AccountService(new AccountRepository(), userRepository, rateService);
+  const userReadRepository = new UserReadRepository();
+  const userWriteRepository = new UserWriteRepository();
+  const accountReadRepository = new AccountReadRepository();
+  const accountReadService = new AccountReadService(accountReadRepository);
+  const accountWriteService = new AccountWriteService(
+    accountReadService,
+    new AccountWriteRepository(),
+    userReadRepository,
+    new RateReadService(new RateReadRepository()),
+  );
 
-  let userService: IUserService;
-  let userRepositoryStub: sinon.SinonStubbedInstance<IUserRepository>;
-  let accountServiceStub: sinon.SinonStubbedInstance<IAccountService>;
+  let userReadService: IUserReadService;
+  let userWriteService: IUserWriteService;
+  let userReadRepositoryStub: sinon.SinonStubbedInstance<IUserReadRepository>;
+  let userWriteRepositoryStub: sinon.SinonStubbedInstance<IUserWriteRepository>;
+  let accountWriteServiceStub: sinon.SinonStubbedInstance<IAccountWriteService>;
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    userRepositoryStub = sandbox.stub(userRepository as IUserRepository);
-    accountServiceStub = sandbox.stub(accountService as IAccountService);
-    userService = new UserService(userRepositoryStub, accountServiceStub);
+    userReadRepositoryStub = sandbox.stub(userReadRepository as IUserReadRepository);
+    userWriteRepositoryStub = sandbox.stub(userWriteRepository as IUserWriteRepository);
+    accountWriteServiceStub = sandbox.stub(accountWriteService as IAccountWriteService);
+    userReadService = new UserReadService(userReadRepositoryStub);
+    userWriteService = new UserWriteService(userReadRepositoryStub, userWriteRepositoryStub, accountWriteServiceStub);
   });
   afterEach(() => {
     sandbox.restore();
@@ -33,14 +42,14 @@ describe('UserService', () => {
 
   describe('getAll', () => {
     it('should return an array of users', async () => {
-      const users: User[] = [
+      const users: UserOutputDTO[] = [
         { id: 1, email: 'test1@example.com', password: 'hashedPassword1' },
         { id: 2, email: 'test2@example.com', password: 'hashedPassword2' },
       ];
 
-      const getAll = userRepositoryStub.getAll.resolves(users);
+      const getAll = userReadRepositoryStub.getAll.resolves(users);
 
-      const result = await userService.getAll();
+      const result = await userReadService.getAll();
 
       should(result).be.eql(users);
       should(getAll.calledOnce).be.true();
@@ -50,11 +59,11 @@ describe('UserService', () => {
   describe('getByEmail', () => {
     it('should return the user that matches the email', async () => {
       const email = 'test@example.com';
-      const user: User = { id: 1, email, password: 'hashedPassword1' };
+      const user: UserOutputDTO = { id: 1, email, password: 'hashedPassword1' };
 
-      const getByEmail = userRepositoryStub.getByEmail.resolves(user);
+      const getByEmail = userReadRepositoryStub.getByEmail.resolves(user);
 
-      const result = await userService.getByEmail(email);
+      const result = await userReadService.getByEmail(email);
 
       //Assertions
       should(result).be.eql(user);
@@ -63,10 +72,10 @@ describe('UserService', () => {
 
     it('should throw CustomError with validation error if no user matches the email', async () => {
       const email = 'test@example.com';
-      const getByEmail = userRepositoryStub.getByEmail.resolves(undefined);
+      const getByEmail = userReadRepositoryStub.getByEmail.resolves(undefined);
 
       try {
-        await userService.getByEmail(email);
+        await userReadService.getByEmail(email);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -79,11 +88,11 @@ describe('UserService', () => {
   describe('getByID', () => {
     it('should return the user that matches the id', async () => {
       const id = 1;
-      const user: User = { id, email: 'test@example.com', password: 'hashedPassword1' };
+      const user: UserOutputDTO = { id, email: 'test@example.com', password: 'hashedPassword1' };
 
-      const getByID = userRepositoryStub.getByID.resolves(user);
+      const getByID = userReadRepositoryStub.getByID.resolves(user);
 
-      const result = await userService.getByID(id);
+      const result = await userReadService.getByID(id);
 
       //Assertions
       should(result).be.eql(user);
@@ -92,10 +101,10 @@ describe('UserService', () => {
 
     it('should throw CustomError with validation error if no user matches the id', async () => {
       const id = 1;
-      const getByID = userRepositoryStub.getByID.resolves(undefined);
+      const getByID = userReadRepositoryStub.getByID.resolves(undefined);
 
       try {
-        await userService.getByID(id);
+        await userReadService.getByID(id);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -107,22 +116,22 @@ describe('UserService', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      const user: UserData = {
+      const user: UserCreateInputDTO = {
         email: 'test@example.com',
         password: 'password',
       };
       const hashedPassword = await hash(user.password, 10);
-      const newUser: User = {
+      const newUser: UserOutputDTO = {
         id: 1,
         email: user.email,
         password: hashedPassword,
       };
 
-      const getByEmail = userRepositoryStub.getByEmail.resolves(undefined);
-      const create = userRepositoryStub.create.resolves(newUser);
-      const createUsersAccounts = accountServiceStub.createUsersAccounts.resolves();
+      const getByEmail = userReadRepositoryStub.getByEmail.resolves(undefined);
+      const create = userWriteRepositoryStub.create.resolves(newUser);
+      const createUsersAccounts = accountWriteServiceStub.createUsersAccounts.resolves();
 
-      const createdUser = await userService.create(user);
+      const createdUser = await userWriteService.create(user);
 
       should.exist(createdUser);
       should(createdUser).be.eql(newUser);
@@ -132,27 +141,27 @@ describe('UserService', () => {
     });
 
     it('should throw a CustomError with validation error if email already exists', async () => {
-      const user: UserData = {
+      const user: UserCreateInputDTO = {
         email: 'test@example.com',
         password: 'password',
       };
-      const existingUser: User = {
+      const existingUser: UserOutputDTO = {
         id: 1,
         email: user.email,
         password: 'hashedPassword',
       };
 
-      const getByEmail = userRepositoryStub.getByEmail.resolves(existingUser);
+      const getByEmail = userReadRepositoryStub.getByEmail.resolves(existingUser);
 
       try {
-        await userService.create(user);
+        await userWriteService.create(user);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
         should(error.errorType).be.eql('VALIDATION_ERROR');
         should(getByEmail.calledOnce).be.true();
-        should(userRepositoryStub.create.notCalled).be.true();
-        should(accountServiceStub.createUsersAccounts.notCalled).be.true();
+        should(userWriteRepositoryStub.create.notCalled).be.true();
+        should(accountWriteServiceStub.createUsersAccounts.notCalled).be.true();
       }
     });
   });
@@ -160,7 +169,7 @@ describe('UserService', () => {
   describe('update', () => {
     it('should throw a CustomError with forbidden error', async () => {
       try {
-        await userService.update();
+        await userWriteService.update();
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);

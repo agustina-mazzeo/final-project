@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
-import { Transaction, User } from '../../interfaces';
 import { TransactionsQuery, TransferBody } from './transactions.schema';
-import { IService } from '../../services/interfaces/IService';
+import { ITransactionReadService, ITransactionWriteService } from '../../services/interfaces';
+import { TransactionOutputDTO, UserOutputDTO } from '../../services/data-transfer-objects';
 
 export class TransactionsController {
-  constructor(private transactionsService: IService<Transaction>) {}
+  constructor(private transactionReadService: ITransactionReadService, private transactionWriteService: ITransactionWriteService) {}
   public getTransactions = async (req: Request<{}, {}, {}, TransactionsQuery>, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User;
-      const queryParams = req.query;
-      const transactions: Transaction[] = await this.transactionsService.getAll(queryParams, user.id);
+      const user = req.user as UserOutputDTO;
+      const queryParams: TransactionsQuery = req.query;
+      const transactions: TransactionOutputDTO[] = await this.transactionReadService.getAll({ queryParams, userId: user.id });
       res.status(200).json({ data: transactions });
     } catch (error: any) {
       next(error);
@@ -17,9 +17,9 @@ export class TransactionsController {
   };
   public createTransfer = async (req: Request<{}, {}, TransferBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User;
-      const newTransfer = req.body;
-      const transaction: Transaction = await this.transactionsService.create(newTransfer, user.id);
+      const user = req.user as UserOutputDTO;
+      const newTransfer: TransferBody = req.body;
+      const transaction: TransactionOutputDTO = await this.transactionWriteService.create({ transfer: newTransfer, userId: user.id });
       res.status(200).json({ data: transaction });
     } catch (error: any) {
       next(error);

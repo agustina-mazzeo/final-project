@@ -1,29 +1,41 @@
 import should from 'should';
 import sinon from 'sinon';
-import { AccountService } from '../../src/services/account.service';
 import { TransactionsController } from '../../src/api/transactions/transactions.controller';
-import { Transaction } from '../../src/interfaces';
-import { TransactionService } from '../../src/services/transaction.service';
-import { AccountRepository } from '../../src/repositories/account.repository';
-import { UserRepository } from '../../src/repositories/user.repository';
-import { RateService } from '../../src/services/rate.service';
-import { RateRepository } from '../../src/repositories/rate.repository';
-import { TransactionRepository } from '../../src/repositories/transaction.repository';
-import { IService } from '../../src/services/interfaces';
+import {
+  AccountReadRepository,
+  AccountWriteRepository,
+  RateReadRepository,
+  TransactionReadRepository,
+  TransactionWriteRepository,
+  UserReadRepository,
+} from '../../src/repositories';
+import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
+import { TransactionOutputDTO } from '../../src/services/data-transfer-objects';
+import { ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
 
 describe('TransactionController', () => {
-  const rateService = new RateService(new RateRepository());
-  const accountService = new AccountService(new AccountRepository(), new UserRepository(), rateService);
-  const transactionService = new TransactionService(new TransactionRepository(), accountService);
+  const transactionReadRepository = new TransactionReadRepository();
+  const transactionWriteRepository = new TransactionWriteRepository();
+  const userReadRepository = new UserReadRepository();
+  const accountReadRepository = new AccountReadRepository();
+  const accountWriteRepository = new AccountWriteRepository();
+  const rateReadRepository = new RateReadRepository();
+  const rateReadService = new RateReadService(rateReadRepository);
+  const accountReadService = new AccountReadService(accountReadRepository);
+  const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
+  const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);
+  const transactionWriteService = new TransactionWriteService(transactionWriteRepository, accountWriteService, accountReadService);
 
   let transactionController: TransactionsController;
-  let transactionServiceStub: sinon.SinonStubbedInstance<IService<Transaction>>;
+  let transactionReadServiceStub: sinon.SinonStubbedInstance<ITransactionReadService>;
+  let transactionWriteServiceStub: sinon.SinonStubbedInstance<ITransactionWriteService>;
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    transactionServiceStub = sandbox.stub(transactionService as IService<Transaction>);
-    transactionController = new TransactionsController(transactionServiceStub);
+    transactionReadServiceStub = sandbox.stub(transactionReadService as ITransactionReadService);
+    transactionWriteServiceStub = sandbox.stub(transactionWriteService as ITransactionWriteService);
+    transactionController = new TransactionsController(transactionReadServiceStub, transactionWriteServiceStub);
   });
 
   afterEach(() => {
@@ -38,18 +50,18 @@ describe('TransactionController', () => {
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
       const next = sinon.spy();
-      const expectedTransactions: Transaction[] = [
+      const expectedTransactions: TransactionOutputDTO[] = [
         { id: 1, account_from: 12345, account_to: 67890, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
         { id: 2, account_from: 67890, account_to: 12345, amount: 200, createdAt: '2023-04-12T14:45:00.000Z', description: 'Transaction 2' },
       ];
 
-      const getAll = transactionServiceStub.getAll.resolves(expectedTransactions);
+      const getAll = transactionReadServiceStub.getAll.resolves(expectedTransactions);
 
       await transactionController.getTransactions(req as any, res as any, next);
 
       // Assertions
       should(getAll.calledOnce).be.true();
-      should(getAll.calledWith(req.query, req.user.id)).be.true();
+      should(getAll.calledWith({ queryParams: req.query, userId: req.user.id })).be.true();
       should(res.status.calledOnce).be.true();
       should(res.status.calledWith(200)).be.true();
       should(res.json.calledOnce).be.true();
@@ -66,13 +78,13 @@ describe('TransactionController', () => {
       const next = sinon.spy();
       const expectedError = new Error('Test error');
 
-      const getAll = transactionServiceStub.getAll.rejects(expectedError);
+      const getAll = transactionReadServiceStub.getAll.rejects(expectedError);
 
       await transactionController.getTransactions(req as any, res as any, next);
 
       // Assertions
       should(getAll.calledOnce).be.true();
-      should(getAll.calledWith(req.query, req.user.id)).be.true();
+      should(getAll.calledWith({ queryParams: req.query, userId: req.user.id })).be.true();
       should(res.status.called).be.false();
       should(res.json.called).be.false();
       should(next.calledOnce).be.true();
@@ -102,13 +114,13 @@ describe('TransactionController', () => {
         description: 'some description',
       };
 
-      const create = transactionServiceStub.create.resolves(expectedTransaction);
+      const create = transactionWriteServiceStub.create.resolves(expectedTransaction);
 
       await transactionController.createTransfer(req as any, res as any, next);
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith(req.body, req.user.id)).be.true();
+      should(create.calledWith({ transfer: req.body, userId: req.user.id })).be.true();
       should(res.status.calledOnce).be.true();
       should(res.status.calledWith(200)).be.true();
       should(res.json.calledOnce).be.true();
@@ -130,13 +142,13 @@ describe('TransactionController', () => {
       const next = sinon.spy();
       const expectedError = new Error('Test error');
 
-      const create = transactionServiceStub.create.rejects(expectedError);
+      const create = transactionWriteServiceStub.create.rejects(expectedError);
 
       await transactionController.createTransfer(req as any, res as any, next);
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith(req.body, req.user.id)).be.true();
+      should(create.calledWith({ transfer: req.body, userId: req.user.id })).be.true();
       should(res.status.called).be.false();
       should(res.json.called).be.false();
       should(next.calledOnce).be.true();

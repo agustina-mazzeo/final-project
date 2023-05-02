@@ -1,31 +1,36 @@
 import sinon from 'sinon';
 import should from 'should';
-import { Account, CustomError, User } from '../../src/interfaces';
-import { IAccountService, IRateService } from '../../src/services/interfaces';
-import { AccountService } from '../../src/services/account.service';
-import { RateService } from '../../src/services/rate.service';
-import { IUserRepository, IRepository } from '../../src/repositories/interfaces';
-import { AccountRepository } from '../../src/repositories/account.repository';
-import { UserRepository } from '../../src/repositories/user.repository';
-import { RateRepository } from '../../src/repositories/rate.repository';
+import { CustomError } from '../../src/interfaces';
+import { IAccountReadService, IAccountWriteService, IRateReadService } from '../../src/services/interfaces';
+import { IAccountReadRepository, IAccountWriteRepository, IUserReadRepository } from '../../src/repositories/interfaces';
+import { AccountReadRepository } from '../../src/repositories/account.read.repository';
+import { AccountReadService, AccountWriteService, RateReadService } from '../../src/services';
+import { AccountWriteRepository, RateReadRepository, UserReadRepository } from '../../src/repositories';
+import { AccountOutputDTO, UserOutputDTO } from '../../src/services/data-transfer-objects';
+import { AccountModelDTO } from 'repositories/data-transfer-objects';
 
 describe('AccountService', () => {
-  const accountRepository = new AccountRepository();
-  const userRepository = new UserRepository();
-  const rateService = new RateService(new RateRepository());
+  const accountReadRepository = new AccountReadRepository();
+  const accountWriteRepository = new AccountWriteRepository();
+  const userReadRepository = new UserReadRepository();
+  const rateReadService = new RateReadService(new RateReadRepository());
 
-  let accountService: IAccountService;
-  let accountRepositoryStub: sinon.SinonStubbedInstance<IRepository<Account>>;
-  let userRepositoryStub: sinon.SinonStubbedInstance<IUserRepository>;
-  let rateServiceStub: sinon.SinonStubbedInstance<IRateService>;
+  let accountReadRepositoryStub: sinon.SinonStubbedInstance<IAccountReadRepository>;
+  let accountWriteRepositoryStub: sinon.SinonStubbedInstance<IAccountWriteRepository>;
+  let userReadRepositoryStub: sinon.SinonStubbedInstance<IUserReadRepository>;
+  let rateReadServiceStub: sinon.SinonStubbedInstance<IRateReadService>;
+  let accountReadService: IAccountReadService;
+  let accountWriteService: IAccountWriteService;
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    accountRepositoryStub = sandbox.stub(accountRepository as IRepository<Account>);
-    userRepositoryStub = sandbox.stub(userRepository as IUserRepository);
-    rateServiceStub = sandbox.stub(rateService as IRateService);
-    accountService = new AccountService(accountRepositoryStub, userRepositoryStub, rateServiceStub);
+    accountReadRepositoryStub = sandbox.stub(accountReadRepository as IAccountReadRepository);
+    accountWriteRepositoryStub = sandbox.stub(accountWriteRepository as IAccountWriteRepository);
+    userReadRepositoryStub = sandbox.stub(userReadRepository as IUserReadRepository);
+    rateReadServiceStub = sandbox.stub(rateReadService as IRateReadService);
+    accountReadService = new AccountReadService(accountReadRepositoryStub);
+    accountWriteService = new AccountWriteService(accountReadService, accountWriteRepositoryStub, userReadRepositoryStub, rateReadServiceStub);
   });
   afterEach(() => {
     sandbox.restore();
@@ -33,46 +38,46 @@ describe('AccountService', () => {
 
   describe('create', () => {
     it('should call create method in accountsRepository with correct arguments', async () => {
-      const userId = 1;
+      const id_user = 1;
       const currency = 'USD';
-      const user: User = {
-        id: userId,
+      const user: UserOutputDTO = {
+        id: id_user,
         email: 'someemail',
         password: 'somepass',
       };
 
-      const getById = userRepositoryStub.getByID.resolves(user);
+      const getById = userReadRepositoryStub.getByID.resolves(user);
 
-      const newAccount: Account = {
+      const newAccount: AccountOutputDTO = {
         id: Math.random(),
-        id_user: userId,
+        id_user,
         currency,
         balance: 0,
       };
-      const create = accountRepositoryStub.create.resolves(newAccount);
+      const create = accountWriteRepositoryStub.create.resolves(newAccount);
 
-      const createdAccount = await accountService.create(currency, userId);
+      const createdAccount = await accountWriteService.create({ currency, id_user });
 
       should.exist(createdAccount);
       should(createdAccount).deepEqual(newAccount);
-      should(create.calledOnceWithExactly({ userId, currency })).be.true();
-      should(getById.calledOnceWithExactly(userId)).be.true();
+      should(create.calledOnceWithExactly({ id_user, currency })).be.true();
+      should(getById.calledOnceWithExactly(id_user)).be.true();
     });
 
     it('should throw an error when invalid userId is provided', async () => {
       const userId = 1;
       const currency = 'USD';
-      const getById = userRepositoryStub.getByID.resolves(undefined);
+      const getById = userReadRepositoryStub.getByID.resolves(undefined);
 
       try {
-        await accountService.create(currency, userId);
+        await accountWriteService.create({ currency, id_user: userId });
         sinon.assert.fail();
       } catch (error: any) {
         should.exist(error);
         should(error).be.instanceOf(CustomError);
         should(error.errorType).be.eql('VALIDATION_ERROR');
         should(getById.calledOnceWithExactly(userId)).be.true();
-        should(accountRepositoryStub.create.notCalled).be.true();
+        should(accountWriteRepositoryStub.create.notCalled).be.true();
       }
     });
   });
@@ -80,18 +85,18 @@ describe('AccountService', () => {
   describe('createUsersAccounts', () => {
     it('should create accounts for all currencies for a user', async () => {
       const userId = 1;
-      const account: Account = {
+      const account: AccountOutputDTO = {
         id: 1,
         id_user: userId,
         currency: 'UYU',
         balance: 13,
       };
-      const user: User = { id: userId, email: 'test@example.com', password: 'password' };
+      const user: UserOutputDTO = { id: userId, email: 'test@example.com', password: 'password' };
 
-      const getByID = userRepositoryStub.getByID.resolves(user);
-      const create = accountRepositoryStub.create.resolves(account);
+      const getByID = userReadRepositoryStub.getByID.resolves(user);
+      const create = accountWriteRepositoryStub.create.resolves(account);
 
-      await accountService.createUsersAccounts(userId);
+      await accountWriteService.createUsersAccounts(userId);
 
       should(getByID.called).be.true();
       should(create.called).be.true();
@@ -99,9 +104,9 @@ describe('AccountService', () => {
 
     it('should throw an error when the user is not found', async () => {
       const userId = 1;
-      const getByID = userRepositoryStub.getByID.resolves(undefined);
+      const getByID = userReadRepositoryStub.getByID.resolves(undefined);
       try {
-        await accountService.createUsersAccounts(userId);
+        await accountWriteService.createUsersAccounts(userId);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -113,7 +118,7 @@ describe('AccountService', () => {
 
   describe('getAll', () => {
     it('should return an array of accounts', async () => {
-      const accounts: Account[] = [
+      const accounts: AccountOutputDTO[] = [
         {
           id: 1,
           id_user: 0.5069248488856752,
@@ -134,9 +139,9 @@ describe('AccountService', () => {
         },
       ];
 
-      const getAll = accountRepositoryStub.getAll.resolves(accounts);
+      const getAll = accountReadRepositoryStub.getAll.resolves(accounts);
 
-      const result = await accountService.getAll();
+      const result = await accountReadService.getAll();
 
       should(result).be.eql(accounts);
       should(getAll.calledOnce).be.true();
@@ -146,16 +151,16 @@ describe('AccountService', () => {
   describe('getByID', () => {
     it('should return the account that matches the id', async () => {
       const id = 1;
-      const account: Account = {
+      const account: AccountOutputDTO = {
         id,
         id_user: 0.5069248488856752,
         currency: 'UYU',
         balance: 13,
       };
 
-      const getByID = accountRepositoryStub.getByID.resolves(account);
+      const getByID = accountReadRepositoryStub.getByID.resolves(account);
 
-      const result = await accountService.getByID(id);
+      const result = await accountReadService.getByID(id);
 
       //Assertions
       should(result).be.eql(account);
@@ -164,10 +169,10 @@ describe('AccountService', () => {
 
     it('should throw CustomError with validation error if no user matches the id', async () => {
       const id = 1;
-      const getByID = accountRepositoryStub.getByID.resolves(undefined);
+      const getByID = accountReadRepositoryStub.getByID.resolves(undefined);
 
       try {
-        await accountService.getByID(id);
+        await accountReadService.getByID(id);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -179,16 +184,16 @@ describe('AccountService', () => {
 
   describe('update', () => {
     it('should update and return the updated account', async () => {
-      const account: Account = {
+      const account: AccountOutputDTO = {
         id: 1,
         id_user: 0.5069248488856752,
         currency: 'UYU',
         balance: 13,
       };
 
-      const update = accountRepositoryStub.update.resolves(account);
+      const update = accountWriteRepositoryStub.update.resolves(account);
 
-      const result = await accountService.update(account);
+      const result = await accountWriteService.update(account);
 
       should(update.calledWith(account)).be.true();
       should(result).deepEqual(account);
@@ -199,37 +204,43 @@ describe('AccountService', () => {
     it('should return the updates accounts from the same user', async () => {
       const userId = 1;
       const amount = 1;
-      const account_from: Account = {
-        id: 2,
+      const account_from_id = 2;
+      const account_to_id = 3;
+      const account_from: AccountOutputDTO = {
+        id: account_from_id,
         id_user: userId,
         currency: 'UYU',
         balance: 10,
       };
-      const account_to: Account = {
-        id: 3,
+      const account_to: AccountOutputDTO = {
+        id: account_to_id,
         id_user: userId,
         currency: 'USD',
         balance: 10,
       };
-      const account_from_updated: Account = {
-        id: 2,
+      const account_from_updated_balance = 9;
+      const account_to_updated_balance = 10.5;
+      const account_from_updated: AccountOutputDTO = {
+        id: account_from_id,
         id_user: userId,
         currency: 'UYU',
-        balance: 9,
+        balance: account_from_updated_balance,
       };
-      const account_to_updated: Account = {
-        id: 3,
+      const account_to_updated: AccountOutputDTO = {
+        id: account_to_id,
         id_user: userId,
         currency: 'USD',
-        balance: 10.5,
+        balance: account_to_updated_balance,
       };
-      const getMultiplier = rateServiceStub.getMultiplier.resolves(0.5);
-      const update = accountRepositoryStub.update;
-      update.withArgs(account_from_updated).resolves(account_from_updated);
-      update.withArgs(account_to_updated).resolves(account_to_updated);
+      const getByID = accountReadRepositoryStub.getByID;
+      getByID.withArgs(account_from_id).resolves({ currency: 'UYU' } as AccountModelDTO);
+      getByID.withArgs(account_to_id).resolves({ currency: 'USD' } as AccountModelDTO);
+      const getMultiplier = rateReadServiceStub.getMultiplier.resolves(0.5);
+      const update = accountWriteRepositoryStub.update;
+      update.withArgs({ id: account_from_id, balance: account_from_updated_balance }).resolves(account_from_updated);
+      update.withArgs({ id: account_to_id, balance: account_to_updated_balance }).resolves(account_to_updated);
 
-      const result = await accountService.updateAccounts(account_from, account_to, amount, userId);
-
+      const result = await accountWriteService.updateAccounts(account_from, account_to, amount, userId);
       //Assertions
       should(getMultiplier.calledOnce).be.true();
       should(update.calledTwice).be.true();
@@ -242,37 +253,40 @@ describe('AccountService', () => {
     it('should return the updates accounts from different users', async () => {
       const userId = 1;
       const amount = 1;
-      const account_from: Account = {
+      const account_from: AccountOutputDTO = {
         id: 2,
         id_user: userId,
         currency: 'UYU',
         balance: 10,
       };
-      const account_to: Account = {
+      const account_to: AccountOutputDTO = {
         id: 3,
         id_user: 4,
         currency: 'USD',
         balance: 10,
       };
-      const account_from_updated: Account = {
+      const account_from_updated: AccountOutputDTO = {
         id: 2,
         id_user: userId,
         currency: 'UYU',
         balance: 8.99,
       };
-      const account_to_updated: Account = {
+      const account_to_updated: AccountOutputDTO = {
         id: 3,
         id_user: 4,
         currency: 'USD',
         balance: 10.5,
       };
-      const getMultiplier = rateServiceStub.getMultiplier.resolves(0.5);
-      const update = accountRepositoryStub.update;
-      update.withArgs(account_from_updated).resolves(account_from_updated);
-      update.withArgs(account_to_updated).resolves(account_to_updated);
+      const getByID = accountReadRepositoryStub.getByID;
+      getByID.withArgs(account_from.id).resolves({ currency: 'UYU' } as AccountOutputDTO);
+      getByID.withArgs(account_to.id).resolves({ currency: 'USD' } as AccountOutputDTO);
+      const getMultiplier = rateReadServiceStub.getMultiplier.resolves(0.5);
+      const update = accountWriteRepositoryStub.update;
+      update.withArgs({ id: account_from.id, balance: account_from_updated.balance }).resolves(account_from_updated);
+      update.withArgs({ id: account_to.id, balance: account_to_updated.balance }).resolves(account_to_updated);
 
-      const result = await accountService.updateAccounts(account_from, account_to, amount, userId);
-
+      const result = await accountWriteService.updateAccounts(account_from, account_to, amount, userId);
+      console.log(result);
       //Assertions
       should(getMultiplier.calledOnce).be.true();
       should(update.calledTwice).be.true();
@@ -286,13 +300,13 @@ describe('AccountService', () => {
     it('should throw an error if the account does not have sufficient funds', async () => {
       const userId = 1;
       const amount = 10;
-      const account_from: Account = {
+      const account_from: AccountOutputDTO = {
         id: 2,
         id_user: userId,
         currency: 'UYU',
         balance: 10,
       };
-      const account_to: Account = {
+      const account_to: AccountOutputDTO = {
         id: 3,
         id_user: 4,
         currency: 'USD',
@@ -300,13 +314,14 @@ describe('AccountService', () => {
       };
 
       try {
-        await accountService.updateAccounts(account_from, account_to, amount, userId);
+        await accountWriteService.updateAccounts(account_from, account_to, amount, userId);
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
         should(error.errorType).be.eql('VALIDATION_ERROR');
-        should(rateServiceStub.getMultiplier.notCalled).be.true();
-        should(accountRepositoryStub.update.notCalled).be.true();
+        should(error.messages).be.eql(['Insufficient funds']);
+        should(rateReadServiceStub.getMultiplier.notCalled).be.true();
+        should(accountWriteRepositoryStub.update.notCalled).be.true();
       }
     });
   });

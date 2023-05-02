@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { RatesController } from '../rates/rates.controller';
-import { RateService } from '../../services/rate.service';
-import { RateRepository } from '../../repositories/rate.repository';
+import { RateReadService } from '../../services';
+import { RateReadRepository } from '../../repositories';
 
-const ratesService = new RateService(new RateRepository());
+const rateReadService = new RateReadService(new RateReadRepository());
 
 export class RatesRoutes {
   public path = '/rates';
   public router = Router();
-  public rates = new RatesController(ratesService);
+  public rates = new RatesController(rateReadService);
 
   constructor() {
     this.initializeRoutes();

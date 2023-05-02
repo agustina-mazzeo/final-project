@@ -1,4 +1,4 @@
-export { User, UserData, Account, TokenData, DataStoredInToken } from './user.interface';
-export { Transaction, Transfer } from './transaction.interface';
-export { ExchangeRate, Rates } from './rates.interface';
-export { ErrorType, CustomError } from './error.interface';
+export * from './user.interface';
+export * from './transaction.interface';
+export * from './rates.interface';
+export * from './error.interface';
