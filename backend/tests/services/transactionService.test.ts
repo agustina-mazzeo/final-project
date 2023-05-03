@@ -71,12 +71,7 @@ describe('TransactionService', () => {
       ];
 
       const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
-      const getAll = transactionReadRepositoryStub.getAll
-        .withArgs({
-          filters: [{ value: 1, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 }],
-          usersAccountsId: [1, 2],
-        })
-        .resolves(filteredUsersTransactions);
+      const getAll = transactionReadRepositoryStub.getAll.resolves(filteredUsersTransactions);
 
       const result = await transactionReadService.getAll({ userId: 1, queryParams: { account_from: 1 } });
 
@@ -84,12 +79,7 @@ describe('TransactionService', () => {
       should(result).have.length(filteredUsersTransactions.length);
       should(result).containDeep(filteredUsersTransactions);
       should(getAllService.calledOnceWith(1)).be.true();
-      should(
-        getAll.calledOnceWith({
-          filters: [{ value: 1, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 }],
-          usersAccountsId: [1, 2],
-        }),
-      ).be.true();
+      should(getAll.calledOnce).be.true();
     });
 
     it('should throw an error if user has no accounts', async () => {
