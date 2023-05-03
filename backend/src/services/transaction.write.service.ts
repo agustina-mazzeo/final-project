@@ -1,7 +1,7 @@
 import { IAccountReadService, IAccountWriteService, ITransactionWriteService } from './interfaces';
 import { CustomError } from '../interfaces';
 
-import { TransactionOutputDTO, TransactionInputDTO } from './data-transfer-objects';
+import { TransactionOutputDTO, TransactionInputDTO } from './dtos';
 import { ITransactionWriteRepository } from '../repositories/interfaces';
 
 export class TransactionWriteService implements ITransactionWriteService {

@@ -8,7 +8,7 @@ import {
   TransactionOutputDTO,
   UserCreateInputDTO,
   UserOutputDTO,
-} from '../data-transfer-objects';
+} from '../dtos';
 import { IReadService } from './IReadService';
 import { IWriteService } from './IWriteService';
 

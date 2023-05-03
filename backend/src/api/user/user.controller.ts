@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { SignUserBody, LoginUserBody } from './user.schema';
 import { userToResponseDTO } from './user.dto';
 import { createToken } from '../utils/helpers';
-import { UserOutputDTO } from '../../services/data-transfer-objects';
+import { UserOutputDTO } from '../../services/dtos';
 import { IAccountReadService, IUserReadService } from '../../services/interfaces';
 
 class UserController {

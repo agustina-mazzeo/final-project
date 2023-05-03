@@ -6,8 +6,8 @@ import { IAccountReadRepository, IAccountWriteRepository, IUserReadRepository } 
 import { AccountReadRepository } from '../../src/repositories/account.read.repository';
 import { AccountReadService, AccountWriteService, RateReadService } from '../../src/services';
 import { AccountWriteRepository, RateReadRepository, UserReadRepository } from '../../src/repositories';
-import { AccountOutputDTO, UserOutputDTO } from '../../src/services/data-transfer-objects';
-import { AccountModelDTO } from 'repositories/data-transfer-objects';
+import { AccountOutputDTO, UserOutputDTO } from '../../src/services/dtos';
+import { AccountModelDTO } from 'repositories/dtos';
 
 describe('AccountService', () => {
   const accountReadRepository = new AccountReadRepository();

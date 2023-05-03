@@ -1,6 +1,6 @@
 import { CustomError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
-import { TransactionOutputDTO, TransactionGetAllDTO } from './data-transfer-objects';
+import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
 import { IAccountReadService, ITransactionReadService } from './interfaces';
 
 export class TransactionReadService implements ITransactionReadService {
@@ -12,18 +12,18 @@ export class TransactionReadService implements ITransactionReadService {
       if (userAccounts.length === 0) {
         throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);
       }
-      const usersAccountsID = userAccounts.map(({ id }) => {
+      const usersAccountsId = userAccounts.map(({ id }) => {
         return id;
       });
-      let usersTransactions = await this.transactionReadRepository.getUsersTransactions(usersAccountsID);
-      usersTransactions = usersTransactions.filter(({ account_from, createdAt }) => {
-        return (
-          (!queryParams.account_from || account_from === queryParams.account_from) &&
-          (!queryParams.from || createdAt >= queryParams.from) &&
-          (!queryParams.to || createdAt <= queryParams.to)
-        );
-      });
-      return usersTransactions;
+
+      const filters: { filterBy: keyof TransactionOutputDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[] = [];
+      if (queryParams.account_from)
+        filters.push({ value: queryParams.account_from, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 });
+      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'createdAt', operator: (arg1, arg2) => arg1 >= arg2 });
+      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'createdAt', operator: (arg1, arg2) => arg1 <= arg2 });
+
+      const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
+      return filteredTransactions;
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);
     }

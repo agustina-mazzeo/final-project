@@ -1,5 +1,5 @@
 import { IWriteService } from '.';
-import { AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from '../data-transfer-objects';
+import { AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from '../dtos';
 
 export interface IAccountWriteService extends IWriteService<AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO> {
   createUsersAccounts(userId: number): Promise<void>;

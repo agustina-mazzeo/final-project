@@ -5,7 +5,7 @@ import { IRateReadService, IRateWriteService } from '../../src/services/interfac
 import { IRateReadRepository, IRateWriteRepository } from '../../src/repositories/interfaces';
 import { RateReadService, RateWriteService } from '../../src/services';
 import { RateReadRepository, RateWriteRepository } from '../../src/repositories';
-import { RateOutputDTO } from '../../src/services/data-transfer-objects';
+import { RateOutputDTO } from '../../src/services/dtos';
 
 describe('RateService', () => {
   const rateReadRepository = new RateReadRepository();

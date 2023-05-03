@@ -1,6 +1,6 @@
 import { users } from '../../database';
 import { CustomError, User } from '../interfaces';
-import { UserCreateInputDTO, UserModelDTO } from './data-transfer-objects';
+import { UserCreateInputDTO, UserModelDTO } from './dtos';
 import { IUserWriteRepository } from './interfaces';
 
 export class UserWriteRepository implements IUserWriteRepository {

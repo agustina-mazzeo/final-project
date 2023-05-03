@@ -1,5 +1,5 @@
 import { rates } from '../../database';
-import { RateGetterDTO, RateModelDTO } from './data-transfer-objects';
+import { RateGetterDTO, RateModelDTO } from './dtos';
 import { IRateReadRepository } from './interfaces';
 
 export class RateReadRepository implements IRateReadRepository {

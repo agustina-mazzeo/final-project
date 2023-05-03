@@ -1,4 +1,4 @@
-import { UserOutputDTO, UserGetterDTO } from '../data-transfer-objects';
+import { UserOutputDTO, UserGetterDTO } from '../dtos';
 import { IReadService } from '.';
 
 export interface IUserReadService extends IReadService<UserOutputDTO, unknown, UserGetterDTO> {

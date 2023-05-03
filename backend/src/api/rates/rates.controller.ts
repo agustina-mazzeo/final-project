@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { IRateReadService } from '../../services/interfaces';
-import { RateOutputDTO } from '../../services/data-transfer-objects';
+import { RateOutputDTO } from '../../services/dtos';
 
 export class RatesController {
   constructor(private rateReadService: IRateReadService) {}

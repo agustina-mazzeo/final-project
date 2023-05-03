@@ -1,7 +1,7 @@
 import { transactions } from '../../database';
 import { CustomError, Transaction } from '../interfaces';
-import { TransactionInputDTO } from './data-transfer-objects/Transaction/TransactionInput';
-import { TransactionModelDTO } from './data-transfer-objects/Transaction/TransactionModel';
+import { TransactionInputDTO, TransactionModelDTO } from './dtos';
+
 import { ITransactionWriteRepository } from './interfaces';
 
 export class TransactionWriteRepository implements ITransactionWriteRepository {

@@ -12,7 +12,7 @@ import {
   TransactionWriteRepository,
   UserReadRepository,
 } from '../../src/repositories';
-import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/data-transfer-objects';
+import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
 
 describe('TransactionService', () => {
   const rateReadService = new RateReadService(new RateReadRepository());
@@ -51,16 +51,45 @@ describe('TransactionService', () => {
         { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
       ];
 
-      const getAll = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
-      const getUTRansactions = transactionReadRepositoryStub.getUsersTransactions.resolves(usersTransactions);
+      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: [1, 2] }).resolves(usersTransactions);
 
       const result = await transactionReadService.getAll({ userId: 1, queryParams: {} });
 
       should(result).be.an.Array();
       should(result).have.length(usersTransactions.length);
       should(result).containDeep(usersTransactions);
-      should(getAll.calledOnceWith(1)).be.true();
-      should(getUTRansactions.calledOnceWith([1, 2])).be.true();
+      should(getAllService.calledOnceWith(1)).be.true();
+      should(getAll.calledOnceWith({ filters: [], usersAccountsId: [1, 2] })).be.true();
+    });
+
+    it('should filter the users accounts', async () => {
+      const userAccounts = [{ id: 1 }, { id: 2 }];
+      const filteredUsersTransactions: TransactionOutputDTO[] = [
+        { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
+        { id: 2, account_from: 1, account_to: 3, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+      ];
+
+      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAll = transactionReadRepositoryStub.getAll
+        .withArgs({
+          filters: [{ value: 1, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 }],
+          usersAccountsId: [1, 2],
+        })
+        .resolves(filteredUsersTransactions);
+
+      const result = await transactionReadService.getAll({ userId: 1, queryParams: { account_from: 1 } });
+
+      should(result).be.an.Array();
+      should(result).have.length(filteredUsersTransactions.length);
+      should(result).containDeep(filteredUsersTransactions);
+      should(getAllService.calledOnceWith(1)).be.true();
+      should(
+        getAll.calledOnceWith({
+          filters: [{ value: 1, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 }],
+          usersAccountsId: [1, 2],
+        }),
+      ).be.true();
     });
 
     it('should throw an error if user has no accounts', async () => {

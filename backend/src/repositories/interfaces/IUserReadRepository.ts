@@ -1,4 +1,4 @@
-import { UserModelDTO, UserGetterDTO } from '../data-transfer-objects';
+import { UserModelDTO, UserGetterDTO } from '../dtos';
 import { IReadRepository } from '.';
 
 export interface IUserReadRepository extends IReadRepository<UserModelDTO, unknown, UserGetterDTO> {

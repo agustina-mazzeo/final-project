@@ -2,7 +2,7 @@ import { hash } from 'bcrypt';
 import { CustomError } from '../interfaces';
 import { IAccountWriteService, IUserWriteService } from './interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../repositories/interfaces';
-import { UserOutputDTO, UserCreateInputDTO } from './data-transfer-objects';
+import { UserOutputDTO, UserCreateInputDTO } from './dtos';
 
 export class UserWriteService implements IUserWriteService {
   constructor(

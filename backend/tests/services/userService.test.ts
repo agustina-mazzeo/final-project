@@ -6,8 +6,8 @@ import { IAccountWriteService, IUserReadService, IUserWriteService } from '../..
 import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../src/services';
 import { AccountReadRepository, AccountWriteRepository, RateReadRepository, UserReadRepository, UserWriteRepository } from '../../src/repositories';
-import { UserOutputDTO } from '../../src/services/data-transfer-objects';
-import { UserCreateInputDTO } from '../../src/repositories/data-transfer-objects';
+import { UserOutputDTO } from '../../src/services/dtos';
+import { UserCreateInputDTO } from '../../src/repositories/dtos';
 
 describe('UserService', () => {
   const userReadRepository = new UserReadRepository();

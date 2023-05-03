@@ -1,5 +1,5 @@
 import { users } from '../../database';
-import { UserGetterDTO, UserModelDTO } from './data-transfer-objects';
+import { UserGetterDTO, UserModelDTO } from './dtos';
 import { IUserReadRepository } from './interfaces';
 
 export class UserReadRepository implements IUserReadRepository {

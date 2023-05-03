@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { TransactionsQuery, TransferBody } from './transactions.schema';
 import { ITransactionReadService, ITransactionWriteService } from '../../services/interfaces';
-import { TransactionOutputDTO, UserOutputDTO } from '../../services/data-transfer-objects';
+import { TransactionOutputDTO, UserOutputDTO } from '../../services/dtos';
 
 export class TransactionsController {
   constructor(private transactionReadService: ITransactionReadService, private transactionWriteService: ITransactionWriteService) {}

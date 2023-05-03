@@ -1,7 +1,7 @@
 import { IAccountWriteRepository, IUserReadRepository } from '../repositories/interfaces';
 import { CustomError } from '../interfaces';
 import { addOnePercent, currencies } from '../utils/helpers';
-import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO } from './data-transfer-objects';
+import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO } from './dtos';
 import { IAccountReadService, IAccountWriteService, IRateReadService } from './interfaces';
 
 export class AccountWriteService implements IAccountWriteService {

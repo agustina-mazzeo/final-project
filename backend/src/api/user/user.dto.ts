@@ -1,4 +1,4 @@
-import { UserOutputDTO } from '../../services/data-transfer-objects';
+import { UserOutputDTO } from '../../services/dtos';
 export interface UserResponseDTO {
   name?: string;
   email: string;

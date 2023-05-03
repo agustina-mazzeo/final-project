@@ -10,7 +10,7 @@ import {
   UserReadRepository,
 } from '../../src/repositories';
 import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
-import { TransactionOutputDTO } from '../../src/services/data-transfer-objects';
+import { TransactionOutputDTO } from '../../src/services/dtos';
 import { ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
 
 describe('TransactionController', () => {

@@ -1,6 +1,6 @@
 import { accounts, inc_acc } from '../../database';
 import { Account } from '../interfaces';
-import { AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from './data-transfer-objects';
+import { AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from './dtos';
 import { IAccountWriteRepository } from './interfaces';
 
 export class AccountWriteRepository implements IAccountWriteRepository {

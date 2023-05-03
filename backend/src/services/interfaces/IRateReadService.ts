@@ -1,4 +1,4 @@
-import { RateOutputDTO } from '../data-transfer-objects';
+import { RateOutputDTO } from '../dtos';
 import { IReadService } from '.';
 
 export interface IRateReadService extends IReadService<RateOutputDTO, unknown, unknown> {

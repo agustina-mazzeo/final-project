@@ -12,7 +12,7 @@ import {
   TransactionModelDTO,
   UserCreateInputDTO,
   UserModelDTO,
-} from '../data-transfer-objects';
+} from '../dtos';
 import { IReadRepository } from './IReadRepository';
 import { IWriteRepository } from './IWriteRepository';
 

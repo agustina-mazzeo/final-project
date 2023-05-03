@@ -1,15 +1,17 @@
 import { transactions } from '../../database';
 import { CustomError } from '../interfaces';
-import { TransactionModelDTO, TransactionGetAllDTO } from './data-transfer-objects';
+import { TransactionModelDTO, TransactionGetAllDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
 
 export class TransactionReadRepository implements ITransactionReadRepository {
-  public getAll = async (filter?: TransactionGetAllDTO): Promise<TransactionModelDTO[]> => {
+  public getAll = async ({ filters, usersAccountsId }: TransactionGetAllDTO): Promise<TransactionModelDTO[]> => {
     const transactionsModel: TransactionModelDTO[] = transactions;
-    if (!filter) return transactionsModel;
-    return transactionsModel.filter(txn =>
-      filter.every(({ filterBy, value }) => {
-        return txn[filterBy] === value;
+    const usersTransactions = transactionsModel.filter(({ account_from, account_to }) => {
+      return usersAccountsId.some(id => id === account_from || id === account_to);
+    });
+    return usersTransactions.filter(txn =>
+      filters.every(({ filterBy, value, operator }) => {
+        return operator(txn[filterBy], value);
       }),
     );
   };

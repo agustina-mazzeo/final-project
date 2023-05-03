@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 import { TokenData, DataStoredInToken } from '../../interfaces';
 import * as dotenv from 'dotenv';
-import { UserOutputDTO } from '../../services/data-transfer-objects';
+import { UserOutputDTO } from '../../services/dtos';
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY as string;

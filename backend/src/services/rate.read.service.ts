@@ -1,7 +1,7 @@
 import { IRateReadRepository } from '../repositories/interfaces';
 import { CustomError } from '../interfaces';
 import { IRateReadService } from './interfaces';
-import { RateOutputDTO } from './data-transfer-objects';
+import { RateOutputDTO } from './dtos';
 
 export class RateReadService implements IRateReadService {
   constructor(private rateReadRepository: IRateReadRepository) {}

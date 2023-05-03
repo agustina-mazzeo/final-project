@@ -1,7 +1,7 @@
 import { CustomError } from '../interfaces';
 import { IUserReadService } from './interfaces';
 import { IUserReadRepository } from '../repositories/interfaces';
-import { UserGetterDTO, UserOutputDTO } from './data-transfer-objects';
+import { UserGetterDTO, UserOutputDTO } from './dtos';
 
 export class UserReadService implements IUserReadService {
   constructor(private userReadRepository: IUserReadRepository) {}

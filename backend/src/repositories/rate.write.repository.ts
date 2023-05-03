@@ -1,5 +1,5 @@
 import { rates } from '../../database';
-import { RateModelDTO, RateInputDTO } from './data-transfer-objects';
+import { RateModelDTO, RateInputDTO } from './dtos';
 import { IRateWriteRepository } from './interfaces';
 
 export class RateWriteRepository implements IRateWriteRepository {

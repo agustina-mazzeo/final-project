@@ -1,13 +1,13 @@
 import { IAccountReadRepository } from '../repositories/interfaces';
 import { CustomError } from '../interfaces';
 import { IAccountReadService } from './interfaces';
-import { AccountOutputDTO, AccountGetterDTO } from './data-transfer-objects';
+import { AccountOutputDTO, AccountGetterDTO } from './dtos';
 
 export class AccountReadService implements IAccountReadService {
   constructor(private accountReadRepository: IAccountReadRepository) {}
 
   public getAll = async (userId: AccountGetterDTO): Promise<AccountOutputDTO[]> => {
-    return this.accountReadRepository.getAll([{ filterBy: 'id_user', value: userId }]);
+    return this.accountReadRepository.getAll([{ filterBy: 'id_user', value: userId, operator: (arg1: number, arg2: number) => arg1 === arg2 }]);
   };
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {

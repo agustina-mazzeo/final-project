@@ -1,7 +1,7 @@
 import { Rates } from '../interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../repositories/interfaces';
 import { IRateWriteService } from './interfaces';
-import { RateCreateInputDTO, RateOutputDTO, RateUpdateInputDTO } from './data-transfer-objects';
+import { RateCreateInputDTO, RateOutputDTO, RateUpdateInputDTO } from './dtos';
 
 import * as dotenv from 'dotenv';
 dotenv.config();

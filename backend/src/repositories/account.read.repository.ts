@@ -1,5 +1,5 @@
 import { accounts } from '../../database';
-import { AccountModelDTO, AccountGetAllDTO, AccountGetterDTO } from './data-transfer-objects';
+import { AccountModelDTO, AccountGetAllDTO, AccountGetterDTO } from './dtos';
 import { IAccountReadRepository } from './interfaces';
 
 export class AccountReadRepository implements IAccountReadRepository {
@@ -7,7 +7,7 @@ export class AccountReadRepository implements IAccountReadRepository {
     if (!filter) {
       return accounts;
     }
-    return accounts.filter(acc => filter.every(({ filterBy, value }) => acc[filterBy] === value));
+    return accounts.filter(acc => filter.every(({ filterBy, value, operator }) => operator(acc[filterBy], value)));
   }
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountModelDTO | undefined> => {
