@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
-import { TransactionModelDTO, TransactionGetAllDTO } from './dtos';
+import { TransactionModelDTO, TransactionGetAllInputDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
 
 export class TransactionReadRepository implements ITransactionReadRepository {
-  public getAll = async ({ filters, usersAccountsId }: TransactionGetAllDTO): Promise<TransactionModelDTO[]> => {
+  public getAll = async ({ filters, usersAccountsId }: TransactionGetAllInputDTO): Promise<TransactionModelDTO[]> => {
     const where: Prisma.TransactionWhereInput = {
       AND: {
         OR: {

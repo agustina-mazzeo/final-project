@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import {
   AccountCreateInputDTO,
-  AccountGetAllDTO,
+  AccountGetAllInputDTO,
   AccountGetterDTO,
   AccountModelDTO,
   AccountUpdateInputDTO,
@@ -23,7 +23,7 @@ export * from './IUserReadRepository';
 
 export interface ITransactionWriteRepository extends IWriteRepository<TransactionModelDTO, TransactionInputDTO, unknown> {}
 export interface IUserWriteRepository extends IWriteRepository<UserModelDTO, UserCreateInputDTO, unknown> {}
-export interface IAccountReadRepository extends IReadRepository<AccountModelDTO, AccountGetAllDTO, AccountGetterDTO> {}
+export interface IAccountReadRepository extends IReadRepository<AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO> {}
 export interface IAccountWriteRepository extends IWriteRepository<AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO> {}
 export interface IRateReadRepository extends IReadRepository<RateModelDTO, unknown, RateGetterDTO> {}
 export interface IRateWriteRepository extends IWriteRepository<RateModelDTO, RateInputDTO, RateInputDTO> {}

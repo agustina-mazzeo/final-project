@@ -8,7 +8,7 @@ export class AccountReadService implements IAccountReadService {
 
   public getAll = async (userId: AccountGetterDTO): Promise<AccountOutputDTO[]> => {
     try {
-      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: (arg1: number, arg2: number) => arg1 === arg2 }]);
+      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: '===' }]);
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);
     }

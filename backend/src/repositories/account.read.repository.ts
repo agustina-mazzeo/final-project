@@ -1,19 +1,19 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
-import { AccountModelDTO, AccountGetAllDTO, AccountGetterDTO } from './dtos';
+import { AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO } from './dtos';
 import { IAccountReadRepository } from './interfaces';
 import { CustomError } from '../interfaces';
 import { selectAccountOptions } from './helpers';
 
 export class AccountReadRepository implements IAccountReadRepository {
-  public async getAll(filters?: AccountGetAllDTO): Promise<AccountModelDTO[]> {
+  public async getAll(filters?: AccountGetAllInputDTO): Promise<AccountModelDTO[]> {
     try {
       const where: Prisma.AccountWhereInput = filters
         ? {
             AND: {
-              id: filters?.find(({ filterBy }) => filterBy === 'id')?.value,
-              user_id: filters?.find(({ filterBy }) => filterBy === 'user_id')?.value,
-              currency: filters?.find(({ filterBy }) => filterBy === 'currency')?.value,
+              id: { equals: filters?.find(({ filterBy }) => filterBy === 'id')?.value },
+              user_id: { equals: filters?.find(({ filterBy }) => filterBy === 'user_id')?.value },
+              currency: { equals: filters?.find(({ filterBy }) => filterBy === 'currency')?.value },
             },
           }
         : {};

@@ -17,11 +17,10 @@ export class TransactionReadService implements ITransactionReadService {
         return id;
       });
 
-      const filters: { filterBy: keyof TransactionOutputDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[] = [];
-      if (queryParams.account_from_id)
-        filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: (arg1: number, arg2: number) => arg1 === arg2 });
-      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: (arg1, arg2) => arg1 >= arg2 });
-      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: (arg1, arg2) => arg1 <= arg2 });
+      const filters = [];
+      if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: '===' });
+      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: '>=' });
+      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: '<=' });
 
       const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
       return filteredTransactions;
