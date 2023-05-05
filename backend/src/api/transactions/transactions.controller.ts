@@ -14,6 +14,7 @@ export class TransactionsController {
         queryParams: queryToDTO(queryParams),
         userId: id,
       });
+
       res.status(200).json({ data: transactions });
     } catch (error: any) {
       next(error);
@@ -23,6 +24,7 @@ export class TransactionsController {
     try {
       const id = req.user as string;
       const newTransfer: TransferBody = req.body;
+
       const transaction: TransactionOutputDTO = await this.transactionWriteService.create({
         transfer: transactionToDTO(newTransfer),
         userId: id,

@@ -57,7 +57,7 @@ const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
   try {
     const { id } = await userReadService.getByID(token.id);
     return done(null, id);
- } catch (error: any) {
+  } catch (error: any) {
     return done(new Error('Not authorized'));
   }
 });
