@@ -8,6 +8,7 @@ export class TransactionReadService implements ITransactionReadService {
 
   public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
+      if (!userId) throw new CustomError('VALIDATION_ERROR', ['Invalid Credentials']);
       const userAccounts = await this.accountReadService.getAll(userId);
       if (userAccounts.length === 0) {
         throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);

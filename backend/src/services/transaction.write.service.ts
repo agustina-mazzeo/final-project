@@ -13,6 +13,7 @@ export class TransactionWriteService implements ITransactionWriteService {
 
   public create = async ({ userId: id, transfer }: TransactionInputDTO): Promise<TransactionOutputDTO> => {
     try {
+      if (!id) throw new CustomError('VALIDATION_ERROR', ['Invalid Credentials']);
       const amount = transfer.amount;
       const userAccounts = await this.accountReadService.getAll(id);
       const account_from = userAccounts.find(({ id }) => transfer.account_from === id);

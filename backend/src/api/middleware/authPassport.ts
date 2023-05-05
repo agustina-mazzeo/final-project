@@ -54,11 +54,15 @@ const jwtOpts = {
 };
 
 const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
-  const user = await userReadService.getByID(token.id);
-  if (user) {
-    return done(null, user);
+  try {
+    const { id } = await userReadService.getByID(token.id);
+    if (id) {
+      return done(null, id);
+    }
+    return done(new Error('Not authorized'));
+  } catch (error) {
+    return done(error);
   }
-  return done(new Error('Not authorized'));
 });
 
 passport.use('signup', signupStrategy);

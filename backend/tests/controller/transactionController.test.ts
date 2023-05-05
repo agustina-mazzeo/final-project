@@ -45,7 +45,7 @@ describe('TransactionController', () => {
   describe('getTransactions', () => {
     it('should call transactionsService.getAll with correct parameters', async () => {
       const req = {
-        user: { id: 1 },
+        user: 1,
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
@@ -61,7 +61,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(getAll.calledOnce).be.true();
-      should(getAll.calledWith({ queryParams: req.query, userId: req.user.id })).be.true();
+      should(getAll.calledWith({ queryParams: req.query, userId: req.user })).be.true();
       should(res.status.calledOnce).be.true();
       should(res.status.calledWith(200)).be.true();
       should(res.json.calledOnce).be.true();
@@ -71,7 +71,7 @@ describe('TransactionController', () => {
 
     it('should call next with error if transactionsService.getAll throws an error', async () => {
       const req = {
-        user: { id: 1 },
+        user: 1,
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
@@ -84,7 +84,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(getAll.calledOnce).be.true();
-      should(getAll.calledWith({ queryParams: req.query, userId: req.user.id })).be.true();
+      should(getAll.calledWith({ queryParams: req.query, userId: req.user })).be.true();
       should(res.status.called).be.false();
       should(res.json.called).be.false();
       should(next.calledOnce).be.true();
@@ -95,7 +95,7 @@ describe('TransactionController', () => {
   describe('createTransfer', () => {
     it('should call transactionsService.create with correct parameters', async () => {
       const req = {
-        user: { id: 1 },
+        user: 1,
         body: {
           account_from: 1,
           account_to: 3,
@@ -120,7 +120,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith({ transfer: req.body, userId: req.user.id })).be.true();
+      should(create.calledWith({ transfer: req.body, userId: req.user })).be.true();
       should(res.status.calledOnce).be.true();
       should(res.status.calledWith(200)).be.true();
       should(res.json.calledOnce).be.true();
@@ -130,7 +130,7 @@ describe('TransactionController', () => {
 
     it('should call next with error if transactionsService.create throws an error', async () => {
       const req = {
-        user: { id: 1 },
+        user: 1,
         body: {
           account_from: 1,
           account_to: 3,
@@ -148,7 +148,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith({ transfer: req.body, userId: req.user.id })).be.true();
+      should(create.calledWith({ transfer: req.body, userId: req.user })).be.true();
       should(res.status.called).be.false();
       should(res.json.called).be.false();
       should(next.calledOnce).be.true();
