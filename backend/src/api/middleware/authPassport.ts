@@ -4,16 +4,19 @@ import { compare } from 'bcrypt';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
-import { UserRepository } from '../../repositories/user.repository';
-import { UserService } from '../../services/user.service';
-import { AccountService } from '../../services/account.service';
-import { AccountRepository } from '../../repositories/account.repository';
-import { RateService } from 'services/rate.service';
-import { RateRepository } from 'repositories/rate.repository';
+import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../services';
+import { AccountWriteRepository, AccountReadRepository, UserReadRepository, UserWriteRepository, RateReadRepository } from '../../repositories';
 
-const rateService = new RateService(new RateRepository());
-const accountsService = new AccountService(new AccountRepository(), new UserRepository(), rateService);
-const usersService = new UserService(new UserRepository(), accountsService);
+const userReadRepository = new UserReadRepository();
+const userWriteRepository = new UserWriteRepository();
+const accountReadRepository = new AccountReadRepository();
+const accountWriteRepository = new AccountWriteRepository();
+const rateReadRepository = new RateReadRepository();
+const rateReadService = new RateReadService(rateReadRepository);
+const accountReadService = new AccountReadService(accountReadRepository);
+const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
+const userWriteService = new UserWriteService(userReadRepository, userWriteRepository, accountWriteService);
+const userReadService = new UserReadService(userReadRepository);
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
@@ -22,7 +25,7 @@ const signupOpts = {
 };
 const signupStrategy = new LocalStrategy(signupOpts, async (email, password, done) => {
   try {
-    const user = await usersService.create({ email, password });
+    const user = await userWriteService.create({ email, password });
     return done(null, user);
   } catch (error) {
     done(error);
@@ -35,7 +38,7 @@ const loginOpts = {
 
 const loginStrategy = new LocalStrategy(loginOpts, async (email, password, done) => {
   try {
-    const user = await usersService.getByEmail(email);
+    const user = await userReadService.getByEmail(email);
     if (!user || !(await compare(password, user.password))) {
       return done(new Error('Incorrect email or password'));
     }
@@ -51,11 +54,15 @@ const jwtOpts = {
 };
 
 const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
-  const user = await usersService.getByID(token.id);
-  if (user) {
-    return done(null, user);
+  try {
+    const { id } = await userReadService.getByID(token.id);
+    if (id) {
+      return done(null, id);
+    }
+    return done(new Error('Not authorized'));
+  } catch (error) {
+    return done(error);
   }
-  return done(new Error('Not authorized'));
 });
 
 passport.use('signup', signupStrategy);

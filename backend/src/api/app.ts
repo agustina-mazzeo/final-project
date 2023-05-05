@@ -7,10 +7,10 @@ import { cronJob } from '../cron/cron';
 import { getRates } from '../services/external/rates';
 import { Rates } from '../interfaces';
 import { currencies } from '../utils/helpers';
-import { RateRepository } from '../repositories/rate.repository';
-import { RateService } from '../services/rate.service';
+import { RateReadRepository, RateWriteRepository } from '../repositories';
+import { RateWriteService } from '../services';
 
-const ratesService = new RateService(new RateRepository());
+const rateWriteService = new RateWriteService(new RateReadRepository(), new RateWriteRepository());
 
 export class App {
   public app: express.Application;
@@ -49,8 +49,8 @@ export class App {
       //   console.log(data.error);
       // } else {
       const referenceRate: Rates = data.rates;
-      for (const currency of currencies) {
-        ratesService.create(referenceRate, currency);
+      for (const name of currencies) {
+        rateWriteService.create({ referenceRate, name });
       }
       //}
     });

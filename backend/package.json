@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } && mocha -r ts-node/register 'tests/**/*.ts'",
+    "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } &&  nyc mocha -r ts-node/register 'tests/**/*.ts'",
     "dev": "nodemon",
     "build": "tsc",
     "start": "npm run build && node dist/server.js",
@@ -49,6 +49,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
+    "nyc": "^15.1.0",
     "prettier": "^2.8.7",
     "should": "^13.2.3",
     "sinon": "^15.0.4",

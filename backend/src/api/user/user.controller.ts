@@ -1,23 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import { User } from '../../interfaces';
 import { SignUserBody, LoginUserBody } from './user.schema';
 import { userToResponseDTO } from './user.dto';
-import { IService } from '../../services/interfaces/IService';
-import { IAccountService } from '../../services/interfaces/IAccountService';
 import { createToken } from '../utils/helpers';
+import { UserOutputDTO } from '../../services/dtos';
+import { IAccountReadService, IUserReadService } from '../../services/interfaces';
 
 class UserController {
-  constructor(private usersService: IService<User>, private accountsService: IAccountService) {}
+  constructor(private userReadService: IUserReadService, private accountReadService: IAccountReadService) {}
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      res.status(200).json(await this.usersService.getAll());
+      res.status(200).json(await this.userReadService.getAll());
     } catch (error) {
       next(error);
     }
   };
+
   public createUser = async (req: Request<{}, {}, SignUserBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User;
+      const user = req.user as UserOutputDTO;
       if (user) res.status(200).send({ data: userToResponseDTO(user) });
       else throw new Error('An unexpected error ocurred');
     } catch (error: any) {
@@ -27,7 +27,7 @@ class UserController {
 
   public login = async (req: Request<{}, {}, LoginUserBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User;
+      const user = req.user as UserOutputDTO;
       res.status(200).json({ data: { user: userToResponseDTO(user), token: createToken(user) } });
     } catch (error) {
       next(error);
@@ -36,8 +36,8 @@ class UserController {
 
   public getAccounts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as User;
-      const userAccounts = await this.accountsService.getAll(user.id);
+      const user = req.user as UserOutputDTO;
+      const userAccounts = await this.accountReadService.getAll(user.id);
       res.status(200).json({ data: userAccounts });
     } catch (error) {
       next(error);

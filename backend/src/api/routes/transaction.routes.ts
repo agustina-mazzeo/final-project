@@ -1,25 +1,35 @@
 import { Router } from 'express';
-import { TransactionsController } from '../transactions/transactions.controller';
-import { TransactionService } from '../../services/transaction.service';
-import { TransactionRepository } from '../../repositories/transaction.repository';
 import validateRequest from '../middleware/validateRequest';
-import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
 import { authJwt } from '../middleware/authPassport';
-import { AccountService } from '../../services/account.service';
-import { AccountRepository } from '../../repositories/account.repository';
-import { UserRepository } from '../../repositories/user.repository';
-import { RateService } from '../../services/rate.service';
-import { RateRepository } from '../../repositories/rate.repository';
+import { TransactionsController } from '../transactions/transactions.controller';
+import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
+import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../services';
+import {
+  AccountReadRepository,
+  AccountWriteRepository,
+  RateReadRepository,
+  TransactionReadRepository,
+  TransactionWriteRepository,
+  UserReadRepository,
+} from '../../repositories';
 
-const rateService = new RateService(new RateRepository());
-const accountsService = new AccountService(new AccountRepository(), new UserRepository(), rateService);
-const transactionsService = new TransactionService(new TransactionRepository(), accountsService);
+const transactionReadRepository = new TransactionReadRepository();
+const transactionWriteRepository = new TransactionWriteRepository();
+const userReadRepository = new UserReadRepository();
+const accountReadRepository = new AccountReadRepository();
+const accountWriteRepository = new AccountWriteRepository();
+const rateReadRepository = new RateReadRepository();
+const rateReadService = new RateReadService(rateReadRepository);
+const accountReadService = new AccountReadService(accountReadRepository);
+const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
+const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);
+const transactionWriteService = new TransactionWriteService(transactionWriteRepository, accountWriteService, accountReadService);
 
 export class TransactionRoutes {
   private path = '/transactions';
   private pathTransfer = '/transfer';
   public router = Router();
-  public transactionsController = new TransactionsController(transactionsService);
+  public transactionsController = new TransactionsController(transactionReadService, transactionWriteService);
 
   constructor() {
     this.initializeRoutes();

@@ -1,31 +1,42 @@
 import sinon from 'sinon';
 import should from 'should';
-import { TransactionRepository } from '../../src/repositories/transaction.repository';
-import { UserRepository } from '../../src/repositories/user.repository';
-import { AccountRepository } from '../../src/repositories/account.repository';
-import { AccountService } from '../../src/services/account.service';
-import { IAccountService, IService } from '../../src/services/interfaces';
-import { ITransactionRepository } from '../../src/repositories/interfaces';
-import { Account, CustomError, Transaction, Transfer } from '../../src/interfaces';
-import { TransactionService } from '../../src/services/transaction.service';
-import { RateService } from '../../src/services/rate.service';
-import { RateRepository } from '../../src/repositories/rate.repository';
+import { CustomError } from '../../src/interfaces';
+import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
+import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
+import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
+import {
+  AccountReadRepository,
+  AccountWriteRepository,
+  RateReadRepository,
+  TransactionReadRepository,
+  TransactionWriteRepository,
+  UserReadRepository,
+} from '../../src/repositories';
+import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
 
 describe('TransactionService', () => {
-  const transactionRepository = new TransactionRepository();
-  const rateService = new RateService(new RateRepository());
-  const accountService = new AccountService(new AccountRepository(), new UserRepository(), rateService);
+  const rateReadService = new RateReadService(new RateReadRepository());
+  const transactionReadRepository = new TransactionReadRepository();
+  const transactionWriteRepository = new TransactionWriteRepository();
+  const accountReadService = new AccountReadService(new AccountReadRepository());
+  const accountWriteService = new AccountWriteService(accountReadService, new AccountWriteRepository(), new UserReadRepository(), rateReadService);
 
-  let transactionService: IService<Transaction>;
-  let transactionRepositoryStub: sinon.SinonStubbedInstance<ITransactionRepository>;
-  let accountServiceStub: sinon.SinonStubbedInstance<IAccountService>;
+  let transactionReadRepositoryStub: sinon.SinonStubbedInstance<ITransactionReadRepository>;
+  let transactionWriteRepositoryStub: sinon.SinonStubbedInstance<ITransactionWriteRepository>;
+  let accountReadServiceStub: sinon.SinonStubbedInstance<IAccountReadService>;
+  let accountWriteServiceStub: sinon.SinonStubbedInstance<IAccountWriteService>;
+  let transactionReadService: ITransactionReadService;
+  let transactionWriteService: ITransactionWriteService;
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    transactionRepositoryStub = sandbox.stub(transactionRepository as ITransactionRepository);
-    accountServiceStub = sandbox.stub(accountService as IAccountService);
-    transactionService = new TransactionService(transactionRepositoryStub, accountServiceStub);
+    transactionReadRepositoryStub = sandbox.stub(transactionReadRepository as ITransactionReadRepository);
+    transactionWriteRepositoryStub = sandbox.stub(transactionWriteRepository as ITransactionWriteRepository);
+    accountReadServiceStub = sandbox.stub(accountReadService as IAccountReadService);
+    accountWriteServiceStub = sandbox.stub(accountWriteService as IAccountWriteService);
+    transactionReadService = new TransactionReadService(transactionReadRepositoryStub, accountReadServiceStub);
+    transactionWriteService = new TransactionWriteService(transactionWriteRepositoryStub, accountWriteServiceStub, accountReadServiceStub);
   });
 
   afterEach(() => {
@@ -36,44 +47,65 @@ describe('TransactionService', () => {
     it('should return user transactions if valid user id is provided', async () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
 
-      const usersTransactions: Transaction[] = [
+      const usersTransactions: TransactionOutputDTO[] = [
         { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
       ];
 
-      const getAll = accountServiceStub.getAll.withArgs(1).resolves(userAccounts as Account[]);
-      const getUTRansactions = transactionRepositoryStub.getUsersTransactions.resolves(usersTransactions);
+      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: [1, 2] }).resolves(usersTransactions);
 
-      const result = await transactionService.getAll({}, 1);
+      const result = await transactionReadService.getAll({ userId: 1, queryParams: {} });
 
       should(result).be.an.Array();
       should(result).have.length(usersTransactions.length);
       should(result).containDeep(usersTransactions);
-      should(getAll.calledOnceWith(1)).be.true();
-      should(getUTRansactions.calledOnceWith([1, 2])).be.true();
+      should(getAllService.calledOnceWith(1)).be.true();
+      should(getAll.calledOnceWith({ filters: [], usersAccountsId: [1, 2] })).be.true();
     });
 
-    it('should throw an error if invalid user id is provided', async () => {
-      try {
-        await transactionService.getAll({}, undefined);
-        sinon.assert.fail();
-      } catch (error: any) {
-        should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('VALIDATION_ERROR');
-        should(error.messages).containDeep(["Couldn't get user's transactions"]);
-      }
+    it('should filter the users accounts', async () => {
+      const userAccounts = [{ id: 1 }, { id: 2 }];
+      const filteredUsersTransactions: TransactionOutputDTO[] = [
+        { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
+        { id: 2, account_from: 1, account_to: 3, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+      ];
+
+      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAll = transactionReadRepositoryStub.getAll.resolves(filteredUsersTransactions);
+
+      const result = await transactionReadService.getAll({ userId: 1, queryParams: { account_from: 1 } });
+
+      should(result).be.an.Array();
+      should(result).have.length(filteredUsersTransactions.length);
+      should(result).containDeep(filteredUsersTransactions);
+      should(getAllService.calledOnceWith(1)).be.true();
+      should(getAll.calledOnce).be.true();
     });
 
     it('should throw an error if user has no accounts', async () => {
-      const getAll = accountServiceStub.getAll.withArgs(1).resolves([]);
-
+      const getAll = accountReadServiceStub.getAll.withArgs(1).resolves([]);
+      const userId = 1;
       try {
-        await transactionService.getAll({}, 1);
+        await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(CustomError);
         should(error.errorType).equal('NOT_FOUND_ERROR');
         should(error.messages).containDeep(["Couldn't get user's transactions"]);
         should(getAll.calledOnce).be.true();
+      }
+    });
+
+    it('should throw an error if a user id is not provided or non valid', async () => {
+      const userId = undefined as unknown as number;
+      try {
+        await transactionReadService.getAll({ queryParams: {}, userId });
+        sinon.assert.fail();
+      } catch (error: any) {
+        should(error).be.an.instanceOf(CustomError);
+        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.messages).containDeep(['Invalid Credentials']);
+        should(transactionReadRepositoryStub.getAll.notCalled).be.true();
       }
     });
   });
@@ -83,12 +115,12 @@ describe('TransactionService', () => {
       const userId = 1;
       const amount = 100;
 
-      const transfer: Transfer = {
+      const transfer: TransactionInputDTO['transfer'] = {
         account_from: 1,
         account_to: 2,
         amount,
       };
-      const userAccounts: Account[] = [
+      const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
           id_user: userId,
@@ -105,7 +137,7 @@ describe('TransactionService', () => {
       const account_from = userAccounts[0];
       const account_to = userAccounts[1];
 
-      const newTransaction: Transaction = {
+      const newTransaction: TransactionOutputDTO = {
         id: 3,
         account_from: 1,
         account_to: 2,
@@ -113,12 +145,12 @@ describe('TransactionService', () => {
         createdAt: new Date().toISOString(),
       };
 
-      const getAll = accountServiceStub.getAll.resolves(userAccounts);
-      const getByID = accountServiceStub.getByID.resolves(account_to); //may throw an error
-      const updateAccounts = accountServiceStub.updateAccounts.resolves(undefined);
-      const create = transactionRepositoryStub.create.resolves(newTransaction);
+      const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
+      const getByID = accountReadServiceStub.getByID.resolves(account_to); //may throw an error
+      const updateAccounts = accountWriteServiceStub.updateAccounts.resolves(undefined);
+      const create = transactionWriteRepositoryStub.create.resolves(newTransaction);
 
-      const result = await transactionService.create(transfer, 1);
+      const result = await transactionWriteService.create({ transfer, userId: 1 });
 
       should(getAll.calledWith(1)).be.true();
       should(getByID.calledWith(2)).be.true();
@@ -131,24 +163,24 @@ describe('TransactionService', () => {
       const userId = 1;
       const amount = 100;
 
-      const transfer: Transfer = {
+      const transfer: TransactionInputDTO['transfer'] = {
         account_from: 1,
         account_to: 2,
         amount,
       };
 
-      const getAll = accountServiceStub.getAll.resolves([]);
+      const getAll = accountReadServiceStub.getAll.resolves([]);
 
       try {
-        await transactionService.create(transfer, 1);
+        await transactionWriteService.create({ transfer, userId: 1 });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
         should(error.errorType).be.eql('VALIDATION_ERROR');
         should(getAll.calledOnceWith(userId)).be.true();
-        should(accountServiceStub.getByID.notCalled).be.true();
-        should(accountServiceStub.updateAccounts.notCalled).be.true();
-        should(transactionRepositoryStub.create.notCalled).be.true();
+        should(accountReadServiceStub.getByID.notCalled).be.true();
+        should(accountWriteServiceStub.updateAccounts.notCalled).be.true();
+        should(transactionWriteRepositoryStub.create.notCalled).be.true();
       }
     });
 
@@ -156,12 +188,12 @@ describe('TransactionService', () => {
       const userId = 1;
       const amount = 100;
 
-      const transfer: Transfer = {
+      const transfer: TransactionInputDTO['transfer'] = {
         account_from: 1,
         account_to: 2,
         amount,
       };
-      const userAccounts: Account[] = [
+      const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
           id_user: userId,
@@ -177,19 +209,19 @@ describe('TransactionService', () => {
       ];
       const custom_error = new CustomError('VALIDATION_ERROR', ['Invalid account']);
 
-      const getAll = accountServiceStub.getAll.resolves(userAccounts);
-      const getByID = accountServiceStub.getByID.rejects(custom_error);
+      const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
+      const getByID = accountReadServiceStub.getByID.rejects(custom_error);
 
       try {
-        await transactionService.create(transfer, 1);
+        await transactionWriteService.create({ transfer, userId: 1 });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
         should(error.errorType).be.eql('VALIDATION_ERROR');
         should(getAll.calledOnceWith(userId)).be.true();
         should(getByID.calledWith(2)).be.true();
-        should(accountServiceStub.updateAccounts.notCalled).be.true();
-        should(transactionRepositoryStub.create.notCalled).be.true();
+        should(accountWriteServiceStub.updateAccounts.notCalled).be.true();
+        should(transactionWriteRepositoryStub.create.notCalled).be.true();
       }
     });
 
@@ -197,12 +229,12 @@ describe('TransactionService', () => {
       const userId = 1;
       const amount = 100;
 
-      const transfer: Transfer = {
+      const transfer: TransactionInputDTO['transfer'] = {
         account_from: 1,
         account_to: 2,
         amount,
       };
-      const userAccounts: Account[] = [
+      const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
           id_user: userId,
@@ -219,12 +251,12 @@ describe('TransactionService', () => {
       const account_to = userAccounts[1];
       const custom_error = new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
 
-      const getAll = accountServiceStub.getAll.resolves(userAccounts);
-      const getByID = accountServiceStub.getByID.resolves(account_to);
-      const updateAccounts = accountServiceStub.updateAccounts.rejects(custom_error);
+      const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
+      const getByID = accountReadServiceStub.getByID.resolves(account_to);
+      const updateAccounts = accountWriteServiceStub.updateAccounts.rejects(custom_error);
 
       try {
-        await transactionService.create(transfer, 1);
+        await transactionWriteService.create({ transfer, userId: 1 });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -232,7 +264,28 @@ describe('TransactionService', () => {
         should(getAll.calledOnceWith(userId)).be.true();
         should(getByID.calledWith(2)).be.true();
         should(updateAccounts.called).be.true();
-        should(transactionRepositoryStub.create.notCalled).be.true();
+        should(transactionWriteRepositoryStub.create.notCalled).be.true();
+      }
+    });
+
+    it('should throw an error if a user id is not provided or non valid', async () => {
+      const userId = undefined as unknown as number;
+      const amount = 100;
+
+      const transfer: TransactionInputDTO['transfer'] = {
+        account_from: 1,
+        account_to: 2,
+        amount,
+      };
+
+      try {
+        await transactionWriteService.create({ transfer, userId });
+        sinon.assert.fail();
+      } catch (error: any) {
+        should(error).be.an.instanceOf(CustomError);
+        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.messages).containDeep(['Invalid Credentials']);
+        should(accountReadServiceStub.getAll.notCalled).be.true();
       }
     });
   });
@@ -240,7 +293,7 @@ describe('TransactionService', () => {
   describe('update', () => {
     it('should throw a CustomError with forbidden error', async () => {
       try {
-        await transactionService.update();
+        await transactionWriteService.update();
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -252,7 +305,7 @@ describe('TransactionService', () => {
   describe('getByID', () => {
     it('should throw a CustomError with forbidden error', async () => {
       try {
-        await transactionService.getByID();
+        await transactionReadService.getByID();
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
