@@ -29,6 +29,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@prisma/client": "^4.13.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
@@ -51,6 +52,7 @@
     "nodemon": "^2.0.22",
     "nyc": "^15.1.0",
     "prettier": "^2.8.7",
+    "prisma": "^4.13.0",
     "should": "^13.2.3",
     "sinon": "^15.0.4",
     "ts-node": "^10.9.1",

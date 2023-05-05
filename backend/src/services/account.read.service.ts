@@ -7,7 +7,11 @@ export class AccountReadService implements IAccountReadService {
   constructor(private accountReadRepository: IAccountReadRepository) {}
 
   public getAll = async (userId: AccountGetterDTO): Promise<AccountOutputDTO[]> => {
-    return this.accountReadRepository.getAll([{ filterBy: 'id_user', value: userId, operator: (arg1: number, arg2: number) => arg1 === arg2 }]);
+    try {
+      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: (arg1: number, arg2: number) => arg1 === arg2 }]);
+    } catch (error: any) {
+      throw new CustomError(error.errorType, error.messages);
+    }
   };
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {
@@ -17,6 +21,10 @@ export class AccountReadService implements IAccountReadService {
   };
 
   public getAccountCurrency = async (account_id: number): Promise<string> => {
-    return (await this.getByID(account_id)).currency;
+    try {
+      return (await this.getByID(account_id)).currency;
+    } catch (error: any) {
+      throw new CustomError(error.errorType, error.messages);
+    }
   };
 }

@@ -1,6 +1,6 @@
 export type AccountOutputDTO = {
   id: number;
-  id_user: number;
+  user_id: number;
   currency: string;
   balance: number;
 };

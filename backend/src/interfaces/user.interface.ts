@@ -7,7 +7,7 @@ export interface User {
 
 export interface Account {
   id: number;
-  id_user: number;
+  user_id: number;
   currency: string;
   balance: number;
 }

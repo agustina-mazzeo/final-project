@@ -37,9 +37,7 @@ export class App {
   };
 
   public start = () => {
-    this.app.listen(this.port, () => {
-      console.log(`Listening on port ${this.port}`);
-
+    this.app.listen(this.port, async () => {
       //const data = await getRates();
       const data = {
         base: 'USD',
@@ -49,10 +47,16 @@ export class App {
       //   console.log(data.error);
       // } else {
       const referenceRate: Rates = data.rates;
-      for (const name of currencies) {
-        rateWriteService.create({ referenceRate, name });
+      try {
+        for (const name of currencies) {
+          await rateWriteService.create({ referenceRate, name });
+        }
+      } catch (err: any) {
+        console.log(err.messages);
+        throw err;
       }
-      //}
+      // }
+      console.log(`Listening on port ${this.port}`);
     });
   };
 }
