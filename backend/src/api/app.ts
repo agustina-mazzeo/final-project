@@ -6,8 +6,11 @@ import { setRoutes } from './routes';
 import { cronJob } from '../cron/cron';
 import { getRates } from '../services/external/rates';
 import { Rates } from '../interfaces';
-import { ratesService } from '../services/rates.service';
 import { currencies } from '../utils/helpers';
+import { RateRepository } from '../repositories/rate.repository';
+import { RateService } from '../services/rate.service';
+
+const ratesService = new RateService(new RateRepository());
 
 export class App {
   public app: express.Application;
