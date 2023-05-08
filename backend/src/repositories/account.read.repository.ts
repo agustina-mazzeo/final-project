@@ -1,9 +1,9 @@
-//import { accounts } from '../../database';
+import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
 import { AccountModelDTO, AccountGetAllDTO, AccountGetterDTO } from './dtos';
 import { IAccountReadRepository } from './interfaces';
 import { CustomError } from '../interfaces';
-import { Prisma } from '@prisma/client';
+import { selectAccountOptions } from './helpers';
 
 export class AccountReadRepository implements IAccountReadRepository {
   public async getAll(filters?: AccountGetAllDTO): Promise<AccountModelDTO[]> {
@@ -17,20 +17,15 @@ export class AccountReadRepository implements IAccountReadRepository {
             },
           }
         : {};
-      return await prisma.account.findMany({ select: { user_id: true, balance: true, currency: true, id: true }, where });
+      return await prisma.account.findMany({ select: selectAccountOptions, where });
     } catch (error: any) {
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at account all']);
     }
-
-    //   if (!filter) {
-    //     return accounts;
-    //   }
-    //   return accounts.filter(acc => filter.every(({ filterBy, value, operator }) => operator(acc[filterBy], value)));
   }
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountModelDTO | null> => {
     return await prisma.account.findUnique({
-      select: { user_id: true, balance: true, currency: true, id: true },
+      select: selectAccountOptions,
       where: {
         id,
       },

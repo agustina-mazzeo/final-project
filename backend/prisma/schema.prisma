@@ -8,32 +8,32 @@ generator client {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(uuid())
   email    String    @unique
   password String
   accounts Account[]
 }
 
 model Account {
-  id               Int           @id @default(autoincrement())
-  user_id          Int
-  user             User          @relation(fields: [user_id], references: [id])
-  currency         String
-  balance          Float
-  createdAt        DateTime      @default(now())
-  transactionsFrom Transaction[] @relation("From")
-  transactionsTo   Transaction[] @relation("To")
+  id                Int        @id @default(autoincrement())
+  user_id           String
+  user              User          @relation(fields: [user_id], references: [id])
+  currency          String
+  balance           Float
+  created_at        DateTime      @default(now())
+  transactions_from Transaction[] @relation("From")
+  transactions_to   Transaction[] @relation("To")
 }
 
 model Transaction {
-  id           Int      @id @default(autoincrement())
-  account_from Int
-  account_to   Int
-  amount       Float
-  description  String?
-  accountFrom  Account  @relation("From", fields: [account_from], references: [id])
-  accountTo    Account  @relation("To", fields: [account_to], references: [id])
-  createdAt    DateTime @default(now())
+  id              String   @id @default(uuid())
+  account_from_id Int
+  account_to_id   Int
+  amount          Float
+  description     String?
+  account_from    Account  @relation("From", fields: [account_from_id], references: [id])
+  account_to      Account  @relation("To", fields: [account_to_id], references: [id])
+  created_at      DateTime @default(now())
 }
 
 model Rate {
