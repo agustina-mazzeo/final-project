@@ -1,7 +1,7 @@
-import { Account } from '../../../interfaces';
+import { AccountModelDTO } from './AccountModel';
 
-export type AccountCreateInputDTO = Pick<Account, 'currency' | 'user_id'>;
-export type AccountUpdateInputDTO = Pick<Account, 'balance' | 'id'>;
+export type AccountCreateInputDTO = Pick<AccountModelDTO, 'currency' | 'user_id'>;
+export type AccountUpdateInputDTO = Pick<AccountModelDTO, 'balance' | 'id'>;
 
-export type AccountGetAllDTO = { filterBy: keyof Account; value: any; operator: (arg1: any, arg2: any) => boolean }[];
-export type AccountGetterDTO = number;
+export type AccountGetAllDTO = { filterBy: keyof AccountModelDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[];
+export type AccountGetterDTO = AccountModelDTO['id'] | AccountModelDTO['user_id'];

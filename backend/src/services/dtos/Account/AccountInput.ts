@@ -1,6 +1,6 @@
-import { Account } from '../../../interfaces';
+import { AccountOutputDTO } from './AccountOutput';
 
-export type AccountCreateInputDTO = Pick<Account, 'currency' | 'user_id'>;
-export type AccountUpdateInputDTO = Pick<Account, 'balance' | 'id'>;
+export type AccountCreateInputDTO = Pick<AccountOutputDTO, 'currency' | 'user_id'>;
+export type AccountUpdateInputDTO = Pick<AccountOutputDTO, 'balance' | 'id'>;
 
-export type AccountGetterDTO = number;
+export type AccountGetterDTO = AccountOutputDTO['id'] | AccountOutputDTO['user_id'];

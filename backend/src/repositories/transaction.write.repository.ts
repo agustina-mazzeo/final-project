@@ -1,5 +1,4 @@
 import prisma from '../config/prisma';
-//import { transactions } from '../../database';
 import { CustomError } from '../interfaces';
 import { TransactionInputDTO, TransactionModelDTO } from './dtos';
 
@@ -18,14 +17,6 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
       console.log(error);
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at transaction create']);
     }
-    // const newTransfer: Transaction = {
-    //   id: Math.random(),
-    //   createdAt: new Date().toISOString(),
-    //   ...transfer,
-    // };
-    // transactions.push(newTransfer);
-    // const transactionModel: TransactionModelDTO = { ...newTransfer };
-    // return transactionModel;
   };
 
   public update = (): Promise<TransactionModelDTO> => {

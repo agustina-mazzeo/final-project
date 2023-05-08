@@ -1,4 +1,3 @@
-//import { users } from '../../database';
 import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
 import { UserCreateInputDTO, UserModelDTO } from './dtos';
@@ -17,12 +16,6 @@ export class UserWriteRepository implements IUserWriteRepository {
       console.log(error);
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at user create']);
     }
-    // const newUser: User = {
-    //   ...user,
-    //   id: Math.random(),
-    // };
-    //users.push(newUser);
-    //return newUser;
   };
 
   public update = (): Promise<UserModelDTO> => {

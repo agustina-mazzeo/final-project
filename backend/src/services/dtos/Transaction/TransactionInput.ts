@@ -1,14 +1,14 @@
-import { Transaction } from '../../../interfaces';
+import { TransactionOutputDTO } from './TransactionOutput';
 
 export type TransactionInputDTO = {
-  userId: number;
-  transfer: Pick<Transaction, 'account_from' | 'account_to' | 'amount' | 'description'>;
+  userId: string;
+  transfer: Pick<TransactionOutputDTO, 'account_from_id' | 'account_to_id' | 'amount' | 'description'>;
 };
 export type TransactionGetAllDTO = {
-  userId: number;
+  userId: string;
   queryParams: {
     from?: string;
     to?: string;
-    account_from?: number;
+    account_from_id?: number;
   };
 };

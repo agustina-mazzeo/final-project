@@ -22,7 +22,7 @@ export class AccountWriteService implements IAccountWriteService {
     }
   };
 
-  public createUsersAccounts = async (user_id: number): Promise<void> => {
+  public createUsersAccounts = async (user_id: string): Promise<void> => {
     try {
       for (const currency of currencies) {
         await this.create({ currency, user_id });
@@ -44,7 +44,7 @@ export class AccountWriteService implements IAccountWriteService {
     account_from: AccountOutputDTO,
     account_to: AccountOutputDTO,
     amount: number,
-    userId: number,
+    userId: string,
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }> => {
     let amount_from = amount;
     //add comission

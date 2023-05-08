@@ -1,8 +1,8 @@
-import { Transaction } from '../../../interfaces';
+import { TransactionModelDTO } from './TransactionModel';
 
-export type TransactionInputDTO = Pick<Transaction, 'account_from' | 'account_to' | 'amount' | 'description'>;
+export type TransactionInputDTO = Pick<TransactionModelDTO, 'account_from_id' | 'account_to_id' | 'amount' | 'description'>;
 
 export type TransactionGetAllDTO = {
   usersAccountsId: number[];
-  filters: { filterBy: keyof Transaction; value: any; operator: (arg1: any, arg2: any) => boolean }[];
+  filters: { filterBy: keyof TransactionModelDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[];
 };

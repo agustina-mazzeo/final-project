@@ -12,16 +12,14 @@ export class TransactionWriteService implements ITransactionWriteService {
   ) {}
 
   public create = async ({ userId: id, transfer }: TransactionInputDTO): Promise<TransactionOutputDTO> => {
-    console.log(id);
     try {
       const amount = transfer.amount;
       const userAccounts = await this.accountReadService.getAll(id);
-      console.log(userAccounts);
-      const account_from = userAccounts.find(({ id }) => transfer.account_from === id);
+      const account_from = userAccounts.find(({ id }) => transfer.account_from_id === id);
       if (!account_from) {
         throw new CustomError('VALIDATION_ERROR', ['Could not make transfer']);
       }
-      const account_to = await this.accountReadService.getByID(transfer.account_to); //throws
+      const account_to = await this.accountReadService.getByID(transfer.account_to_id); //throws
       await this.accountWriteService.updateAccounts(account_from, account_to, amount, id); //throws
 
       const newTransaction: TransactionOutputDTO = await this.transactionWriteRepository.create(transfer);
