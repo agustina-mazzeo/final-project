@@ -45,7 +45,7 @@ export class AccountWriteService implements IAccountWriteService {
     account_to: AccountOutputDTO,
     amount: number,
     userId: string,
-    prisma: PrismaContext,
+    prisma?: PrismaContext,
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }> => {
     let amount_from = amount;
     //add comission

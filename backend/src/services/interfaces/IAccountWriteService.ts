@@ -8,6 +8,6 @@ export interface IAccountWriteService extends IWriteService<AccountOutputDTO, Ac
     account_to: AccountOutputDTO,
     amount: number,
     userId: string,
-    prisma: PrismaContext,
+    prisma?: PrismaContext,
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }>;
 }
