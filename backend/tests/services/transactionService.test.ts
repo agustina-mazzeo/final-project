@@ -84,15 +84,28 @@ describe('TransactionService', () => {
 
     it('should throw an error if user has no accounts', async () => {
       const getAll = accountReadServiceStub.getAll.withArgs(1).resolves([]);
-
+      const userId = 1;
       try {
-        await transactionReadService.getAll({ queryParams: {}, userId: 1 });
+        await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(CustomError);
         should(error.errorType).equal('NOT_FOUND_ERROR');
         should(error.messages).containDeep(["Couldn't get user's transactions"]);
         should(getAll.calledOnce).be.true();
+      }
+    });
+
+    it('should throw an error if a user id is not provided or non valid', async () => {
+      const userId = undefined as unknown as number;
+      try {
+        await transactionReadService.getAll({ queryParams: {}, userId });
+        sinon.assert.fail();
+      } catch (error: any) {
+        should(error).be.an.instanceOf(CustomError);
+        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.messages).containDeep(['Invalid Credentials']);
+        should(transactionReadRepositoryStub.getAll.notCalled).be.true();
       }
     });
   });
@@ -252,6 +265,27 @@ describe('TransactionService', () => {
         should(getByID.calledWith(2)).be.true();
         should(updateAccounts.called).be.true();
         should(transactionWriteRepositoryStub.create.notCalled).be.true();
+      }
+    });
+
+    it('should throw an error if a user id is not provided or non valid', async () => {
+      const userId = undefined as unknown as number;
+      const amount = 100;
+
+      const transfer: TransactionInputDTO['transfer'] = {
+        account_from: 1,
+        account_to: 2,
+        amount,
+      };
+
+      try {
+        await transactionWriteService.create({ transfer, userId });
+        sinon.assert.fail();
+      } catch (error: any) {
+        should(error).be.an.instanceOf(CustomError);
+        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.messages).containDeep(['Invalid Credentials']);
+        should(accountReadServiceStub.getAll.notCalled).be.true();
       }
     });
   });
