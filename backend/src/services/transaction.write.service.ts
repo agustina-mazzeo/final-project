@@ -30,7 +30,8 @@ export class TransactionWriteService implements ITransactionWriteService {
 
       return newTransaction;
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      if (error instanceof CustomError) throw new CustomError(error.errorType, error.messages);
+      else throw new CustomError('VALIDATION_ERROR', [error.message]);
     }
   };
 
