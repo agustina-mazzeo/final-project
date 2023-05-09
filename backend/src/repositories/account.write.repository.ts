@@ -1,7 +1,7 @@
 import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
 import { AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from './dtos';
-import { selectAccountOptions } from './helpers';
+import { selectAccountOptions } from '../utils/helpers';
 import { IAccountWriteRepository } from './interfaces';
 
 export class AccountWriteRepository implements IAccountWriteRepository {

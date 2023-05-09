@@ -3,7 +3,7 @@ import prisma from '../config/prisma';
 import { AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO } from './dtos';
 import { IAccountReadRepository } from './interfaces';
 import { CustomError } from '../interfaces';
-import { addFilters, selectAccountOptions } from './helpers';
+import { addFilters, selectAccountOptions } from '../utils/helpers';
 
 export class AccountReadRepository implements IAccountReadRepository {
   public async getAll(filters?: AccountGetAllInputDTO): Promise<AccountModelDTO[]> {

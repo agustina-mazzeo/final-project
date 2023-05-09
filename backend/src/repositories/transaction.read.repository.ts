@@ -3,7 +3,7 @@ import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
 import { TransactionModelDTO, TransactionGetAllInputDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
-import { addFilters } from './helpers';
+import { addFilters } from '../utils/helpers';
 
 export class TransactionReadRepository implements ITransactionReadRepository {
   public getAll = async ({ filters, usersAccountsId }: TransactionGetAllInputDTO): Promise<TransactionModelDTO[]> => {

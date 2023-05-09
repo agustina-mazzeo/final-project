@@ -1,4 +1,4 @@
-import { operators } from 'utils/helpers';
+import { operators } from '../utils/helpers';
 import { CustomError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
 import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
