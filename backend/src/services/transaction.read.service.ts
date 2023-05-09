@@ -1,3 +1,4 @@
+import { operators } from 'utils/helpers';
 import { CustomError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
 import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
@@ -8,7 +9,7 @@ export class TransactionReadService implements ITransactionReadService {
 
   public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
-      if (!userId) throw new CustomError('VALIDATION_ERROR', ['Invalid Credentials']);
+      if (!userId) throw new CustomError('UNAUTHORIZED_ERROR', ['Invalid Credentials']);
       const userAccounts = await this.accountReadService.getAll(userId);
       if (userAccounts.length === 0) {
         throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);
@@ -18,9 +19,9 @@ export class TransactionReadService implements ITransactionReadService {
       });
 
       const filters = [];
-      if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: '===' });
-      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: '>=' });
-      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: '<=' });
+      if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: operators.equal });
+      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: operators.gte });
+      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: operators.lte });
 
       const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
       return filteredTransactions;

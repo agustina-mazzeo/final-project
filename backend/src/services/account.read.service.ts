@@ -1,14 +1,15 @@
 import { IAccountReadRepository } from '../repositories/interfaces';
 import { CustomError } from '../interfaces';
 import { IAccountReadService } from './interfaces';
-import { AccountOutputDTO, AccountGetterDTO } from './dtos';
+import { AccountOutputDTO, AccountGetterDTO, AccountGetAllInputDTO } from './dtos';
+import { operators } from '../utils/helpers';
 
 export class AccountReadService implements IAccountReadService {
   constructor(private accountReadRepository: IAccountReadRepository) {}
 
-  public getAll = async (userId: AccountGetterDTO): Promise<AccountOutputDTO[]> => {
+  public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> => {
     try {
-      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: '===' }]);
+      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);
     }

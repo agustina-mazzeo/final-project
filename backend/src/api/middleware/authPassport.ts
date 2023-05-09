@@ -6,6 +6,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../services';
 import { AccountWriteRepository, AccountReadRepository, UserReadRepository, UserWriteRepository, RateReadRepository } from '../../repositories';
+import { CustomError } from 'interfaces';
 
 const userReadRepository = new UserReadRepository();
 const userWriteRepository = new UserWriteRepository();
@@ -58,7 +59,7 @@ const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
     const { id } = await userReadService.getByID(token.id);
     return done(null, id);
   } catch (error: any) {
-    return done(new Error('Not authorized'));
+    return done(new CustomError('UNAUTHORIZED_ERROR', error.messages));
   }
 });
 
