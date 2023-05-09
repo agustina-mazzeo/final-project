@@ -6,7 +6,7 @@ export const transactionsSchema = object({
     to: string().datetime({ message: 'Expected a DateString' }).optional(),
     account_from: coerce.number({ invalid_type_error: 'Account must be a positive number' }).positive({ message: 'Invalid Account' }).optional(),
   }),
-});
+}).strict();
 
 export type TransactionsQuery = TypeOf<typeof transactionsSchema>['query'];
 
@@ -26,6 +26,6 @@ export const transferSchema = object({
     message: 'Please select a different account',
     path: ['account_to'],
   }),
-});
+}).strict();
 
 export type TransferBody = TypeOf<typeof transferSchema>['body'];

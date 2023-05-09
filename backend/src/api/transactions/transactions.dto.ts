@@ -9,12 +9,13 @@ export type TransacitonInputDTO = {
 };
 
 export const transactionToDTO = ({ account_from, account_to, amount, description }: TransferBody): TransacitonInputDTO => {
-  return {
-    account_from_id: account_from,
+  const result: TransacitonInputDTO = {
     account_to_id: account_to,
+    account_from_id: account_from,
     amount,
-    description,
   };
+  if (description) result.description = description;
+  return result;
 };
 
 export type QueryParamsDTO = {
@@ -24,9 +25,9 @@ export type QueryParamsDTO = {
 };
 
 export const queryToDTO = ({ account_from, from, to }: TransactionsQuery): QueryParamsDTO => {
-  return {
-    account_from_id: account_from,
-    from,
-    to,
-  };
+  const result: QueryParamsDTO = {};
+  if (account_from) result.account_from_id = account_from;
+  if (from) result.from = from;
+  if (to) result.to = from;
+  return result;
 };

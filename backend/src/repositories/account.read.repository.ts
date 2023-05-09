@@ -24,10 +24,11 @@ export class AccountReadRepository implements IAccountReadRepository {
   }
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountModelDTO | null> => {
+    const user_id = id as number;
     return await prisma.account.findUnique({
       select: selectAccountOptions,
       where: {
-        id,
+        id: user_id,
       },
     });
     //return accounts.find(acc => acc.id === id);

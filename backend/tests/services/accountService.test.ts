@@ -38,10 +38,10 @@ describe('AccountService', () => {
 
   describe('create', () => {
     it('should call create method in accountsRepository with correct arguments', async () => {
-      const id_user = 1;
+      const user_id = '1';
       const currency = 'USD';
       const user: UserOutputDTO = {
-        id: id_user,
+        id: user_id,
         email: 'someemail',
         password: 'somepass',
       };
@@ -50,27 +50,27 @@ describe('AccountService', () => {
 
       const newAccount: AccountOutputDTO = {
         id: Math.random(),
-        id_user,
+        user_id,
         currency,
         balance: 0,
       };
       const create = accountWriteRepositoryStub.create.resolves(newAccount);
 
-      const createdAccount = await accountWriteService.create({ currency, id_user });
+      const createdAccount = await accountWriteService.create({ currency, user_id });
 
       should.exist(createdAccount);
       should(createdAccount).deepEqual(newAccount);
-      should(create.calledOnceWithExactly({ id_user, currency })).be.true();
-      should(getById.calledOnceWithExactly(id_user)).be.true();
+      should(create.calledOnceWithExactly({ user_id, currency })).be.true();
+      should(getById.calledOnceWithExactly(user_id)).be.true();
     });
 
     it('should throw an error when invalid userId is provided', async () => {
-      const userId = 1;
+      const userId = '1';
       const currency = 'USD';
       const getById = userReadRepositoryStub.getByID.resolves(undefined);
 
       try {
-        await accountWriteService.create({ currency, id_user: userId });
+        await accountWriteService.create({ currency, user_id: userId });
         sinon.assert.fail();
       } catch (error: any) {
         should.exist(error);
@@ -84,10 +84,10 @@ describe('AccountService', () => {
 
   describe('createUsersAccounts', () => {
     it('should create accounts for all currencies for a user', async () => {
-      const userId = 1;
+      const userId = '1';
       const account: AccountOutputDTO = {
         id: 1,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: 13,
       };
@@ -103,7 +103,7 @@ describe('AccountService', () => {
     });
 
     it('should throw an error when the user is not found', async () => {
-      const userId = 1;
+      const userId = '1';
       const getByID = userReadRepositoryStub.getByID.resolves(undefined);
       try {
         await accountWriteService.createUsersAccounts(userId);
@@ -121,19 +121,19 @@ describe('AccountService', () => {
       const accounts: AccountOutputDTO[] = [
         {
           id: 1,
-          id_user: 0.5069248488856752,
+          user_id: '0.5069248488856752',
           currency: 'UYU',
           balance: 13,
         },
         {
           id: 2,
-          id_user: 0.5069248488856752,
+          user_id: '0.5069248488856752',
           currency: 'USD',
           balance: 76,
         },
         {
           id: 3,
-          id_user: 0.5069248488856752,
+          user_id: '0.5069248488856752',
           currency: 'EUR',
           balance: 83.02335801106693,
         },
@@ -153,7 +153,7 @@ describe('AccountService', () => {
       const id = 1;
       const account: AccountOutputDTO = {
         id,
-        id_user: 0.5069248488856752,
+        user_id: '0.5069248488856752',
         currency: 'UYU',
         balance: 13,
       };
@@ -186,7 +186,7 @@ describe('AccountService', () => {
     it('should update and return the updated account', async () => {
       const account: AccountOutputDTO = {
         id: 1,
-        id_user: 0.5069248488856752,
+        user_id: '0.5069248488856752',
         currency: 'UYU',
         balance: 13,
       };
@@ -202,19 +202,19 @@ describe('AccountService', () => {
 
   describe('updateAccounts', () => {
     it('should return the updates accounts from the same user', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 1;
       const account_from_id = 2;
       const account_to_id = 3;
       const account_from: AccountOutputDTO = {
         id: account_from_id,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: account_to_id,
-        id_user: userId,
+        user_id: userId,
         currency: 'USD',
         balance: 10,
       };
@@ -222,13 +222,13 @@ describe('AccountService', () => {
       const account_to_updated_balance = 10.5;
       const account_from_updated: AccountOutputDTO = {
         id: account_from_id,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: account_from_updated_balance,
       };
       const account_to_updated: AccountOutputDTO = {
         id: account_to_id,
-        id_user: userId,
+        user_id: userId,
         currency: 'USD',
         balance: account_to_updated_balance,
       };
@@ -251,29 +251,29 @@ describe('AccountService', () => {
     });
 
     it('should return the updates accounts from different users', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 1;
       const account_from: AccountOutputDTO = {
         id: 2,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: 3,
-        id_user: 4,
+        user_id: '4',
         currency: 'USD',
         balance: 10,
       };
       const account_from_updated: AccountOutputDTO = {
         id: 2,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: 8.99,
       };
       const account_to_updated: AccountOutputDTO = {
         id: 3,
-        id_user: 4,
+        user_id: '4',
         currency: 'USD',
         balance: 10.5,
       };
@@ -286,29 +286,29 @@ describe('AccountService', () => {
       update.withArgs({ id: account_to.id, balance: account_to_updated.balance }).resolves(account_to_updated);
 
       const result = await accountWriteService.updateAccounts(account_from, account_to, amount, userId);
-      console.log(result);
+
       //Assertions
       should(getMultiplier.calledOnce).be.true();
       should(update.calledTwice).be.true();
       should(update.calledWith(account_from_updated));
       should(update.calledWith(account_from_updated));
-      should(result.account_from.id_user).not.be.equal(result.account_to.id_user);
+      should(result.account_from.user_id).not.be.equal(result.account_to.user_id);
       should(result.account_to).deepEqual(account_to_updated);
       should(result.account_from).deepEqual(account_from_updated);
     });
 
     it('should throw an error if the account does not have sufficient funds', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 10;
       const account_from: AccountOutputDTO = {
         id: 2,
-        id_user: userId,
+        user_id: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: 3,
-        id_user: 4,
+        user_id: '4',
         currency: 'USD',
         balance: 10,
       };

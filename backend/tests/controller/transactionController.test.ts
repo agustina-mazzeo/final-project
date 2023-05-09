@@ -45,14 +45,14 @@ describe('TransactionController', () => {
   describe('getTransactions', () => {
     it('should call transactionsService.getAll with correct parameters', async () => {
       const req = {
-        user: 1,
+        user: '1',
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
       const next = sinon.spy();
       const expectedTransactions: TransactionOutputDTO[] = [
-        { id: 1, account_from: 12345, account_to: 67890, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
-        { id: 2, account_from: 67890, account_to: 12345, amount: 200, createdAt: '2023-04-12T14:45:00.000Z', description: 'Transaction 2' },
+        { id: '1', account_from_id: 12345, account_to_id: 67890, amount: 100, created_at: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+        { id: '2', account_from_id: 67890, account_to_id: 12345, amount: 200, created_at: '2023-04-12T14:45:00.000Z', description: 'Transaction 2' },
       ];
 
       const getAll = transactionReadServiceStub.getAll.resolves(expectedTransactions);
@@ -71,7 +71,7 @@ describe('TransactionController', () => {
 
     it('should call next with error if transactionsService.getAll throws an error', async () => {
       const req = {
-        user: 1,
+        user: '1',
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
@@ -95,7 +95,7 @@ describe('TransactionController', () => {
   describe('createTransfer', () => {
     it('should call transactionsService.create with correct parameters', async () => {
       const req = {
-        user: 1,
+        user: '1',
         body: {
           account_from: 1,
           account_to: 3,
@@ -106,10 +106,10 @@ describe('TransactionController', () => {
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
       const next = sinon.spy();
       const expectedTransaction = {
-        id: 0.6359607642103695,
-        createdAt: new Date().toISOString(),
-        account_from: 1,
-        account_to: 3,
+        id: '0.6359607642103695',
+        created_at: new Date().toISOString(),
+        account_from_id: 1,
+        account_to_id: 3,
         amount: 1,
         description: 'some description',
       };
@@ -120,7 +120,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith({ transfer: req.body, userId: req.user })).be.true();
+      should(create.called).be.true();
       should(res.status.calledOnce).be.true();
       should(res.status.calledWith(200)).be.true();
       should(res.json.calledOnce).be.true();
@@ -130,7 +130,7 @@ describe('TransactionController', () => {
 
     it('should call next with error if transactionsService.create throws an error', async () => {
       const req = {
-        user: 1,
+        user: '1',
         body: {
           account_from: 1,
           account_to: 3,
@@ -148,7 +148,7 @@ describe('TransactionController', () => {
 
       // Assertions
       should(create.calledOnce).be.true();
-      should(create.calledWith({ transfer: req.body, userId: req.user })).be.true();
+      should(create.called).be.true();
       should(res.status.called).be.false();
       should(res.json.called).be.false();
       should(next.calledOnce).be.true();

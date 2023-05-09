@@ -18,7 +18,7 @@ export const signupUserSchema = object({
     message: 'Passwords do not match',
     path: ['passwordConfirmation'],
   }),
-});
+}).strict();
 
 export type SignUserBody = Omit<TypeOf<typeof signupUserSchema>['body'], 'passwordConfirmation'>;
 
@@ -31,6 +31,6 @@ export const loginUserSchema = object({
       required_error: 'Password is required',
     }).min(6, 'Password too short - should be 6 chars minimum'),
   }),
-});
+}).strict();
 
 export type LoginUserBody = TypeOf<typeof loginUserSchema>['body'];
