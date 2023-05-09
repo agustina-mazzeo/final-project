@@ -3,6 +3,7 @@ import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
 import { TransactionModelDTO, TransactionGetAllInputDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
+import { addFilters } from './helpers';
 
 export class TransactionReadRepository implements ITransactionReadRepository {
   public getAll = async ({ filters, usersAccountsId }: TransactionGetAllInputDTO): Promise<TransactionModelDTO[]> => {
@@ -12,11 +13,7 @@ export class TransactionReadRepository implements ITransactionReadRepository {
           account_from_id: { in: usersAccountsId },
           account_to_id: { in: usersAccountsId },
         },
-        account_from_id: filters.find(({ filterBy }) => filterBy === 'account_from_id')?.value,
-        created_at: {
-          gte: filters.find(({ filterBy }) => filterBy === 'created_at')?.value,
-          lte: filters.find(({ filterBy }) => filterBy === 'created_at')?.value,
-        },
+        ...addFilters(filters),
       },
     };
     try {

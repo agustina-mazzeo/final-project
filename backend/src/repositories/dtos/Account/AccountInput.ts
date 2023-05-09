@@ -1,5 +1,5 @@
 import { AccountModelDTO } from './AccountModel';
-import { operators } from '..';
+import { operators } from '../../helpers';
 
 export type AccountCreateInputDTO = Pick<AccountModelDTO, 'currency' | 'user_id'>;
 export type AccountUpdateInputDTO = Pick<AccountModelDTO, 'balance' | 'id'>;
