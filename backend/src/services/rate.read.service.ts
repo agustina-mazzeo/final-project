@@ -1,5 +1,5 @@
 import { IRateReadRepository } from '../repositories/interfaces';
-import { CustomError, ValidationError } from '../interfaces';
+import { ForbiddenError, ValidationError } from '../interfaces';
 import { IRateReadService } from './interfaces';
 import { RateOutputDTO } from './dtos';
 
@@ -26,6 +26,6 @@ export class RateReadService implements IRateReadService {
   };
 
   public getByID = (): Promise<RateOutputDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

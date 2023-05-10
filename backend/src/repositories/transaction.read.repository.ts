@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
-import { CustomError } from '../interfaces';
+import { CustomError, ForbiddenError } from '../interfaces';
 import { TransactionModelDTO, TransactionGetAllInputDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
 import { addFilters } from '../utils/helpers';
@@ -46,6 +46,6 @@ export class TransactionReadRepository implements ITransactionReadRepository {
   };
 
   public getByID = (): Promise<TransactionModelDTO | null> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

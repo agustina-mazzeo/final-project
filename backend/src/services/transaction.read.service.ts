@@ -1,5 +1,5 @@
 import { operators } from '../utils/helpers';
-import { CustomError, NotFoundError, UnauthorizedError } from '../interfaces';
+import { ForbiddenError, NotFoundError, UnauthorizedError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
 import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
 import { IAccountReadService, ITransactionReadService } from './interfaces';
@@ -35,6 +35,6 @@ export class TransactionReadService implements ITransactionReadService {
   };
 
   public getByID = (): Promise<TransactionOutputDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

@@ -1,5 +1,5 @@
 import prisma from '../config/prisma';
-import { CustomError } from '../interfaces';
+import { CustomError, ForbiddenError } from '../interfaces';
 import { UserCreateInputDTO, UserModelDTO } from './dtos';
 import { IUserWriteRepository } from './interfaces';
 
@@ -19,6 +19,6 @@ export class UserWriteRepository implements IUserWriteRepository {
   };
 
   public update = (): Promise<UserModelDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }
