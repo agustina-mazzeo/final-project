@@ -1,8 +1,10 @@
+//import { operators } from '../../../utils/helpers';
 import { TransactionModelDTO } from './TransactionModel';
 
 export type TransactionInputDTO = Pick<TransactionModelDTO, 'account_from_id' | 'account_to_id' | 'amount' | 'description'>;
 
-export type TransactionGetAllDTO = {
+export type TransactionGetAllInputDTO = {
   usersAccountsId: number[];
-  filters: { filterBy: keyof TransactionModelDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[];
+  filters: { filterBy: keyof TransactionModelDTO; value: any; operator: string }[];
+  //filters: { filterBy: keyof TransactionModelDTO; value: any; operator: keyof typeof operators }[];
 };

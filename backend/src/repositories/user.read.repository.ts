@@ -15,13 +15,7 @@ export class UserReadRepository implements IUserReadRepository {
     }
   };
 
-  public getByEmail = async (email: string): Promise<UserModelDTO | null> => {
-    return await prisma.user.findUnique({ where: { email } });
-    //return users.find(user => user.email === email);
-  };
+  public getByEmail = async (email: string): Promise<UserModelDTO | null> => await prisma.user.findUnique({ where: { email } });
 
-  public getByID = async (id: UserGetterDTO): Promise<UserModelDTO | null> => {
-    return await prisma.user.findUnique({ where: { id } });
-    //return users.find(user => user.id === id);
-  };
+  public getByID = async (id: UserGetterDTO): Promise<UserModelDTO | null> => await prisma.user.findUnique({ where: { id } });
 }

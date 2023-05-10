@@ -103,7 +103,7 @@ describe('TransactionService', () => {
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.errorType).equal('UNAUTHORIZED_ERROR');
         should(error.messages).containDeep(['Invalid Credentials']);
         should(transactionReadRepositoryStub.getAll.notCalled).be.true();
       }

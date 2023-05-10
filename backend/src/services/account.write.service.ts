@@ -1,7 +1,7 @@
 import { IAccountWriteRepository, IUserReadRepository } from '../repositories/interfaces';
 import { CustomError } from '../interfaces';
 import { addOnePercent, currencies } from '../utils/helpers';
-import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO } from './dtos';
+import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO, PrismaContext } from './dtos';
 import { IAccountReadService, IAccountWriteService, IRateReadService } from './interfaces';
 
 export class AccountWriteService implements IAccountWriteService {
@@ -32,9 +32,9 @@ export class AccountWriteService implements IAccountWriteService {
     }
   };
 
-  public update = async (updateInfo: AccountUpdateInputDTO): Promise<AccountOutputDTO> => {
+  public update = async (updateInfo: AccountUpdateInputDTO, prisma?: PrismaContext): Promise<AccountOutputDTO> => {
     try {
-      return await this.accountWriteRepository.update(updateInfo);
+      return await this.accountWriteRepository.update(updateInfo, prisma);
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);
     }
@@ -45,28 +45,32 @@ export class AccountWriteService implements IAccountWriteService {
     account_to: AccountOutputDTO,
     amount: number,
     userId: string,
+    prisma?: PrismaContext,
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }> => {
     let amount_from = amount;
     //add comission
     if (account_to.user_id !== userId) {
       amount_from = addOnePercent(amount);
     }
-    //check balance
-    if (account_from.balance - amount_from < 0) {
-      throw new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
-    }
-    //substract funds
-    account_from.balance = account_from.balance - amount_from;
     try {
+      //check balance
+      if (account_from.balance - amount_from < 0) {
+        throw new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
+      }
+      //substract funds
+      account_from.balance = account_from.balance - amount_from;
+
       //convert the amount
-      const currency_to = await this.accountReadService.getAccountCurrency(account_to.id);
-      const currency_from = await this.accountReadService.getAccountCurrency(account_from.id);
-      const multiplier = await this.rateReadService.getMultiplier(currency_from, currency_to);
+      //const currency_to = await this.accountReadService.getAccountCurrency(account_to.id);
+      //const currency_from = await this.accountReadService.getAccountCurrency(account_from.id);
+      const multiplier = await this.rateReadService.getMultiplier(account_from.currency, account_to.currency);
       const amount_to = amount * multiplier;
+
       //deposit funds
       account_to.balance = account_to.balance + amount_to;
-      const account_from_updated = await this.update({ balance: account_from.balance, id: account_from.id });
-      const account_to_updated = await this.update({ balance: account_to.balance, id: account_to.id });
+
+      const account_from_updated = await this.update({ balance: account_from.balance, id: account_from.id }, prisma);
+      const account_to_updated = await this.update({ balance: account_to.balance, id: account_to.id }, prisma);
       return { account_from: account_from_updated, account_to: account_to_updated };
     } catch (error: any) {
       throw new CustomError(error.errorType, error.messages);

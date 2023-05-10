@@ -1,7 +1,8 @@
+import { PrismaContext } from '../services/dtos';
 import prisma from '../config/prisma';
 import { CustomError } from '../interfaces';
 import { AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from './dtos';
-import { selectAccountOptions } from './helpers';
+import { selectAccountOptions } from '../utils/helpers';
 import { IAccountWriteRepository } from './interfaces';
 
 export class AccountWriteRepository implements IAccountWriteRepository {
@@ -21,9 +22,10 @@ export class AccountWriteRepository implements IAccountWriteRepository {
     }
   };
 
-  public update = async ({ balance, id }: AccountUpdateInputDTO): Promise<AccountModelDTO> => {
+  public update = async ({ balance, id }: AccountUpdateInputDTO, prismaTransaction: PrismaContext): Promise<AccountModelDTO> => {
+    const prismaInstance = prismaTransaction ?? prisma;
     try {
-      return await prisma.account.update({
+      return await prismaInstance.account.update({
         select: {
           id: true,
           user_id: true,

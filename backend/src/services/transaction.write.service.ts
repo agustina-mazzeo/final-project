@@ -3,6 +3,7 @@ import { CustomError } from '../interfaces';
 
 import { TransactionOutputDTO, TransactionInputDTO } from './dtos';
 import { ITransactionWriteRepository } from '../repositories/interfaces';
+import prisma from '../config/prisma';
 
 export class TransactionWriteService implements ITransactionWriteService {
   constructor(
@@ -21,12 +22,16 @@ export class TransactionWriteService implements ITransactionWriteService {
         throw new CustomError('VALIDATION_ERROR', ['Could not make transfer']);
       }
       const account_to = await this.accountReadService.getByID(transfer.account_to_id); //throws
-      await this.accountWriteService.updateAccounts(account_from, account_to, amount, id); //throws
 
-      const newTransaction: TransactionOutputDTO = await this.transactionWriteRepository.create(transfer);
+      const newTransaction = await prisma.$transaction(async prisma => {
+        await this.accountWriteService.updateAccounts(account_from, account_to, amount, id, prisma); //throws
+        return await this.transactionWriteRepository.create(transfer, prisma);
+      });
+
       return newTransaction;
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      if (error instanceof CustomError) throw new CustomError(error.errorType, error.messages);
+      else throw new CustomError('VALIDATION_ERROR', [error.message]);
     }
   };
 

@@ -6,3 +6,11 @@ export * from './Rate/RateInput';
 export * from './Rate/RateModel';
 export * from './Transaction/TransactionInput';
 export * from './Transaction/TransactionModel';
+
+export const operators = {
+  '===': 'equals',
+  '!==': 'not',
+  '>=': 'gte',
+  '<=': 'lte',
+  in: 'in',
+};
