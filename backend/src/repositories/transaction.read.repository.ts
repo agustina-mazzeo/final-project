@@ -17,7 +17,11 @@ export class TransactionReadRepository implements ITransactionReadRepository {
       },
     };
     try {
-      return JSON.parse(JSON.stringify(await prisma.transaction.findMany({ where }))) as TransactionModelDTO[];
+      const transactions = await prisma.transaction.findMany({ where });
+      return transactions.map(transaction => {
+        const created_at = transaction.created_at.toISOString();
+        return { ...transaction, created_at };
+      }) as TransactionModelDTO[];
     } catch (error: any) {
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at txn get all']);
     }
@@ -31,7 +35,11 @@ export class TransactionReadRepository implements ITransactionReadRepository {
       },
     };
     try {
-      return JSON.parse(JSON.stringify(await prisma.transaction.findMany({ where }))) as TransactionModelDTO[];
+      const transactions = await prisma.transaction.findMany({ where });
+      return transactions.map(transaction => {
+        const created_at = transaction.created_at.toISOString();
+        return { ...transaction, created_at };
+      }) as TransactionModelDTO[];
     } catch (error: any) {
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at txn get users txn']);
     }

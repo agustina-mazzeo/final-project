@@ -19,5 +19,5 @@ export interface TokenData {
 
 export interface DataStoredInToken {
   email: string;
-  id: number;
+  id: string;
 }

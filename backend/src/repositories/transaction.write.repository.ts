@@ -13,7 +13,7 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
           ...transfer,
         },
       });
-      return JSON.parse(JSON.stringify(createdTransaction)) as TransactionModelDTO;
+      return { ...createdTransaction, created_at: createdTransaction.created_at.toISOString() } as TransactionModelDTO;
     } catch (error: any) {
       console.log(error);
       throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at transaction create']);
