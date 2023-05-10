@@ -1,4 +1,4 @@
-import { CustomError } from '../interfaces';
+import { InternalError } from '../interfaces';
 //import { users } from '../../database';
 import prisma from '../config/prisma';
 import { UserGetterDTO, UserModelDTO } from './dtos';
@@ -10,12 +10,23 @@ export class UserReadRepository implements IUserReadRepository {
       const users = await prisma.user.findMany();
       return users;
     } catch (error: any) {
-      console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at user get all']);
+      throw new InternalError('Error at user get all');
     }
   };
 
-  public getByEmail = async (email: string): Promise<UserModelDTO | null> => await prisma.user.findUnique({ where: { email } });
+  public getByEmail = async (email: string): Promise<UserModelDTO | null> => {
+    try {
+      return await prisma.user.findUnique({ where: { email } });
+    } catch (error: any) {
+      throw new InternalError('Error at user get all');
+    }
+  };
 
-  public getByID = async (id: UserGetterDTO): Promise<UserModelDTO | null> => await prisma.user.findUnique({ where: { id } });
+  public getByID = async (id: UserGetterDTO): Promise<UserModelDTO | null> => {
+    try {
+      return await prisma.user.findUnique({ where: { id } });
+    } catch (error: any) {
+      throw new InternalError('Error at user get by id');
+    }
+  };
 }

@@ -16,9 +16,13 @@ export class AccountReadService implements IAccountReadService {
   };
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {
-    const account = await this.accountReadRepository.getByID(id);
-    if (account) return account;
-    else throw new ValidationError('Invalid account');
+    try {
+      const account = await this.accountReadRepository.getByID(id);
+      if (account) return account;
+      else throw new ValidationError('Invalid account');
+    } catch (error: any) {
+      throw error;
+    }
   };
 
   public getAccountCurrency = async (account_id: number): Promise<string> => {

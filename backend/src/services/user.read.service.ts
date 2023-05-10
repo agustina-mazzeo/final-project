@@ -21,8 +21,12 @@ export class UserReadService implements IUserReadService {
   };
 
   public getByID = async (id: UserGetterDTO): Promise<UserOutputDTO> => {
-    const user = await this.userReadRepository.getByID(id);
-    if (user) return user;
-    else throw new UnauthorizedError('Invalid credentials');
+    try {
+      const user = await this.userReadRepository.getByID(id);
+      if (user) return user;
+      else throw new UnauthorizedError('Invalid credentials');
+    } catch (error: any) {
+      throw error;
+    }
   };
 }

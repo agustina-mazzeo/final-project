@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
-import { CustomError, ForbiddenError } from '../interfaces';
+import { ForbiddenError, InternalError } from '../interfaces';
 import { TransactionModelDTO, TransactionGetAllInputDTO } from './dtos';
 import { ITransactionReadRepository } from './interfaces';
 import { addFilters } from '../utils/helpers';
@@ -23,7 +23,7 @@ export class TransactionReadRepository implements ITransactionReadRepository {
         return { ...transaction, created_at };
       }) as TransactionModelDTO[];
     } catch (error: any) {
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at txn get all']);
+      throw new InternalError('Error at txn get all');
     }
   };
 
@@ -41,7 +41,7 @@ export class TransactionReadRepository implements ITransactionReadRepository {
         return { ...transaction, created_at };
       }) as TransactionModelDTO[];
     } catch (error: any) {
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at txn get users txn']);
+      throw new InternalError('Error at txn get users txn');
     }
   };
 
