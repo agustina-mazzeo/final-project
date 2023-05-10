@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError, UnauthorizedError, ValidationError } from '../../src/interfaces';
+import { CustomError, NotFoundError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
 import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
 import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
@@ -89,8 +89,7 @@ describe('TransactionService', () => {
         await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('NOT_FOUND_ERROR');
+        should(error).be.an.instanceOf(NotFoundError);
         should(error.messages).containDeep(["Couldn't get user's transactions"]);
         should(getAll.calledOnce).be.true();
       }
