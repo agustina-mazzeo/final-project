@@ -7,15 +7,15 @@ export const currencies: string[] = SYMBOLS.split(',');
 
 export const selectAccountOptions = { user_id: true, balance: true, currency: true, id: true };
 
-export const operators = {
-  equal: 'equals',
-  not: 'not',
-  gte: 'gte',
-  lte: 'lte',
-  in: 'in',
-};
+export enum operators {
+  equal = 'equals',
+  not = 'not',
+  gte = 'gte',
+  lte = 'lte',
+  in = 'in',
+}
 
-export const addFilters = (filters: { filterBy: any; value: any; operator: string }[]) => {
+export const addFilters = (filters: { filterBy: any; value: any; operator: operators }[]) => {
   return filters.reduce((acumulator: { [key: string]: any }, current) => {
     const operator = current.operator;
     const key = current.filterBy;

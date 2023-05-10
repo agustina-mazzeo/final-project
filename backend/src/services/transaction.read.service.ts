@@ -21,7 +21,7 @@ export class TransactionReadService implements ITransactionReadService {
       const filters: {
         filterBy: keyof TransactionOutputDTO;
         value: any;
-        operator: string;
+        operator: operators;
       }[] = [];
       if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: operators.equal });
       if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: operators.gte });
