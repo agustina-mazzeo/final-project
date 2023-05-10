@@ -30,7 +30,7 @@ export class TransactionReadService implements ITransactionReadService {
       const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
       return filteredTransactions;
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 

@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import should from 'should';
 import { hash } from 'bcrypt';
-import { CustomError } from '../../src/interfaces';
+import { CustomError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { IAccountWriteService, IUserReadService, IUserWriteService } from '../../src/services/interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../src/services';
@@ -70,7 +70,7 @@ describe('UserService', () => {
       should(getByEmail.calledOnce).be.true();
     });
 
-    it('should throw CustomError with validation error if no user matches the email', async () => {
+    it('should throw CustomError with unauthorized error if no user matches the email', async () => {
       const email = 'test@example.com';
       const getByEmail = userReadRepositoryStub.getByEmail.resolves(undefined);
 
@@ -78,8 +78,7 @@ describe('UserService', () => {
         await userReadService.getByEmail(email);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(UnauthorizedError);
         should(getByEmail.calledOnce).be.true();
       }
     });
@@ -99,7 +98,7 @@ describe('UserService', () => {
       should(getByID.calledOnce).be.true();
     });
 
-    it('should throw CustomError with validation error if no user matches the id', async () => {
+    it('should throw CustomError with unauthorized error if no user matches the id', async () => {
       const id = '1';
       const getByID = userReadRepositoryStub.getByID.resolves(undefined);
 
@@ -107,8 +106,7 @@ describe('UserService', () => {
         await userReadService.getByID(id);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(UnauthorizedError);
         should(getByID.calledOnce).be.true();
       }
     });
@@ -157,8 +155,7 @@ describe('UserService', () => {
         await userWriteService.create(user);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getByEmail.calledOnce).be.true();
         should(userWriteRepositoryStub.create.notCalled).be.true();
         should(accountWriteServiceStub.createUsersAccounts.notCalled).be.true();

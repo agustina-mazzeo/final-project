@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError } from '../../src/interfaces';
+import { ValidationError } from '../../src/interfaces';
 import { IAccountReadService, IAccountWriteService, IRateReadService } from '../../src/services/interfaces';
 import { IAccountReadRepository, IAccountWriteRepository, IUserReadRepository } from '../../src/repositories/interfaces';
 import { AccountReadRepository } from '../../src/repositories/account.read.repository';
@@ -74,8 +74,7 @@ describe('AccountService', () => {
         sinon.assert.fail();
       } catch (error: any) {
         should.exist(error);
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getById.calledOnceWithExactly(userId)).be.true();
         should(accountWriteRepositoryStub.create.notCalled).be.true();
       }
@@ -109,8 +108,7 @@ describe('AccountService', () => {
         await accountWriteService.createUsersAccounts(userId);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getByID.calledOnceWithExactly(userId)).be.true();
       }
     });
@@ -175,8 +173,7 @@ describe('AccountService', () => {
         await accountReadService.getByID(id);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getByID.calledOnce).be.true();
       }
     });
@@ -317,9 +314,8 @@ describe('AccountService', () => {
         await accountWriteService.updateAccounts(account_from, account_to, amount, userId);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
-        should(error.messages).be.eql(['Insufficient funds']);
+        should(error).be.instanceOf(ValidationError);
+        should(error.message).be.eql('Insufficient funds');
         should(rateReadServiceStub.getMultiplier.notCalled).be.true();
         should(accountWriteRepositoryStub.update.notCalled).be.true();
       }

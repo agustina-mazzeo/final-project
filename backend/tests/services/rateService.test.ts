@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError, Rates } from '../../src/interfaces';
+import { CustomError, Rates, ValidationError } from '../../src/interfaces';
 import { IRateReadService, IRateWriteService } from '../../src/services/interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../../src/repositories/interfaces';
 import { RateReadService, RateWriteService } from '../../src/services';
@@ -109,8 +109,7 @@ describe('RateService', () => {
         await rateReadService.getMultiplier(currency_from, currency_to);
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getByID.calledTwice).be.true();
       }
     });

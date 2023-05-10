@@ -1,5 +1,5 @@
 import { IAccountReadService, IAccountWriteService, ITransactionWriteService } from './interfaces';
-import { CustomError } from '../interfaces';
+import { CustomError, UnauthorizedError, ValidationError } from '../interfaces';
 
 import { TransactionOutputDTO, TransactionInputDTO } from './dtos';
 import { ITransactionWriteRepository } from '../repositories/interfaces';
@@ -14,12 +14,12 @@ export class TransactionWriteService implements ITransactionWriteService {
 
   public create = async ({ userId: id, transfer }: TransactionInputDTO): Promise<TransactionOutputDTO> => {
     try {
-      if (!id) throw new CustomError('VALIDATION_ERROR', ['Invalid Credentials']);
+      if (!id) throw new UnauthorizedError('Invalid Credentials');
       const amount = transfer.amount;
       const userAccounts = await this.accountReadService.getAll(id);
       const account_from = userAccounts.find(({ id }) => transfer.account_from_id === id);
       if (!account_from) {
-        throw new CustomError('VALIDATION_ERROR', ['Could not make transfer']);
+        throw new ValidationError('Could not make transfer');
       }
       const account_to = await this.accountReadService.getByID(transfer.account_to_id); //throws
 
@@ -30,8 +30,7 @@ export class TransactionWriteService implements ITransactionWriteService {
 
       return newTransaction;
     } catch (error: any) {
-      if (error instanceof CustomError) throw new CustomError(error.errorType, error.messages);
-      else throw new CustomError('VALIDATION_ERROR', [error.message]);
+      throw error;
     }
   };
 
