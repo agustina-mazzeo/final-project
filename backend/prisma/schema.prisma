@@ -37,7 +37,11 @@ model Transaction {
 }
 
 model Rate {
-  name     String @id
-  USD_FROM Float
-  USD_TO   Float
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  name       String
+  USD_FROM   Float
+  USD_TO     Float
+
+  @@index([created_at])
 }

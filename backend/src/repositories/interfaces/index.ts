@@ -6,7 +6,6 @@ import {
   AccountGetterDTO,
   AccountModelDTO,
   AccountUpdateInputDTO,
-  RateGetterDTO,
   RateInputDTO,
   RateModelDTO,
   TransactionInputDTO,
@@ -21,10 +20,10 @@ export * from './IReadRepository';
 export * from './IWriteRepository';
 export * from './ITransactionReadRepository';
 export * from './IUserReadRepository';
+export * from './IRateReadRepository';
 
 export interface ITransactionWriteRepository extends IWriteRepository<TransactionModelDTO, TransactionInputDTO, unknown, PrismaContext> {}
 export interface IUserWriteRepository extends IWriteRepository<UserModelDTO, UserCreateInputDTO, unknown, unknown> {}
 export interface IAccountReadRepository extends IReadRepository<AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO> {}
 export interface IAccountWriteRepository extends IWriteRepository<AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO, PrismaContext> {}
-export interface IRateReadRepository extends IReadRepository<RateModelDTO, unknown, RateGetterDTO> {}
 export interface IRateWriteRepository extends IWriteRepository<RateModelDTO, RateInputDTO, RateInputDTO, unknown> {}
