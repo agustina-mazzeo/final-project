@@ -1,16 +1,34 @@
-import { accounts } from '../../database';
-import { AccountModelDTO, AccountGetAllDTO, AccountGetterDTO } from './dtos';
+import { Prisma } from '@prisma/client';
+import prisma from '../config/prisma';
+import { AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO } from './dtos';
 import { IAccountReadRepository } from './interfaces';
+import { CustomError } from '../interfaces';
+import { addFilters, selectAccountOptions } from '../utils/helpers';
 
 export class AccountReadRepository implements IAccountReadRepository {
-  public async getAll(filter?: AccountGetAllDTO): Promise<AccountModelDTO[]> {
-    if (!filter) {
-      return accounts;
+  public async getAll(filters?: AccountGetAllInputDTO): Promise<AccountModelDTO[]> {
+    try {
+      const where: Prisma.AccountWhereInput = filters
+        ? {
+            AND: {
+              ...addFilters(filters),
+            },
+          }
+        : {};
+      return await prisma.account.findMany({ select: selectAccountOptions, where });
+    } catch (error: any) {
+      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at account all']);
     }
-    return accounts.filter(acc => filter.every(({ filterBy, value, operator }) => operator(acc[filterBy], value)));
   }
 
-  public getByID = async (id: AccountGetterDTO): Promise<AccountModelDTO | undefined> => {
-    return accounts.find(acc => acc.id === id);
+  public getByID = async (id: AccountGetterDTO): Promise<AccountModelDTO | null> => {
+    const accID = id as number;
+    return await prisma.account.findUnique({
+      select: selectAccountOptions,
+      where: {
+        id: accID,
+      },
+    });
+    //return accounts.find(acc => acc.id === id);
   };
 }

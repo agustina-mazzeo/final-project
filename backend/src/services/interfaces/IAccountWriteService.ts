@@ -1,12 +1,13 @@
 import { IWriteService } from '.';
-import { AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from '../dtos';
+import { AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO, PrismaContext } from '../dtos';
 
-export interface IAccountWriteService extends IWriteService<AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO> {
-  createUsersAccounts(userId: number): Promise<void>;
+export interface IAccountWriteService extends IWriteService<AccountOutputDTO, AccountCreateInputDTO, AccountUpdateInputDTO, PrismaContext> {
+  createUsersAccounts(userId: string): Promise<void>;
   updateAccounts(
     account_from: AccountOutputDTO,
     account_to: AccountOutputDTO,
     amount: number,
-    userId: number,
+    userId: string,
+    prisma?: PrismaContext,
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }>;
 }

@@ -48,43 +48,43 @@ describe('TransactionService', () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
 
       const usersTransactions: TransactionOutputDTO[] = [
-        { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
+        { id: '1', account_from_id: 1, account_to_id: 2, amount: 1, created_at: new Date('2022-01-01').toISOString() },
       ];
 
-      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
       const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: [1, 2] }).resolves(usersTransactions);
 
-      const result = await transactionReadService.getAll({ userId: 1, queryParams: {} });
+      const result = await transactionReadService.getAll({ userId: '1', queryParams: {} });
 
       should(result).be.an.Array();
       should(result).have.length(usersTransactions.length);
       should(result).containDeep(usersTransactions);
-      should(getAllService.calledOnceWith(1)).be.true();
+      should(getAllService.calledOnceWith('1')).be.true();
       should(getAll.calledOnceWith({ filters: [], usersAccountsId: [1, 2] })).be.true();
     });
 
     it('should filter the users accounts', async () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
       const filteredUsersTransactions: TransactionOutputDTO[] = [
-        { id: 1, account_from: 1, account_to: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
-        { id: 2, account_from: 1, account_to: 3, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+        { id: '1', account_from_id: 1, account_to_id: 2, amount: 1, created_at: new Date('2022-01-01').toISOString() },
+        { id: '2', account_from_id: 1, account_to_id: 3, amount: 100, created_at: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
       ];
 
-      const getAllService = accountReadServiceStub.getAll.withArgs(1).resolves(userAccounts as AccountOutputDTO[]);
+      const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
       const getAll = transactionReadRepositoryStub.getAll.resolves(filteredUsersTransactions);
 
-      const result = await transactionReadService.getAll({ userId: 1, queryParams: { account_from: 1 } });
+      const result = await transactionReadService.getAll({ userId: '1', queryParams: { account_from_id: 1 } });
 
       should(result).be.an.Array();
       should(result).have.length(filteredUsersTransactions.length);
       should(result).containDeep(filteredUsersTransactions);
-      should(getAllService.calledOnceWith(1)).be.true();
+      should(getAllService.calledOnceWith('1')).be.true();
       should(getAll.calledOnce).be.true();
     });
 
     it('should throw an error if user has no accounts', async () => {
-      const getAll = accountReadServiceStub.getAll.withArgs(1).resolves([]);
-      const userId = 1;
+      const getAll = accountReadServiceStub.getAll.withArgs('1').resolves([]);
+      const userId = '1';
       try {
         await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
@@ -97,13 +97,13 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if a user id is not provided or non valid', async () => {
-      const userId = undefined as unknown as number;
+      const userId = undefined as unknown as string;
       try {
         await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('VALIDATION_ERROR');
+        should(error.errorType).equal('UNAUTHORIZED_ERROR');
         should(error.messages).containDeep(['Invalid Credentials']);
         should(transactionReadRepositoryStub.getAll.notCalled).be.true();
       }
@@ -112,24 +112,24 @@ describe('TransactionService', () => {
 
   describe('create', () => {
     it('should create a new transaction and return it', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from: 1,
-        account_to: 2,
+        account_from_id: 1,
+        account_to_id: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          id_user: userId,
+          user_id: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          id_user: userId,
+          user_id: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -138,11 +138,11 @@ describe('TransactionService', () => {
       const account_to = userAccounts[1];
 
       const newTransaction: TransactionOutputDTO = {
-        id: 3,
-        account_from: 1,
-        account_to: 2,
+        id: '3',
+        account_from_id: 1,
+        account_to_id: 2,
         amount: 100,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
 
       const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
@@ -150,9 +150,9 @@ describe('TransactionService', () => {
       const updateAccounts = accountWriteServiceStub.updateAccounts.resolves(undefined);
       const create = transactionWriteRepositoryStub.create.resolves(newTransaction);
 
-      const result = await transactionWriteService.create({ transfer, userId: 1 });
+      const result = await transactionWriteService.create({ transfer, userId: '1' });
 
-      should(getAll.calledWith(1)).be.true();
+      should(getAll.calledWith('1')).be.true();
       should(getByID.calledWith(2)).be.true();
       should(updateAccounts.calledOnceWith(account_from, account_to, amount, userId)).be.true();
       should(create.calledOnceWith(transfer)).be.true();
@@ -160,19 +160,19 @@ describe('TransactionService', () => {
     });
 
     it("should throw an error if user's account is not found", async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from: 1,
-        account_to: 2,
+        account_from_id: 1,
+        account_to_id: 2,
         amount,
       };
 
       const getAll = accountReadServiceStub.getAll.resolves([]);
 
       try {
-        await transactionWriteService.create({ transfer, userId: 1 });
+        await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -185,24 +185,24 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if acocunt_to is not found', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from: 1,
-        account_to: 2,
+        account_from_id: 1,
+        account_to_id: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          id_user: userId,
+          user_id: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          id_user: userId,
+          user_id: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -213,7 +213,7 @@ describe('TransactionService', () => {
       const getByID = accountReadServiceStub.getByID.rejects(custom_error);
 
       try {
-        await transactionWriteService.create({ transfer, userId: 1 });
+        await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -226,24 +226,24 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if updateAccounts throws', async () => {
-      const userId = 1;
+      const userId = '1';
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from: 1,
-        account_to: 2,
+        account_from_id: 1,
+        account_to_id: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          id_user: userId,
+          user_id: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          id_user: userId,
+          user_id: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -256,7 +256,7 @@ describe('TransactionService', () => {
       const updateAccounts = accountWriteServiceStub.updateAccounts.rejects(custom_error);
 
       try {
-        await transactionWriteService.create({ transfer, userId: 1 });
+        await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.instanceOf(CustomError);
@@ -269,12 +269,12 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if a user id is not provided or non valid', async () => {
-      const userId = undefined as unknown as number;
+      const userId = undefined as unknown as string;
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from: 1,
-        account_to: 2,
+        account_from_id: 1,
+        account_to_id: 2,
         amount,
       };
 

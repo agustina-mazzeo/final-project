@@ -1,6 +1,6 @@
-import { AccountOutputDTO, AccountGetterDTO } from '../dtos';
+import { AccountOutputDTO, AccountGetterDTO, AccountGetAllInputDTO } from '../dtos';
 import { IReadService } from '.';
 
-export interface IAccountReadService extends IReadService<AccountOutputDTO, AccountGetterDTO, AccountGetterDTO> {
+export interface IAccountReadService extends IReadService<AccountOutputDTO, AccountGetAllInputDTO, AccountGetterDTO> {
   getAccountCurrency(account_id: number): Promise<string>;
 }

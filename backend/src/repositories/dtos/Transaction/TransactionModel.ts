@@ -1,8 +1,8 @@
 export type TransactionModelDTO = {
-  id: number;
-  account_from: number;
-  account_to: number;
+  id: string;
+  account_from_id: number;
+  account_to_id: number;
   amount: number;
   description?: string;
-  createdAt: string;
+  created_at: string;
 };

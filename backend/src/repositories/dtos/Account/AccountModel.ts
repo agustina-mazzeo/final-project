@@ -1,6 +1,6 @@
 export type AccountModelDTO = {
   id: number;
-  id_user: number;
+  user_id: string;
   currency: string;
   balance: number;
 };

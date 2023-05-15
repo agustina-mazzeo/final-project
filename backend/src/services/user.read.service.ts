@@ -7,7 +7,11 @@ export class UserReadService implements IUserReadService {
   constructor(private userReadRepository: IUserReadRepository) {}
 
   public getAll = async (): Promise<UserOutputDTO[]> => {
-    return this.userReadRepository.getAll();
+    try {
+      return this.userReadRepository.getAll();
+    } catch (error: any) {
+      throw new CustomError(error.errorType, error.messages);
+    }
   };
 
   public getByEmail = async (email: string): Promise<UserOutputDTO> => {

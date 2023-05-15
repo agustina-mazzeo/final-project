@@ -4,13 +4,6 @@ import passport from 'passport';
 import errorManager from './middleware/errorManager';
 import { setRoutes } from './routes';
 import { cronJob } from '../cron/cron';
-import { getRates } from '../services/external/rates';
-import { Rates } from '../interfaces';
-import { currencies } from '../utils/helpers';
-import { RateReadRepository, RateWriteRepository } from '../repositories';
-import { RateWriteService } from '../services';
-
-const rateWriteService = new RateWriteService(new RateReadRepository(), new RateWriteRepository());
 
 export class App {
   public app: express.Application;
@@ -37,22 +30,8 @@ export class App {
   };
 
   public start = () => {
-    this.app.listen(this.port, () => {
+    this.app.listen(this.port, async () => {
       console.log(`Listening on port ${this.port}`);
-
-      //const data = await getRates();
-      const data = {
-        base: 'USD',
-        rates: { UYU: 38.967787, USD: 1, EUR: 0.91021 },
-      };
-      // if (data.error) {
-      //   console.log(data.error);
-      // } else {
-      const referenceRate: Rates = data.rates;
-      for (const name of currencies) {
-        rateWriteService.create({ referenceRate, name });
-      }
-      //}
     });
   };
 }

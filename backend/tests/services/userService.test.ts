@@ -43,8 +43,8 @@ describe('UserService', () => {
   describe('getAll', () => {
     it('should return an array of users', async () => {
       const users: UserOutputDTO[] = [
-        { id: 1, email: 'test1@example.com', password: 'hashedPassword1' },
-        { id: 2, email: 'test2@example.com', password: 'hashedPassword2' },
+        { id: '1', email: 'test1@example.com', password: 'hashedPassword1' },
+        { id: '2', email: 'test2@example.com', password: 'hashedPassword2' },
       ];
 
       const getAll = userReadRepositoryStub.getAll.resolves(users);
@@ -59,7 +59,7 @@ describe('UserService', () => {
   describe('getByEmail', () => {
     it('should return the user that matches the email', async () => {
       const email = 'test@example.com';
-      const user: UserOutputDTO = { id: 1, email, password: 'hashedPassword1' };
+      const user: UserOutputDTO = { id: '1', email, password: 'hashedPassword1' };
 
       const getByEmail = userReadRepositoryStub.getByEmail.resolves(user);
 
@@ -87,7 +87,7 @@ describe('UserService', () => {
 
   describe('getByID', () => {
     it('should return the user that matches the id', async () => {
-      const id = 1;
+      const id = '1';
       const user: UserOutputDTO = { id, email: 'test@example.com', password: 'hashedPassword1' };
 
       const getByID = userReadRepositoryStub.getByID.resolves(user);
@@ -100,7 +100,7 @@ describe('UserService', () => {
     });
 
     it('should throw CustomError with validation error if no user matches the id', async () => {
-      const id = 1;
+      const id = '1';
       const getByID = userReadRepositoryStub.getByID.resolves(undefined);
 
       try {
@@ -122,7 +122,7 @@ describe('UserService', () => {
       };
       const hashedPassword = await hash(user.password, 10);
       const newUser: UserOutputDTO = {
-        id: 1,
+        id: '1',
         email: user.email,
         password: hashedPassword,
       };
@@ -146,7 +146,7 @@ describe('UserService', () => {
         password: 'password',
       };
       const existingUser: UserOutputDTO = {
-        id: 1,
+        id: '1',
         email: user.email,
         password: 'hashedPassword',
       };

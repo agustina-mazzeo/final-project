@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+import { PrismaContext } from '../../services/dtos';
 import {
   AccountCreateInputDTO,
-  AccountGetAllDTO,
+  AccountGetAllInputDTO,
   AccountGetterDTO,
   AccountModelDTO,
   AccountUpdateInputDTO,
@@ -21,9 +22,9 @@ export * from './IWriteRepository';
 export * from './ITransactionReadRepository';
 export * from './IUserReadRepository';
 
-export interface ITransactionWriteRepository extends IWriteRepository<TransactionModelDTO, TransactionInputDTO, unknown> {}
-export interface IUserWriteRepository extends IWriteRepository<UserModelDTO, UserCreateInputDTO, unknown> {}
-export interface IAccountReadRepository extends IReadRepository<AccountModelDTO, AccountGetAllDTO, AccountGetterDTO> {}
-export interface IAccountWriteRepository extends IWriteRepository<AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO> {}
+export interface ITransactionWriteRepository extends IWriteRepository<TransactionModelDTO, TransactionInputDTO, unknown, PrismaContext> {}
+export interface IUserWriteRepository extends IWriteRepository<UserModelDTO, UserCreateInputDTO, unknown, unknown> {}
+export interface IAccountReadRepository extends IReadRepository<AccountModelDTO, AccountGetAllInputDTO, AccountGetterDTO> {}
+export interface IAccountWriteRepository extends IWriteRepository<AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO, PrismaContext> {}
 export interface IRateReadRepository extends IReadRepository<RateModelDTO, unknown, RateGetterDTO> {}
-export interface IRateWriteRepository extends IWriteRepository<RateModelDTO, RateInputDTO, RateInputDTO> {}
+export interface IRateWriteRepository extends IWriteRepository<RateModelDTO, RateInputDTO, RateInputDTO, unknown> {}

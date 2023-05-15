@@ -1,3 +1,4 @@
+import { operators } from '../utils/helpers';
 import { CustomError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
 import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
@@ -8,7 +9,7 @@ export class TransactionReadService implements ITransactionReadService {
 
   public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
-      if (!userId) throw new CustomError('VALIDATION_ERROR', ['Invalid Credentials']);
+      if (!userId) throw new CustomError('UNAUTHORIZED_ERROR', ['Invalid Credentials']);
       const userAccounts = await this.accountReadService.getAll(userId);
       if (userAccounts.length === 0) {
         throw new CustomError('NOT_FOUND_ERROR', ["Couldn't get user's transactions"]);
@@ -17,11 +18,14 @@ export class TransactionReadService implements ITransactionReadService {
         return id;
       });
 
-      const filters: { filterBy: keyof TransactionOutputDTO; value: any; operator: (arg1: any, arg2: any) => boolean }[] = [];
-      if (queryParams.account_from)
-        filters.push({ value: queryParams.account_from, filterBy: 'account_from', operator: (arg1: number, arg2: number) => arg1 === arg2 });
-      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'createdAt', operator: (arg1, arg2) => arg1 >= arg2 });
-      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'createdAt', operator: (arg1, arg2) => arg1 <= arg2 });
+      const filters: {
+        filterBy: keyof TransactionOutputDTO;
+        value: any;
+        operator: operators;
+      }[] = [];
+      if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: operators.equal });
+      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: operators.gte });
+      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: operators.lte });
 
       const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
       return filteredTransactions;

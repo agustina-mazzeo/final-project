@@ -1,4 +1,4 @@
-import { Rates } from '../interfaces';
+import { CustomError, Rates } from '../interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../repositories/interfaces';
 import { IRateWriteService } from './interfaces';
 import { RateCreateInputDTO, RateOutputDTO, RateUpdateInputDTO } from './dtos';
@@ -11,12 +11,16 @@ export class RateWriteService implements IRateWriteService {
   constructor(private rateReadRepository: IRateReadRepository, private rateWriteRepository: IRateWriteRepository) {}
 
   public create = async ({ name, referenceRate }: RateCreateInputDTO): Promise<RateOutputDTO> => {
-    const savedRate = await this.rateReadRepository.getByID(name);
-    const newRate = this.createRate(referenceRate, name);
-    let result: RateOutputDTO;
-    if (savedRate) result = await this.update({ name, rates: newRate });
-    else result = await this.rateWriteRepository.create({ name, rates: newRate });
-    return result;
+    try {
+      const savedRate = await this.rateReadRepository.getByID(name);
+      const newRate = this.createRate(referenceRate, name);
+      let result: RateOutputDTO;
+      if (savedRate) result = await this.update({ name, rates: newRate });
+      else result = await this.rateWriteRepository.create({ name, rates: newRate });
+      return result;
+    } catch (error: any) {
+      throw new CustomError(error.errorType, error.messages);
+    }
   };
 
   private createRate = (referenceRate: Rates, name: string) => {
@@ -27,6 +31,10 @@ export class RateWriteService implements IRateWriteService {
   };
 
   public update = async (newRate: RateUpdateInputDTO): Promise<RateOutputDTO> => {
-    return await this.rateWriteRepository.update(newRate);
+    try {
+      return await this.rateWriteRepository.update(newRate);
+    } catch (error: any) {
+      throw new CustomError(error.errorType, error.messages);
+    }
   };
 }
