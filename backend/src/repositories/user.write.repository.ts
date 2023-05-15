@@ -16,7 +16,7 @@ export class UserWriteRepository implements IUserWriteRepository {
     } catch (error: any) {
       console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ValidationError('User already exists');
-      throw new InternalError('There was an internal error');
+      throw new InternalError('Error trying to create user');
     }
   };
 

@@ -10,7 +10,7 @@ export class UserReadRepository implements IUserReadRepository {
       const users = await prisma.user.findMany();
       return users;
     } catch (error: any) {
-      throw new InternalError('Error at user get all');
+      throw new InternalError('Error trying to get all users');
     }
   };
 
@@ -18,7 +18,7 @@ export class UserReadRepository implements IUserReadRepository {
     try {
       return await prisma.user.findUnique({ where: { email } });
     } catch (error: any) {
-      throw new InternalError('Error at user get all');
+      throw new InternalError('Error trying to get user');
     }
   };
 
@@ -26,7 +26,7 @@ export class UserReadRepository implements IUserReadRepository {
     try {
       return await prisma.user.findUnique({ where: { id } });
     } catch (error: any) {
-      throw new InternalError('Error at user get by id');
+      throw new InternalError('Error trying to get user');
     }
   };
 }

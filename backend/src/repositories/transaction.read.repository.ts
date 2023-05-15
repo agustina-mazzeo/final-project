@@ -23,7 +23,7 @@ export class TransactionReadRepository implements ITransactionReadRepository {
         return { ...transaction, created_at };
       }) as TransactionModelDTO[];
     } catch (error: any) {
-      throw new InternalError('Error at txn get all');
+      throw new InternalError('Error trying to get users transactions');
     }
   };
 
@@ -41,7 +41,7 @@ export class TransactionReadRepository implements ITransactionReadRepository {
         return { ...transaction, created_at };
       }) as TransactionModelDTO[];
     } catch (error: any) {
-      throw new InternalError('Error at txn get users txn');
+      throw new InternalError('Error trying to get users transactions');
     }
   };
 

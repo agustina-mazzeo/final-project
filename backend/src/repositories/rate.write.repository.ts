@@ -20,7 +20,7 @@ export class RateWriteRepository implements IRateWriteRepository {
       return rate;
     } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ValidationError('Rate already exists');
-      throw new InternalError('There was an internal error');
+      throw new InternalError('Error trying to save rate');
     }
     //rates.push(rate);
   };

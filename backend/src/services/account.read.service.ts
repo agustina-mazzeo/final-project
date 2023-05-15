@@ -7,22 +7,13 @@ import { operators } from '../utils/helpers';
 export class AccountReadService implements IAccountReadService {
   constructor(private accountReadRepository: IAccountReadRepository) {}
 
-  public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> => {
-    try {
-      return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
-    } catch (error: any) {
-      throw error;
-    }
-  };
+  public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> =>
+    this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {
-    try {
-      const account = await this.accountReadRepository.getByID(id);
-      if (account) return account;
-      else throw new ValidationError('Invalid account');
-    } catch (error: any) {
-      throw error;
-    }
+    const account = await this.accountReadRepository.getByID(id);
+    if (account) return account;
+    else throw new ValidationError('Invalid account');
   };
 
   public getAccountCurrency = async (account_id: number): Promise<string> => {

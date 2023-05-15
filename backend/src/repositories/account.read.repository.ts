@@ -17,7 +17,7 @@ export class AccountReadRepository implements IAccountReadRepository {
         : {};
       return await prisma.account.findMany({ select: selectAccountOptions, where });
     } catch (error: any) {
-      throw new InternalError('Error at account all');
+      throw new InternalError('Error trying to get all accounts');
     }
   }
 
@@ -31,7 +31,7 @@ export class AccountReadRepository implements IAccountReadRepository {
         },
       });
     } catch (error) {
-      throw new InternalError('Internal Error');
+      throw new InternalError('Error trying to get account');
     }
   };
 }

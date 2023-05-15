@@ -18,7 +18,7 @@ export class AccountWriteRepository implements IAccountWriteRepository {
       return createdAccount as AccountModelDTO;
     } catch (error: any) {
       console.log(error);
-      throw new InternalError('Error at account create');
+      throw new InternalError('Error trying to create account');
     }
   };
 
@@ -41,7 +41,7 @@ export class AccountWriteRepository implements IAccountWriteRepository {
       });
     } catch (error: any) {
       console.log(error);
-      throw new InternalError('Error at account update');
+      throw new InternalError('Error trying to update account');
     }
   };
 }

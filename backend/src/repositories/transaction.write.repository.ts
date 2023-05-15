@@ -16,7 +16,7 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
       return { ...createdTransaction, created_at: createdTransaction.created_at.toISOString() } as TransactionModelDTO;
     } catch (error: any) {
       console.log(error);
-      throw new InternalError('Internal error');
+      throw new InternalError('Error trying to make transfer');
     }
   };
 
