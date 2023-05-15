@@ -1,5 +1,6 @@
+import { Prisma } from '@prisma/client';
 import prisma from '../config/prisma';
-import { CustomError, ForbiddenError } from '../interfaces';
+import { ForbiddenError, InternalError, ValidationError } from '../interfaces';
 import { UserCreateInputDTO, UserModelDTO } from './dtos';
 import { IUserWriteRepository } from './interfaces';
 
@@ -14,7 +15,8 @@ export class UserWriteRepository implements IUserWriteRepository {
       return createdUser as UserModelDTO;
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at user create']);
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ValidationError('User already exists');
+      throw new InternalError('Error trying to create user');
     }
   };
 

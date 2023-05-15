@@ -1,6 +1,6 @@
 import { PrismaContext } from '../services/dtos';
 import prisma from '../config/prisma';
-import { CustomError, ForbiddenError } from '../interfaces';
+import { ForbiddenError, InternalError } from '../interfaces';
 import { TransactionInputDTO, TransactionModelDTO } from './dtos';
 import { ITransactionWriteRepository } from './interfaces';
 
@@ -16,7 +16,7 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
       return { ...createdTransaction, created_at: createdTransaction.created_at.toISOString() } as TransactionModelDTO;
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at transaction create']);
+      throw new InternalError('Error trying to make transfer');
     }
   };
 

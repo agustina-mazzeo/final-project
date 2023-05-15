@@ -6,13 +6,7 @@ import { UserGetterDTO, UserOutputDTO } from './dtos';
 export class UserReadService implements IUserReadService {
   constructor(private userReadRepository: IUserReadRepository) {}
 
-  public getAll = async (): Promise<UserOutputDTO[]> => {
-    try {
-      return this.userReadRepository.getAll();
-    } catch (error: any) {
-      throw error;
-    }
-  };
+  public getAll = async (): Promise<UserOutputDTO[]> => this.userReadRepository.getAll();
 
   public getByEmail = async (email: string): Promise<UserOutputDTO> => {
     const user = await this.userReadRepository.getByEmail(email);

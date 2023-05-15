@@ -1,5 +1,5 @@
 //import { rates } from '../../database';
-import { CustomError } from '../interfaces';
+import { InternalError } from '../interfaces';
 import prisma from '../config/prisma';
 import { RateGetterDTO, RateModelDTO } from './dtos';
 import { IRateReadRepository } from './interfaces';
@@ -13,7 +13,7 @@ export class RateReadRepository implements IRateReadRepository {
       });
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at rate get all']);
+      throw new InternalError('Error at rate get all');
     }
   }
 
@@ -23,7 +23,7 @@ export class RateReadRepository implements IRateReadRepository {
       return { name: name, rates: { USD_FROM, USD_TO } };
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at rate get by id']);
+      throw new InternalError('Error at rate get by id');
     }
   };
 }

@@ -1,6 +1,6 @@
 import { PrismaContext } from '../services/dtos';
 import prisma from '../config/prisma';
-import { CustomError } from '../interfaces';
+import { InternalError } from '../interfaces';
 import { AccountModelDTO, AccountCreateInputDTO, AccountUpdateInputDTO } from './dtos';
 import { selectAccountOptions } from '../utils/helpers';
 import { IAccountWriteRepository } from './interfaces';
@@ -18,7 +18,7 @@ export class AccountWriteRepository implements IAccountWriteRepository {
       return createdAccount as AccountModelDTO;
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at account create']);
+      throw new InternalError('Error trying to create account');
     }
   };
 
@@ -41,7 +41,7 @@ export class AccountWriteRepository implements IAccountWriteRepository {
       });
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at account update']);
+      throw new InternalError('Error trying to update account');
     }
   };
 }

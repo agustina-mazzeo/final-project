@@ -1,6 +1,6 @@
 //import { rates } from '../../database';
 import { Prisma } from '@prisma/client';
-import { CustomError, ValidationError } from '../interfaces';
+import { InternalError, ValidationError } from '../interfaces';
 import prisma from '../config/prisma';
 import { RateModelDTO, RateInputDTO } from './dtos';
 import { IRateWriteRepository } from './interfaces';
@@ -20,7 +20,7 @@ export class RateWriteRepository implements IRateWriteRepository {
       return rate;
     } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ValidationError('Rate already exists');
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['There was an internal error']);
+      throw new InternalError('Error trying to save rate');
     }
     //rates.push(rate);
   };
@@ -41,7 +41,7 @@ export class RateWriteRepository implements IRateWriteRepository {
       return rateToUpdate;
     } catch (error: any) {
       console.log(error);
-      throw new CustomError('INTERNAL_SERVER_ERROR', ['Error at rate update']);
+      throw new InternalError('Error at rate update');
     }
     //const index = rates.findIndex(({ name }) => rateToUpdate.name === name);
     //rates[index] = rateToUpdate;
