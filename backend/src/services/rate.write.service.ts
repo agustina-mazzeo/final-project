@@ -1,4 +1,4 @@
-import { CustomError, Rates } from '../interfaces';
+import { Rates } from '../interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../repositories/interfaces';
 import { IRateWriteService } from './interfaces';
 import { RateCreateInputDTO, RateOutputDTO, RateUpdateInputDTO } from './dtos';
@@ -19,7 +19,7 @@ export class RateWriteService implements IRateWriteService {
       else result = await this.rateWriteRepository.create({ name, rates: newRate });
       return result;
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 
@@ -34,7 +34,7 @@ export class RateWriteService implements IRateWriteService {
     try {
       return await this.rateWriteRepository.update(newRate);
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 }

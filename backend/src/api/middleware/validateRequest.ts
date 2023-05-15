@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CustomError } from '../../interfaces';
+import { ValidationError } from '../../interfaces';
 import { AnyZodObject } from 'zod';
 
 const validateRequest = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
@@ -14,10 +14,16 @@ const validateRequest = (schema: AnyZodObject) => (req: Request, res: Response, 
     req.params = parsed.params;
     next();
   } catch (e: any) {
-    const errors: string[] = e.issues.map(({ message }: any) => {
-      return message;
-    });
-    next(new CustomError('VALIDATION_ERROR', errors));
+    const errors: string = e.issues.reduce((acumulator: string, { message }: any, index: number) => {
+      if (index === 0) {
+        return message;
+      } else if (index === e.issues.length - 1) {
+        return `${acumulator} and ${message}`;
+      } else {
+        return `${acumulator}, ${message}`;
+      }
+    }, '');
+    next(new ValidationError(errors));
     //res.status(400).send({ error: e });
   }
 };

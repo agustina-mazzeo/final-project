@@ -1,5 +1,5 @@
 import { IAccountWriteRepository, IUserReadRepository } from '../repositories/interfaces';
-import { CustomError } from '../interfaces';
+import { ValidationError } from '../interfaces';
 import { addOnePercent, currencies } from '../utils/helpers';
 import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO, PrismaContext } from './dtos';
 import { IAccountReadService, IAccountWriteService, IRateReadService } from './interfaces';
@@ -16,9 +16,9 @@ export class AccountWriteService implements IAccountWriteService {
     try {
       const user = await this.userReadRepository.getByID(user_id);
       if (user) return this.accountWriteRepository.create({ user_id, currency });
-      else throw new CustomError('VALIDATION_ERROR', ['Invalid credentials']);
+      else throw new ValidationError('Invalid credentials');
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 
@@ -28,7 +28,7 @@ export class AccountWriteService implements IAccountWriteService {
         await this.create({ currency, user_id });
       }
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 
@@ -36,7 +36,7 @@ export class AccountWriteService implements IAccountWriteService {
     try {
       return await this.accountWriteRepository.update(updateInfo, prisma);
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 
@@ -55,7 +55,7 @@ export class AccountWriteService implements IAccountWriteService {
     try {
       //check balance
       if (account_from.balance - amount_from < 0) {
-        throw new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
+        throw new ValidationError('Insufficient funds');
       }
       //substract funds
       account_from.balance = account_from.balance - amount_from;
@@ -73,7 +73,7 @@ export class AccountWriteService implements IAccountWriteService {
       const account_to_updated = await this.update({ balance: account_to.balance, id: account_to.id }, prisma);
       return { account_from: account_from_updated, account_to: account_to_updated };
     } catch (error: any) {
-      throw new CustomError(error.errorType, error.messages);
+      throw error;
     }
   };
 }

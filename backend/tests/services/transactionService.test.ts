@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError } from '../../src/interfaces';
+import { CustomError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
 import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
 import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
@@ -175,8 +175,7 @@ describe('TransactionService', () => {
         await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getAll.calledOnceWith(userId)).be.true();
         should(accountReadServiceStub.getByID.notCalled).be.true();
         should(accountWriteServiceStub.updateAccounts.notCalled).be.true();
@@ -207,7 +206,7 @@ describe('TransactionService', () => {
           currency: 'EUR',
         },
       ];
-      const custom_error = new CustomError('VALIDATION_ERROR', ['Invalid account']);
+      const custom_error = new ValidationError('Invalid account');
 
       const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
       const getByID = accountReadServiceStub.getByID.rejects(custom_error);
@@ -216,8 +215,7 @@ describe('TransactionService', () => {
         await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getAll.calledOnceWith(userId)).be.true();
         should(getByID.calledWith(2)).be.true();
         should(accountWriteServiceStub.updateAccounts.notCalled).be.true();
@@ -249,7 +247,7 @@ describe('TransactionService', () => {
         },
       ];
       const account_to = userAccounts[1];
-      const custom_error = new CustomError('VALIDATION_ERROR', ['Insufficient funds']);
+      const custom_error = new ValidationError('Insufficient funds');
 
       const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
       const getByID = accountReadServiceStub.getByID.resolves(account_to);
@@ -259,8 +257,7 @@ describe('TransactionService', () => {
         await transactionWriteService.create({ transfer, userId: '1' });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('VALIDATION_ERROR');
+        should(error).be.instanceOf(ValidationError);
         should(getAll.calledOnceWith(userId)).be.true();
         should(getByID.calledWith(2)).be.true();
         should(updateAccounts.called).be.true();
@@ -282,9 +279,8 @@ describe('TransactionService', () => {
         await transactionWriteService.create({ transfer, userId });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('VALIDATION_ERROR');
-        should(error.messages).containDeep(['Invalid Credentials']);
+        should(error).be.an.instanceOf(UnauthorizedError);
+        should(error.message).containDeep('Invalid Credentials');
         should(accountReadServiceStub.getAll.notCalled).be.true();
       }
     });

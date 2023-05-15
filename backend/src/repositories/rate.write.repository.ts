@@ -1,6 +1,6 @@
 //import { rates } from '../../database';
 import { Prisma } from '@prisma/client';
-import { CustomError } from '../interfaces';
+import { CustomError, ValidationError } from '../interfaces';
 import prisma from '../config/prisma';
 import { RateModelDTO, RateInputDTO } from './dtos';
 import { IRateWriteRepository } from './interfaces';
@@ -19,8 +19,7 @@ export class RateWriteRepository implements IRateWriteRepository {
       });
       return rate;
     } catch (error: any) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
-        throw new CustomError('VALIDATION_ERROR', ['Rate already exists']);
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ValidationError('Rate already exists');
       throw new CustomError('INTERNAL_SERVER_ERROR', ['There was an internal error']);
     }
     //rates.push(rate);
