@@ -10,7 +10,8 @@
     "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } &&  nyc mocha -r ts-node/register 'tests/**/*.ts'",
     "dev": "nodemon",
     "build": "tsc",
-    "start": "npm run build && node dist/server.js",
+    "start": "npm run build && node dist/src/server.js",
+    "doc": "npm run build && node dist/src/swagger.js",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix"
   },
@@ -30,6 +31,9 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "swagger-autogen": "^2.23.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -47,6 +51,8 @@
     "@types/passport-local": "^1.0.35",
     "@types/should": "^13.0.0",
     "@types/sinon": "^10.0.14",
+    "@types/swagger-jsdoc": "^6.0.1",
+    "@types/swagger-ui-express": "^4.1.3",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "eslint": "^8.38.0",

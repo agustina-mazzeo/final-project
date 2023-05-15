@@ -38,7 +38,121 @@ export class TransactionRoutes {
   private initializeRoutes = () => {
     this.router.use(this.path, authJwt);
     this.router.use(this.pathTransfer, authJwt);
-    this.router.get(`${this.path}`, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
-    this.router.post(`${this.pathTransfer}`, validateRequest(transferSchema), this.transactionsController.createTransfer);
+
+    /**
+     * @openapi
+     * /transactions:
+     *   get:
+     *     summary: Gets filtered users transactions
+     *     tags:
+     *       - Transaction
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *         description: Bearer Token.
+     *         type: string
+     *         required: true
+     *       - in: query
+     *         name: from
+     *         description: starting date filter
+     *         required: false
+     *         schema:
+     *           type: string
+     *       - in: query
+     *         name: to
+     *         description: ending date filter
+     *         required: false
+     *         schema:
+     *           type: string
+     *       - in: query
+     *         name: account_from
+     *         description: account from filter
+     *         required: false
+     *         schema:
+     *           type: number
+     *     responses:
+     *       200:
+     *         description: User's filtered transactions
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 data:
+     *                   type: array
+     *                   items:
+     *                     $ref: '#/components/schemas/Transaction'
+     *       400:
+     *         description: Validation Error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 errors:
+     *                   type: string
+     *       500:
+     *         description: An error occurred
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 errors:
+     *                   type: string
+     *             example:
+     *               errors: An error occurred while fetching user's transactions
+     */
+    this.router.get(this.path, validateRequest(transactionsSchema), this.transactionsController.getTransactions);
+
+    /**
+     * @openapi
+     * /transfer:
+     *   post:
+     *     summary: Creates a new transaction
+     *     tags:
+     *       - Transaction
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *         description: Bearer Token.
+     *         type: string
+     *         required: true
+     *     responses:
+     *       200:
+     *         description: New Transfer object
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 data:
+     *                    $ref: '#/components/schemas/Transfer'
+     *       400:
+     *         description: Validation Error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 errors:
+     *                   type: string
+     *       500:
+     *         description: An error occurred
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 errors:
+     *                   type: string
+     *             example:
+     *               errors: An error occurred while creating the transaction
+     */
+    this.router.post(this.pathTransfer, validateRequest(transferSchema), this.transactionsController.createTransfer);
   };
 }
