@@ -1,4 +1,4 @@
-import { cleanEnv, port, str } from 'envalid';
+import { cleanEnv, port, str, num } from 'envalid';
 
 const validateEnv = () => {
   cleanEnv(process.env, {
@@ -7,6 +7,8 @@ const validateEnv = () => {
     BASE: str(),
     SYMBOLS: str(),
     APIKEY: str(),
+    DATABASE_URL: str(),
+    TTL: num(),
   });
 };
 

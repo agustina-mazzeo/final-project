@@ -4,6 +4,9 @@ import { Rates } from '../interfaces';
 import { currencies } from '../utils/helpers';
 import { RateWriteService } from '../services';
 import { RateReadRepository, RateWriteRepository } from '../repositories';
+import CacheLocal from '../cache/cache';
+
+const cacheInstance = CacheLocal.getInstance();
 
 //create service instance
 const rateWriteService = new RateWriteService(new RateReadRepository(), new RateWriteRepository());
@@ -21,7 +24,9 @@ export const cronJob = cron.schedule(
     } else {
       const referenceRate: Rates = data.rates;
       for (const name of currencies) {
-        rateWriteService.create({ name, referenceRate });
+        //creo una entrada a la tabla por cada currency en el Env. aemas actualizo el cache.
+        const lastRate = await rateWriteService.create({ name, referenceRate });
+        cacheInstance.set(name, lastRate, 14400);
       }
     }
   },

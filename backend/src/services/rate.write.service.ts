@@ -1,7 +1,7 @@
-import { Rates } from '../interfaces';
+import { ForbiddenError, Rates } from '../interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../repositories/interfaces';
 import { IRateWriteService } from './interfaces';
-import { RateCreateInputDTO, RateOutputDTO, RateUpdateInputDTO } from './dtos';
+import { RateCreateInputDTO, RateOutputDTO } from './dtos';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -12,11 +12,12 @@ export class RateWriteService implements IRateWriteService {
 
   public create = async ({ name, referenceRate }: RateCreateInputDTO): Promise<RateOutputDTO> => {
     try {
-      const savedRate = await this.rateReadRepository.getByID(name);
+      //const savedRate = await this.rateReadRepository.getByID(name);
       const newRate = this.createRate(referenceRate, name);
-      let result: RateOutputDTO;
-      if (savedRate) result = await this.update({ name, rates: newRate });
-      else result = await this.rateWriteRepository.create({ name, rates: newRate });
+      //let result: RateOutputDTO;
+      //if (savedRate) result = await this.update({ name, rates: newRate });
+      //else
+      const result = await this.rateWriteRepository.create({ name, rates: newRate });
       return result;
     } catch (error: any) {
       throw error;
@@ -30,11 +31,7 @@ export class RateWriteService implements IRateWriteService {
     }
   };
 
-  public update = async (newRate: RateUpdateInputDTO): Promise<RateOutputDTO> => {
-    try {
-      return await this.rateWriteRepository.update(newRate);
-    } catch (error: any) {
-      throw error;
-    }
+  public update = async (): Promise<RateOutputDTO> => {
+    throw new ForbiddenError('Forbidden');
   };
 }
