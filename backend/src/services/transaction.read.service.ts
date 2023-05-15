@@ -1,5 +1,5 @@
 import { operators } from '../utils/helpers';
-import { CustomError, NotFoundError } from '../interfaces';
+import { CustomError, NotFoundError, UnauthorizedError } from '../interfaces';
 import { ITransactionReadRepository } from '../repositories/interfaces';
 import { TransactionOutputDTO, TransactionGetAllDTO } from './dtos';
 import { IAccountReadService, ITransactionReadService } from './interfaces';
@@ -9,7 +9,7 @@ export class TransactionReadService implements ITransactionReadService {
 
   public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
-      if (!userId) throw new CustomError('UNAUTHORIZED_ERROR', ['Invalid Credentials']);
+      if (!userId) throw new UnauthorizedError('Invalid Credentials');
       const userAccounts = await this.accountReadService.getAll(userId);
       if (userAccounts.length === 0) {
         throw new NotFoundError("Couldn't get user's transactions");

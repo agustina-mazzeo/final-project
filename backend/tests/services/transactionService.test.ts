@@ -101,8 +101,7 @@ describe('TransactionService', () => {
         await transactionReadService.getAll({ queryParams: {}, userId });
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('UNAUTHORIZED_ERROR');
+        should(error).be.an.instanceOf(UnauthorizedError);
         should(error.messages).containDeep(['Invalid Credentials']);
         should(transactionReadRepositoryStub.getAll.notCalled).be.true();
       }
