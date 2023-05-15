@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError, Rates, ValidationError } from '../../src/interfaces';
+import { ForbiddenError, Rates, ValidationError } from '../../src/interfaces';
 import { IRateReadService, IRateWriteService } from '../../src/services/interfaces';
 import { IRateReadRepository, IRateWriteRepository } from '../../src/repositories/interfaces';
 import { RateReadService, RateWriteService } from '../../src/services';
@@ -116,14 +116,13 @@ describe('RateService', () => {
   });
 
   describe('getByID', () => {
-    it('should throw a FORBIDDEN_ERROR', async () => {
+    it('should throw a forbidden error', async () => {
       try {
         await rateReadService.getByID();
         sinon.assert.fail();
       } catch (error: any) {
         should.exist(error);
-        should(error).be.an.instanceOf(CustomError);
-        should(error.errorType).equal('FORBIDDEN_ERROR');
+        should(error).be.an.instanceOf(ForbiddenError);
         should(error.messages).deepEqual(['Forbidden']);
       }
     });

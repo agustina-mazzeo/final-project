@@ -1,5 +1,5 @@
 import { IAccountReadService, IAccountWriteService, ITransactionWriteService } from './interfaces';
-import { CustomError, UnauthorizedError, ValidationError } from '../interfaces';
+import { ForbiddenError, UnauthorizedError, ValidationError } from '../interfaces';
 
 import { TransactionOutputDTO, TransactionInputDTO } from './dtos';
 import { ITransactionWriteRepository } from '../repositories/interfaces';
@@ -35,6 +35,6 @@ export class TransactionWriteService implements ITransactionWriteService {
   };
 
   public update = (): Promise<TransactionOutputDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

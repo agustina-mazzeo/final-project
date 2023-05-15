@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import should from 'should';
 import { hash } from 'bcrypt';
-import { CustomError, UnauthorizedError, ValidationError } from '../../src/interfaces';
+import { ForbiddenError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { IAccountWriteService, IUserReadService, IUserWriteService } from '../../src/services/interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../src/services';
@@ -169,8 +169,7 @@ describe('UserService', () => {
         await userWriteService.update();
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('FORBIDDEN_ERROR');
+        should(error).be.instanceOf(ForbiddenError);
       }
     });
   });

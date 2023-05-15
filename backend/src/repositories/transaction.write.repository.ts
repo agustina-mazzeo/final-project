@@ -1,6 +1,6 @@
 import { PrismaContext } from '../services/dtos';
 import prisma from '../config/prisma';
-import { CustomError } from '../interfaces';
+import { CustomError, ForbiddenError } from '../interfaces';
 import { TransactionInputDTO, TransactionModelDTO } from './dtos';
 import { ITransactionWriteRepository } from './interfaces';
 
@@ -21,6 +21,6 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
   };
 
   public update = (): Promise<TransactionModelDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

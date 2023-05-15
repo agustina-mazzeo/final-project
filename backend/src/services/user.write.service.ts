@@ -1,5 +1,5 @@
 import { hash } from 'bcrypt';
-import { CustomError, ValidationError } from '../interfaces';
+import { ForbiddenError, ValidationError } from '../interfaces';
 import { IAccountWriteService, IUserWriteService } from './interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../repositories/interfaces';
 import { UserOutputDTO, UserCreateInputDTO } from './dtos';
@@ -23,6 +23,6 @@ export class UserWriteService implements IUserWriteService {
   };
 
   public update = (): Promise<UserOutputDTO> => {
-    throw new CustomError('FORBIDDEN_ERROR', ['Forbidden']);
+    throw new ForbiddenError('Forbidden');
   };
 }

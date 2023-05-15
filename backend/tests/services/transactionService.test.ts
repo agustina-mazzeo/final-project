@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { CustomError, NotFoundError, UnauthorizedError, ValidationError } from '../../src/interfaces';
+import { ForbiddenError, NotFoundError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
 import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
 import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
@@ -290,8 +290,7 @@ describe('TransactionService', () => {
         await transactionWriteService.update();
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('FORBIDDEN_ERROR');
+        should(error).be.instanceOf(ForbiddenError);
       }
     });
   });
@@ -302,8 +301,7 @@ describe('TransactionService', () => {
         await transactionReadService.getByID();
         sinon.assert.fail();
       } catch (error: any) {
-        should(error).be.instanceOf(CustomError);
-        should(error.errorType).be.eql('FORBIDDEN_ERROR');
+        should(error).be.instanceOf(ForbiddenError);
       }
     });
   });
