@@ -12,18 +12,14 @@ export class UserWriteService implements IUserWriteService {
   ) {}
 
   public create = async (user: UserCreateInputDTO): Promise<UserOutputDTO> => {
-    try {
-      const findUser: UserOutputDTO | null = await this.userReadRepository.getByEmail(user.email);
-      if (findUser) throw new ValidationError(`This email ${user.email} already exists`);
+    const findUser: UserOutputDTO | null = await this.userReadRepository.getByEmail(user.email);
+    if (findUser) throw new ValidationError(`This email ${user.email} already exists`);
 
-      const password = await hash(user.password, 10);
-      const newUser: UserOutputDTO = await this.userWriteRepository.create({ ...user, password });
-      //create user's accounts
-      this.accountWriteService.createUsersAccounts(newUser.id);
-      return newUser;
-    } catch (error: any) {
-      throw error;
-    }
+    const password = await hash(user.password, 10);
+    const newUser: UserOutputDTO = await this.userWriteRepository.create({ ...user, password });
+    //create user's accounts
+    this.accountWriteService.createUsersAccounts(newUser.id);
+    return newUser;
   };
 
   public update = (): Promise<UserOutputDTO> => {
