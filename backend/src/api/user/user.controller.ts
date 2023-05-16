@@ -9,7 +9,7 @@ class UserController {
   constructor(private userReadService: IUserReadService, private accountReadService: IAccountReadService) {}
   public getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      res.status(200).json(await this.userReadService.getAll());
+      res.status(200).json({ data: await this.userReadService.getAll() });
     } catch (error) {
       next(error);
     }
