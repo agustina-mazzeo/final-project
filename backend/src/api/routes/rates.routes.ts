@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { RatesController } from '../rates/rates.controller';
-import { RateReadService } from '../../services';
-import { RateReadRepository } from '../../repositories';
+import { RateReadService, RateWriteService } from '../../services';
+import { RateReadRepository, RateWriteRepository } from '../../repositories';
 
-const rateReadService = new RateReadService(new RateReadRepository());
+const rateReadRepository = new RateReadRepository();
+const rateWriteRepository = new RateWriteRepository();
+const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
+const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
 
 export class RatesRoutes {
   public path = '/rates';

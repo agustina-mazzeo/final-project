@@ -1,10 +1,9 @@
-import { RateWriteService } from '../services';
-import { RateReadRepository, RateWriteRepository } from '../repositories';
 import CacheLocal from '../cache/cache';
 
 import * as dotenv from 'dotenv';
 import { getRates } from '../services/external/rates';
 import { InternalError, Rates } from '../interfaces';
+import { IRateWriteService } from '../services/interfaces';
 dotenv.config();
 
 const SYMBOLS = process.env.SYMBOLS as string;
@@ -12,7 +11,6 @@ const TTL = process.env.TTL as unknown as number;
 export const currencies: string[] = SYMBOLS.split(',');
 
 const cacheInstance = CacheLocal.getInstance();
-const rateWriteService = new RateWriteService(new RateReadRepository(), new RateWriteRepository());
 
 export const selectAccountOptions = { user_id: true, balance: true, currency: true, id: true };
 export const selectRateOptions = { created_at: true, name: true, USD_FROM: true, USD_TO: true };
@@ -50,7 +48,7 @@ export const addOnePercent = (num: number): number => {
   return num + onePercent; // Add 1% to the input number
 };
 
-export const updateRates = async () => {
+export const updateRates = async (rateWriteService: IRateWriteService) => {
   const result: { [key: string]: any } = {};
   console.log('fetching rates');
   const data = await getRates();

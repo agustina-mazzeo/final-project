@@ -1,13 +1,13 @@
 import { IRateReadRepository } from '../repositories/interfaces';
 import { ForbiddenError, ValidationError } from '../interfaces';
-import { IRateReadService } from './interfaces';
+import { IRateReadService, IRateWriteService } from './interfaces';
 import { RateOutputDTO } from './dtos';
 import CacheLocal from '../cache/cache';
 import { updateRates } from '../utils/helpers';
 const cacheInstance = CacheLocal.getInstance();
 
 export class RateReadService implements IRateReadService {
-  constructor(private rateReadRepository: IRateReadRepository) {}
+  constructor(private rateReadRepository: IRateReadRepository, private rateWriteService: IRateWriteService) {}
 
   public getAll = async (): Promise<RateOutputDTO[]> => {
     try {
@@ -27,7 +27,7 @@ export class RateReadService implements IRateReadService {
         rate_from = cacheInstance.get(currency_from);
         rate_to = cacheInstance.get(currency_to);
       } else {
-        const lastRates = await updateRates();
+        const lastRates = await updateRates(this.rateWriteService);
         rate_from = lastRates[currency_from];
         rate_to = lastRates[currency_to];
       }

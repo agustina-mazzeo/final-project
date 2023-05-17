@@ -4,8 +4,8 @@ import { ValidationError } from '../../src/interfaces';
 import { IAccountReadService, IAccountWriteService, IRateReadService } from '../../src/services/interfaces';
 import { IAccountReadRepository, IAccountWriteRepository, IUserReadRepository } from '../../src/repositories/interfaces';
 import { AccountReadRepository } from '../../src/repositories/account.read.repository';
-import { AccountReadService, AccountWriteService, RateReadService } from '../../src/services';
-import { AccountWriteRepository, RateReadRepository, UserReadRepository } from '../../src/repositories';
+import { AccountReadService, AccountWriteService, RateReadService, RateWriteService } from '../../src/services';
+import { AccountWriteRepository, RateReadRepository, UserReadRepository, RateWriteRepository } from '../../src/repositories';
 import { AccountOutputDTO, UserOutputDTO } from '../../src/services/dtos';
 import { AccountModelDTO } from 'repositories/dtos';
 
@@ -13,7 +13,10 @@ describe('AccountService', () => {
   const accountReadRepository = new AccountReadRepository();
   const accountWriteRepository = new AccountWriteRepository();
   const userReadRepository = new UserReadRepository();
-  const rateReadService = new RateReadService(new RateReadRepository());
+  const rateReadRepository = new RateReadRepository();
+  const rateWriteRepository = new RateWriteRepository();
+  const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
+  const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
 
   let accountReadRepositoryStub: sinon.SinonStubbedInstance<IAccountReadRepository>;
   let accountWriteRepositoryStub: sinon.SinonStubbedInstance<IAccountWriteRepository>;

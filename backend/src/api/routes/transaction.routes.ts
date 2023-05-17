@@ -3,11 +3,19 @@ import validateRequest from '../middleware/validateRequest';
 import { authJwt } from '../middleware/authPassport';
 import { TransactionsController } from '../transactions/transactions.controller';
 import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
-import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../services';
+import {
+  AccountReadService,
+  AccountWriteService,
+  RateReadService,
+  RateWriteService,
+  TransactionReadService,
+  TransactionWriteService,
+} from '../../services';
 import {
   AccountReadRepository,
   AccountWriteRepository,
   RateReadRepository,
+  RateWriteRepository,
   TransactionReadRepository,
   TransactionWriteRepository,
   UserReadRepository,
@@ -19,7 +27,9 @@ const userReadRepository = new UserReadRepository();
 const accountReadRepository = new AccountReadRepository();
 const accountWriteRepository = new AccountWriteRepository();
 const rateReadRepository = new RateReadRepository();
-const rateReadService = new RateReadService(rateReadRepository);
+const rateWriteRepository = new RateWriteRepository();
+const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
+const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
 const accountReadService = new AccountReadService(accountReadRepository);
 const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
 const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);

@@ -5,11 +5,19 @@ import {
   AccountReadRepository,
   AccountWriteRepository,
   RateReadRepository,
+  RateWriteRepository,
   TransactionReadRepository,
   TransactionWriteRepository,
   UserReadRepository,
 } from '../../src/repositories';
-import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
+import {
+  AccountReadService,
+  AccountWriteService,
+  RateReadService,
+  RateWriteService,
+  TransactionReadService,
+  TransactionWriteService,
+} from '../../src/services';
 import { TransactionOutputDTO } from '../../src/services/dtos';
 import { ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
 
@@ -20,7 +28,9 @@ describe('TransactionController', () => {
   const accountReadRepository = new AccountReadRepository();
   const accountWriteRepository = new AccountWriteRepository();
   const rateReadRepository = new RateReadRepository();
-  const rateReadService = new RateReadService(rateReadRepository);
+  const rateWriteRepository = new RateWriteRepository();
+  const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
+  const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
   const accountReadService = new AccountReadService(accountReadRepository);
   const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
   const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);

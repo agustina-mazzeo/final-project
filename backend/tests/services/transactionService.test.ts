@@ -1,13 +1,21 @@
 import sinon from 'sinon';
 import should from 'should';
 import { ForbiddenError, NotFoundError, UnauthorizedError, ValidationError } from '../../src/interfaces';
-import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../src/services';
+import {
+  AccountReadService,
+  AccountWriteService,
+  RateReadService,
+  RateWriteService,
+  TransactionReadService,
+  TransactionWriteService,
+} from '../../src/services';
 import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
 import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
 import {
   AccountReadRepository,
   AccountWriteRepository,
   RateReadRepository,
+  RateWriteRepository,
   TransactionReadRepository,
   TransactionWriteRepository,
   UserReadRepository,
@@ -15,7 +23,10 @@ import {
 import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
 
 describe('TransactionService', () => {
-  const rateReadService = new RateReadService(new RateReadRepository());
+  const rateReadRepository = new RateReadRepository();
+  const rateWriteRepository = new RateWriteRepository();
+  const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
+  const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
   const transactionReadRepository = new TransactionReadRepository();
   const transactionWriteRepository = new TransactionWriteRepository();
   const accountReadService = new AccountReadService(new AccountReadRepository());
