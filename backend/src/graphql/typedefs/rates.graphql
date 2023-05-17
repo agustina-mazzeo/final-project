@@ -1,0 +1,10 @@
+type Rate {
+    name: String!
+    createdAt: String!
+    conversion: Conversion!
+}
+
+type Conversion {
+    usdFrom: Int!
+    usdTo: Int!
+}

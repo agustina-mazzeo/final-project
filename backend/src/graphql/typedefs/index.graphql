@@ -1,0 +1,12 @@
+type Query {
+    rates: [Rate!]!
+    users: [User!]!
+    accounts: [Account!]!
+    transactions(params: QueryParamsInput): [Transaction!]!
+}
+
+type Mutation {
+    createUser(user: UserCreateInput!): UserOutput!
+    login(user: LoginInput!): UserWithToken!
+    newTrasfer(transfer: TransactionInput!): Transaction!
+}

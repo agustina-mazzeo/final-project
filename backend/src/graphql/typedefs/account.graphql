@@ -1,0 +1,6 @@
+type Account {
+    id: Int!
+    userId: String!
+    currency: String!
+    balance: Int!
+}

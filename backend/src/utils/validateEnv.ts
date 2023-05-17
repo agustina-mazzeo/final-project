@@ -9,6 +9,7 @@ const validateEnv = () => {
     APIKEY: str(),
     DATABASE_URL: str(),
     TTL: num(),
+    GQL_PORT: port(),
   });
 };
 
