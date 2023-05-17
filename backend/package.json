@@ -7,9 +7,10 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
+    "copy-static": "Xcopy src\\graphql\\typedefs dist\\src\\graphql\\typedefs /E/I",
+    "build": "tsc && npm run copy-static",
     "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } &&  nyc mocha -r ts-node/register 'tests/**/*.ts'",
     "dev": "nodemon",
-    "build": "tsc",
     "start": "npm run build && node dist/src/server.js",
     "gql": "npm run build && node dist/src/graphql/index.js",
     "doc": "npm run build && node dist/src/swagger.js",
