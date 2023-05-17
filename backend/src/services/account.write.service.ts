@@ -2,14 +2,13 @@ import { IAccountWriteRepository, IUserReadRepository } from '../repositories/in
 import { ValidationError } from '../interfaces';
 import { addOnePercent, currencies } from '../utils/helpers';
 import { AccountCreateInputDTO, AccountOutputDTO, AccountUpdateInputDTO, PrismaContext } from './dtos';
-import { IAccountReadService, IAccountWriteService, IRateReadService } from './interfaces';
+import { IAccountWriteService, IRateWriteService } from './interfaces';
 
 export class AccountWriteService implements IAccountWriteService {
   constructor(
-    private accountReadService: IAccountReadService,
     private accountWriteRepository: IAccountWriteRepository,
     private userReadRepository: IUserReadRepository,
-    private rateReadService: IRateReadService,
+    private rateWriteService: IRateWriteService,
   ) {}
 
   public create = async ({ currency, user_id }: AccountCreateInputDTO): Promise<AccountOutputDTO> => {
@@ -63,7 +62,7 @@ export class AccountWriteService implements IAccountWriteService {
       //convert the amount
       //const currency_to = await this.accountReadService.getAccountCurrency(account_to.id);
       //const currency_from = await this.accountReadService.getAccountCurrency(account_from.id);
-      const multiplier = await this.rateReadService.getMultiplier(account_from.currency, account_to.currency);
+      const multiplier = await this.rateWriteService.getMultiplier(account_from.currency, account_to.currency);
       const amount_to = amount * multiplier;
 
       //deposit funds

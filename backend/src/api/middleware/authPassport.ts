@@ -4,27 +4,16 @@ import { compare } from 'bcrypt';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
-import { AccountReadService, AccountWriteService, RateReadService, RateWriteService, UserReadService, UserWriteService } from '../../services';
-import {
-  AccountWriteRepository,
-  AccountReadRepository,
-  UserReadRepository,
-  UserWriteRepository,
-  RateWriteRepository,
-  RateReadRepository,
-} from '../../repositories';
+import { AccountWriteService, RateWriteService, UserReadService, UserWriteService } from '../../services';
+import { AccountWriteRepository, UserReadRepository, UserWriteRepository, RateWriteRepository } from '../../repositories';
 import { InternalError, UnauthorizedError } from '../../interfaces';
 
 const userReadRepository = new UserReadRepository();
 const userWriteRepository = new UserWriteRepository();
-const accountReadRepository = new AccountReadRepository();
 const accountWriteRepository = new AccountWriteRepository();
-const rateReadRepository = new RateReadRepository();
 const rateWriteRepository = new RateWriteRepository();
-const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
-const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
-const accountReadService = new AccountReadService(accountReadRepository);
-const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
+const rateWriteService = new RateWriteService(rateWriteRepository);
+const accountWriteService = new AccountWriteService(accountWriteRepository, userReadRepository, rateWriteService);
 const userWriteService = new UserWriteService(userReadRepository, userWriteRepository, accountWriteService);
 const userReadService = new UserReadService(userReadRepository);
 

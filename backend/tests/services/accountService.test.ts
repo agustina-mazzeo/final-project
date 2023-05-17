@@ -1,11 +1,11 @@
 import sinon from 'sinon';
 import should from 'should';
 import { ValidationError } from '../../src/interfaces';
-import { IAccountReadService, IAccountWriteService, IRateReadService } from '../../src/services/interfaces';
+import { IAccountReadService, IAccountWriteService, IRateWriteService } from '../../src/services/interfaces';
 import { IAccountReadRepository, IAccountWriteRepository, IUserReadRepository } from '../../src/repositories/interfaces';
 import { AccountReadRepository } from '../../src/repositories/account.read.repository';
-import { AccountReadService, AccountWriteService, RateReadService, RateWriteService } from '../../src/services';
-import { AccountWriteRepository, RateReadRepository, UserReadRepository, RateWriteRepository } from '../../src/repositories';
+import { AccountReadService, AccountWriteService, RateWriteService } from '../../src/services';
+import { AccountWriteRepository, UserReadRepository, RateWriteRepository } from '../../src/repositories';
 import { AccountOutputDTO, UserOutputDTO } from '../../src/services/dtos';
 import { AccountModelDTO } from 'repositories/dtos';
 
@@ -13,15 +13,13 @@ describe('AccountService', () => {
   const accountReadRepository = new AccountReadRepository();
   const accountWriteRepository = new AccountWriteRepository();
   const userReadRepository = new UserReadRepository();
-  const rateReadRepository = new RateReadRepository();
   const rateWriteRepository = new RateWriteRepository();
-  const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
-  const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
+  const rateWriteService = new RateWriteService(rateWriteRepository);
 
   let accountReadRepositoryStub: sinon.SinonStubbedInstance<IAccountReadRepository>;
   let accountWriteRepositoryStub: sinon.SinonStubbedInstance<IAccountWriteRepository>;
   let userReadRepositoryStub: sinon.SinonStubbedInstance<IUserReadRepository>;
-  let rateReadServiceStub: sinon.SinonStubbedInstance<IRateReadService>;
+  let rateWriteServiceStub: sinon.SinonStubbedInstance<IRateWriteService>;
   let accountReadService: IAccountReadService;
   let accountWriteService: IAccountWriteService;
   let sandbox: sinon.SinonSandbox;
@@ -31,9 +29,9 @@ describe('AccountService', () => {
     accountReadRepositoryStub = sandbox.stub(accountReadRepository as IAccountReadRepository);
     accountWriteRepositoryStub = sandbox.stub(accountWriteRepository as IAccountWriteRepository);
     userReadRepositoryStub = sandbox.stub(userReadRepository as IUserReadRepository);
-    rateReadServiceStub = sandbox.stub(rateReadService as IRateReadService);
+    rateWriteServiceStub = sandbox.stub(rateWriteService as IRateWriteService);
     accountReadService = new AccountReadService(accountReadRepositoryStub);
-    accountWriteService = new AccountWriteService(accountReadService, accountWriteRepositoryStub, userReadRepositoryStub, rateReadServiceStub);
+    accountWriteService = new AccountWriteService(accountWriteRepositoryStub, userReadRepositoryStub, rateWriteServiceStub);
   });
   afterEach(() => {
     sandbox.restore();
@@ -235,7 +233,7 @@ describe('AccountService', () => {
       const getByID = accountReadRepositoryStub.getByID;
       getByID.withArgs(account_from_id).resolves({ currency: 'UYU' } as AccountModelDTO);
       getByID.withArgs(account_to_id).resolves({ currency: 'USD' } as AccountModelDTO);
-      const getMultiplier = rateReadServiceStub.getMultiplier.resolves(0.5);
+      const getMultiplier = rateWriteServiceStub.getMultiplier.resolves(0.5);
       const update = accountWriteRepositoryStub.update;
       update.withArgs({ id: account_from_id, balance: account_from_updated_balance }).resolves(account_from_updated);
       update.withArgs({ id: account_to_id, balance: account_to_updated_balance }).resolves(account_to_updated);
@@ -280,7 +278,7 @@ describe('AccountService', () => {
       const getByID = accountReadRepositoryStub.getByID;
       getByID.withArgs(account_from.id).resolves({ currency: 'UYU' } as AccountOutputDTO);
       getByID.withArgs(account_to.id).resolves({ currency: 'USD' } as AccountOutputDTO);
-      const getMultiplier = rateReadServiceStub.getMultiplier.resolves(0.5);
+      const getMultiplier = rateWriteServiceStub.getMultiplier.resolves(0.5);
       const update = accountWriteRepositoryStub.update;
       update.withArgs({ id: account_from.id, balance: account_from_updated.balance }).resolves(account_from_updated);
       update.withArgs({ id: account_to.id, balance: account_to_updated.balance }).resolves(account_to_updated);
@@ -319,7 +317,7 @@ describe('AccountService', () => {
       } catch (error: any) {
         should(error).be.instanceOf(ValidationError);
         should(error.message).be.eql('Insufficient funds');
-        should(rateReadServiceStub.getMultiplier.notCalled).be.true();
+        should(rateWriteServiceStub.getMultiplier.notCalled).be.true();
         should(accountWriteRepositoryStub.update.notCalled).be.true();
       }
     });

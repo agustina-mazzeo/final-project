@@ -1,20 +1,12 @@
 import sinon from 'sinon';
 import should from 'should';
 import { ForbiddenError, NotFoundError, UnauthorizedError, ValidationError } from '../../src/interfaces';
-import {
-  AccountReadService,
-  AccountWriteService,
-  RateReadService,
-  RateWriteService,
-  TransactionReadService,
-  TransactionWriteService,
-} from '../../src/services';
+import { AccountReadService, AccountWriteService, RateWriteService, TransactionReadService, TransactionWriteService } from '../../src/services';
 import { ITransactionReadRepository, ITransactionWriteRepository } from '../../src/repositories/interfaces';
 import { IAccountReadService, IAccountWriteService, ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
 import {
   AccountReadRepository,
   AccountWriteRepository,
-  RateReadRepository,
   RateWriteRepository,
   TransactionReadRepository,
   TransactionWriteRepository,
@@ -23,14 +15,12 @@ import {
 import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
 
 describe('TransactionService', () => {
-  const rateReadRepository = new RateReadRepository();
   const rateWriteRepository = new RateWriteRepository();
-  const rateWriteService = new RateWriteService(rateReadRepository, rateWriteRepository);
-  const rateReadService = new RateReadService(rateReadRepository, rateWriteService);
+  const rateWriteService = new RateWriteService(rateWriteRepository);
   const transactionReadRepository = new TransactionReadRepository();
   const transactionWriteRepository = new TransactionWriteRepository();
   const accountReadService = new AccountReadService(new AccountReadRepository());
-  const accountWriteService = new AccountWriteService(accountReadService, new AccountWriteRepository(), new UserReadRepository(), rateReadService);
+  const accountWriteService = new AccountWriteService(new AccountWriteRepository(), new UserReadRepository(), rateWriteService);
 
   let transactionReadRepositoryStub: sinon.SinonStubbedInstance<ITransactionReadRepository>;
   let transactionWriteRepositoryStub: sinon.SinonStubbedInstance<ITransactionWriteRepository>;
