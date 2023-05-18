@@ -11,7 +11,6 @@
     "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } &&  nyc mocha -r ts-node/register 'tests/**/*.ts'",
     "dev": "nodemon",
     "start": "npm run build && node dist/src/server.js",
-    "gql": "npm run build && node dist/src/graphql/index.js",
     "doc": "npm run build && node dist/src/swagger.js",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix"
