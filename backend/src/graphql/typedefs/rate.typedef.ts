@@ -1,3 +1,4 @@
+export const rate = `#graphql
 type Rate {
     name: String!
     createdAt: String!
@@ -5,6 +6,6 @@ type Rate {
 }
 
 type Conversion {
-    usdFrom: Int!
-    usdTo: Int!
-}
+    usdFrom: Float!
+    usdTo: Float!
+}`;

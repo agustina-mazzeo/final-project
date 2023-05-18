@@ -1,3 +1,4 @@
+export const user = `#graphql
 type User {
     id: ID!
     name: String
@@ -29,4 +30,4 @@ type UserWithToken {
 type Token {
     token: String!
     expiresIn: String!
-}
+}`;

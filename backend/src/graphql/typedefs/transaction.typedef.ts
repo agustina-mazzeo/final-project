@@ -1,3 +1,4 @@
+export const transaction = `#graphql
 type Transaction {
     id: ID!
     accountFromId: Int!
@@ -19,3 +20,4 @@ input TransactionInput {
     amount: Int!
     description: String
 }
+`;
