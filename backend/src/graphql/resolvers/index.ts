@@ -1,7 +1,7 @@
 import { rateQueries } from './rate';
-import { userQueries } from './user';
+import { userQueries, userMutations } from './user';
 
 export default {
   Query: { ...rateQueries, ...userQueries },
-  Mutation: {},
+  Mutation: { ...userMutations },
 };
