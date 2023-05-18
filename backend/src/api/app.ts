@@ -2,16 +2,15 @@ import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import passport from 'passport';
-import { context } from '../graphql/context';
-
+import schema from '../graphql/schema';
+import { Context, context } from '../graphql/context';
+import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import errorManager from './middleware/errorManager';
 import { indexRouter } from './routes';
 import { cronJob } from '../cron/cron';
 import swaggerUi from 'swagger-ui-express';
 import { openapiSpec } from '../swagger';
-
-import { server } from '../graphql';
 
 export class App {
   public app: express.Application;
@@ -48,6 +47,9 @@ export class App {
   };
 
   private startGraphQL = async () => {
+    const server = new ApolloServer<Context>({
+      schema,
+    });
     try {
       await server.start();
       this.app.use('/graphql', cors<cors.CorsRequest>(), json(), expressMiddleware(server, { context }));
