@@ -1,12 +1,16 @@
+import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import passport from 'passport';
+import schema from '../graphql/schema';
+import { Context, context } from '../graphql/context';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
 import errorManager from './middleware/errorManager';
 import { indexRouter } from './routes';
 import { cronJob } from '../cron/cron';
 import swaggerUi from 'swagger-ui-express';
 import { openapiSpec } from '../swagger';
-//import * as SwaggerDocument from '../../swagger.json';
 
 export class App {
   public app: express.Application;
@@ -19,26 +23,39 @@ export class App {
     this.setRoutes();
     this.setErrorManager();
     this.setSwaggerDocs();
+    this.startGraphQL();
   }
   private startCronJob = () => {
     cronJob.start();
   };
   private setMiddleware = () => {
-    this.app.use(cors());
-    this.app.use(express.json());
-    this.app.use(passport.initialize());
+    this.app.use('/api', cors());
+    this.app.use('/api', express.json());
+    this.app.use('/api', passport.initialize());
   };
 
   private setSwaggerDocs = () => {
-    this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(openapiSpec));
+    this.app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(openapiSpec));
   };
 
   private setRoutes = () => {
-    this.app.use(indexRouter);
+    this.app.use('/api', indexRouter);
   };
 
   private setErrorManager = () => {
-    this.app.use(errorManager);
+    this.app.use('/api', errorManager);
+  };
+
+  private startGraphQL = async () => {
+    const server = new ApolloServer<Context>({
+      schema,
+    });
+    try {
+      await server.start();
+      this.app.use('/graphql', cors<cors.CorsRequest>(), json(), expressMiddleware(server, { context }));
+    } catch (error) {
+      console.log(error);
+    }
   };
   public start = () => {
     this.app.listen(this.port, async () => {
