@@ -3,7 +3,7 @@ type Transaction {
     id: ID!
     accountFromId: Int!
     accountToId: Int!
-    amount: Int!
+    amount: Float!
     createdAt: String!
     description: String
 }
@@ -17,7 +17,7 @@ input QueryParamsInput {
 input TransactionInput {
     accountFrom: Int!
     accountTo: Int!
-    amount: Int!
+    amount: Float!
     description: String
 }
 `;
