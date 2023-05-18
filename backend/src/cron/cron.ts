@@ -3,13 +3,13 @@ import { getRates } from '../services/external/rates';
 import { Rates } from '../interfaces';
 import { currencies } from '../utils/helpers';
 import { RateWriteService } from '../services';
-import { RateReadRepository, RateWriteRepository } from '../repositories';
+import { RateWriteRepository } from '../repositories';
 import CacheLocal from '../cache/cache';
 
 const cacheInstance = CacheLocal.getInstance();
 
 //create service instance
-const rateWriteService = new RateWriteService(new RateReadRepository(), new RateWriteRepository());
+const rateWriteService = new RateWriteService(new RateWriteRepository());
 
 const options: ScheduleOptions = {
   scheduled: false,

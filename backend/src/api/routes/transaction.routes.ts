@@ -3,11 +3,11 @@ import validateRequest from '../middleware/validateRequest';
 import { authJwt } from '../middleware/authPassport';
 import { TransactionsController } from '../transactions/transactions.controller';
 import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
-import { AccountReadService, AccountWriteService, RateReadService, TransactionReadService, TransactionWriteService } from '../../services';
+import { AccountReadService, AccountWriteService, RateWriteService, TransactionReadService, TransactionWriteService } from '../../services';
 import {
   AccountReadRepository,
   AccountWriteRepository,
-  RateReadRepository,
+  RateWriteRepository,
   TransactionReadRepository,
   TransactionWriteRepository,
   UserReadRepository,
@@ -18,10 +18,10 @@ const transactionWriteRepository = new TransactionWriteRepository();
 const userReadRepository = new UserReadRepository();
 const accountReadRepository = new AccountReadRepository();
 const accountWriteRepository = new AccountWriteRepository();
-const rateReadRepository = new RateReadRepository();
-const rateReadService = new RateReadService(rateReadRepository);
+const rateWriteRepository = new RateWriteRepository();
+const rateWriteService = new RateWriteService(rateWriteRepository);
 const accountReadService = new AccountReadService(accountReadRepository);
-const accountWriteService = new AccountWriteService(accountReadService, accountWriteRepository, userReadRepository, rateReadService);
+const accountWriteService = new AccountWriteService(accountWriteRepository, userReadRepository, rateWriteService);
 const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);
 const transactionWriteService = new TransactionWriteService(transactionWriteRepository, accountWriteService, accountReadService);
 

@@ -3,7 +3,8 @@ import { RatesController } from '../rates/rates.controller';
 import { RateReadService } from '../../services';
 import { RateReadRepository } from '../../repositories';
 
-const rateReadService = new RateReadService(new RateReadRepository());
+const rateReadRepository = new RateReadRepository();
+const rateReadService = new RateReadService(rateReadRepository);
 
 export class RatesRoutes {
   public path = '/rates';

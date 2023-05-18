@@ -4,22 +4,17 @@ import { hash } from 'bcrypt';
 import { ForbiddenError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { IAccountWriteService, IUserReadService, IUserWriteService } from '../../src/services/interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';
-import { AccountReadService, AccountWriteService, RateReadService, UserReadService, UserWriteService } from '../../src/services';
-import { AccountReadRepository, AccountWriteRepository, RateReadRepository, UserReadRepository, UserWriteRepository } from '../../src/repositories';
+import { AccountWriteService, RateWriteService, UserReadService, UserWriteService } from '../../src/services';
+import { AccountWriteRepository, UserReadRepository, UserWriteRepository, RateWriteRepository } from '../../src/repositories';
 import { UserOutputDTO } from '../../src/services/dtos';
 import { UserCreateInputDTO } from '../../src/repositories/dtos';
 
 describe('UserService', () => {
+  const rateWriteRepository = new RateWriteRepository();
+  const rateWriteService = new RateWriteService(rateWriteRepository);
   const userReadRepository = new UserReadRepository();
   const userWriteRepository = new UserWriteRepository();
-  const accountReadRepository = new AccountReadRepository();
-  const accountReadService = new AccountReadService(accountReadRepository);
-  const accountWriteService = new AccountWriteService(
-    accountReadService,
-    new AccountWriteRepository(),
-    userReadRepository,
-    new RateReadService(new RateReadRepository()),
-  );
+  const accountWriteService = new AccountWriteService(new AccountWriteRepository(), userReadRepository, rateWriteService);
 
   let userReadService: IUserReadService;
   let userWriteService: IUserWriteService;
