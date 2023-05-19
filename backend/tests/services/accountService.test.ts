@@ -7,7 +7,7 @@ import { AccountReadRepository } from '../../src/repositories/account.read.repos
 import { AccountReadService, AccountWriteService, RateWriteService } from '../../src/services';
 import { AccountWriteRepository, UserReadRepository, RateWriteRepository } from '../../src/repositories';
 import { AccountOutputDTO, UserOutputDTO } from '../../src/services/dtos';
-import { AccountModelDTO } from 'repositories/dtos';
+import { AccountModelDTO } from '../../src/repositories/dtos';
 
 describe('AccountService', () => {
   const accountReadRepository = new AccountReadRepository();
@@ -117,22 +117,23 @@ describe('AccountService', () => {
 
   describe('getAll', () => {
     it('should return an array of accounts', async () => {
+      const userId = '0.5069248488856752';
       const accounts: AccountOutputDTO[] = [
         {
           id: 1,
-          user_id: '0.5069248488856752',
+          user_id: userId,
           currency: 'UYU',
           balance: 13,
         },
         {
           id: 2,
-          user_id: '0.5069248488856752',
+          user_id: userId,
           currency: 'USD',
           balance: 76,
         },
         {
           id: 3,
-          user_id: '0.5069248488856752',
+          user_id: userId,
           currency: 'EUR',
           balance: 83.02335801106693,
         },
@@ -140,7 +141,7 @@ describe('AccountService', () => {
 
       const getAll = accountReadRepositoryStub.getAll.resolves(accounts);
 
-      const result = await accountReadService.getAll();
+      const result = await accountReadService.getAll(userId);
 
       should(result).be.eql(accounts);
       should(getAll.calledOnce).be.true();

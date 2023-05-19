@@ -1,5 +1,5 @@
 import { IAccountReadRepository } from '../repositories/interfaces';
-import { ValidationError } from '../interfaces';
+import { UnauthorizedError, ValidationError } from '../interfaces';
 import { IAccountReadService } from './interfaces';
 import { AccountOutputDTO, AccountGetterDTO, AccountGetAllInputDTO } from './dtos';
 import { operators } from '../utils/helpers';
@@ -7,8 +7,10 @@ import { operators } from '../utils/helpers';
 export class AccountReadService implements IAccountReadService {
   constructor(private accountReadRepository: IAccountReadRepository) {}
 
-  public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> =>
-    this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
+  public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> => {
+    if (!userId) throw new UnauthorizedError('Invalid Credentials');
+    return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
+  };
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {
     const account = await this.accountReadRepository.getByID(id);
