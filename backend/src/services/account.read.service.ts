@@ -9,7 +9,7 @@ export class AccountReadService implements IAccountReadService {
 
   public getAll = async (userId: AccountGetAllInputDTO): Promise<AccountOutputDTO[]> => {
     if (!userId) throw new UnauthorizedError('Invalid Credentials');
-    return this.accountReadRepository.getAll([{ filterBy: 'user_id', value: userId, operator: operators.equal }]);
+    return this.accountReadRepository.getAll([{ filterBy: 'userId', value: userId, operator: operators.equal }]);
   };
 
   public getByID = async (id: AccountGetterDTO): Promise<AccountOutputDTO> => {

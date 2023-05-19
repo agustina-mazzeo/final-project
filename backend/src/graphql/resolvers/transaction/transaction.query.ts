@@ -9,15 +9,7 @@ export const transactionQueries = {
     try {
       const { query } = (await validateArgs(queryInputSchema, args)) as QueryInput;
       const userId = contextValue.userId;
-      const transactions = await contextValue.dataSources.transactionReadService.getAll({ queryParams: queryToDTO(query), userId });
-      return transactions.map(transaction => {
-        return {
-          ...transaction,
-          createdAt: transaction.created_at,
-          accountFromId: transaction.account_from_id,
-          accountToId: transaction.account_to_id,
-        };
-      });
+      return await contextValue.dataSources.transactionReadService.getAll({ queryParams: queryToDTO(query), userId });
     } catch (error: any) {
       if (error instanceof CustomError)
         throw new GraphQLError(error.message, {

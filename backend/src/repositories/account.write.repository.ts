@@ -28,7 +28,7 @@ export class AccountWriteRepository implements IAccountWriteRepository {
       return await prismaInstance.account.update({
         select: {
           id: true,
-          user_id: true,
+          userId: true,
           currency: true,
           balance: true,
         },

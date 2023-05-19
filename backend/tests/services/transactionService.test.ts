@@ -49,7 +49,7 @@ describe('TransactionService', () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
 
       const usersTransactions: TransactionOutputDTO[] = [
-        { id: '1', account_from_id: 1, account_to_id: 2, amount: 1, created_at: new Date('2022-01-01').toISOString() },
+        { id: '1', accountFromId: 1, accountToId: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
       ];
 
       const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
@@ -67,14 +67,14 @@ describe('TransactionService', () => {
     it('should filter the users accounts', async () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
       const filteredUsersTransactions: TransactionOutputDTO[] = [
-        { id: '1', account_from_id: 1, account_to_id: 2, amount: 1, created_at: new Date('2022-01-01').toISOString() },
-        { id: '2', account_from_id: 1, account_to_id: 3, amount: 100, created_at: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+        { id: '1', accountFromId: 1, accountToId: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
+        { id: '2', accountFromId: 1, accountToId: 3, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
       ];
 
       const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
       const getAll = transactionReadRepositoryStub.getAll.resolves(filteredUsersTransactions);
 
-      const result = await transactionReadService.getAll({ userId: '1', queryParams: { account_from_id: 1 } });
+      const result = await transactionReadService.getAll({ userId: '1', queryParams: { accountFromId: 1 } });
 
       should(result).be.an.Array();
       should(result).have.length(filteredUsersTransactions.length);
@@ -115,20 +115,20 @@ describe('TransactionService', () => {
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          user_id: userId,
+          userId: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          user_id: userId,
+          userId: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -138,10 +138,10 @@ describe('TransactionService', () => {
 
       const newTransaction: TransactionOutputDTO = {
         id: '3',
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount: 100,
-        created_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
 
       const getAll = accountReadServiceStub.getAll.resolves(userAccounts);
@@ -163,8 +163,8 @@ describe('TransactionService', () => {
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount,
       };
 
@@ -187,20 +187,20 @@ describe('TransactionService', () => {
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          user_id: userId,
+          userId: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          user_id: userId,
+          userId: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -227,20 +227,20 @@ describe('TransactionService', () => {
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount,
       };
       const userAccounts: AccountOutputDTO[] = [
         {
           id: 1,
-          user_id: userId,
+          userId: userId,
           balance: 1000,
           currency: 'USD',
         },
         {
           id: 2,
-          user_id: userId,
+          userId: userId,
           balance: 500,
           currency: 'EUR',
         },
@@ -269,8 +269,8 @@ describe('TransactionService', () => {
       const amount = 100;
 
       const transfer: TransactionInputDTO['transfer'] = {
-        account_from_id: 1,
-        account_to_id: 2,
+        accountFromId: 1,
+        accountToId: 2,
         amount,
       };
 

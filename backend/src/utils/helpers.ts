@@ -4,8 +4,8 @@ dotenv.config();
 const SYMBOLS = process.env.SYMBOLS as string;
 
 export const currencies: string[] = SYMBOLS.split(',');
-export const selectAccountOptions = { user_id: true, balance: true, currency: true, id: true };
-export const selectRateOptions = { created_at: true, name: true, USD_FROM: true, USD_TO: true };
+export const selectAccountOptions = { userId: true, balance: true, currency: true, id: true };
+export const selectRateOptions = { createdAt: true, name: true, usdFrom: true, usdTo: true };
 
 export enum operators {
   equal = 'equals',

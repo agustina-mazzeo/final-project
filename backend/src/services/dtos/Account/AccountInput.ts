@@ -1,7 +1,7 @@
 import { AccountOutputDTO } from './AccountOutput';
 
-export type AccountCreateInputDTO = Pick<AccountOutputDTO, 'currency' | 'user_id'>;
+export type AccountCreateInputDTO = Pick<AccountOutputDTO, 'currency' | 'userId'>;
 export type AccountUpdateInputDTO = Pick<AccountOutputDTO, 'balance' | 'id'>;
 
-export type AccountGetAllInputDTO = AccountOutputDTO['user_id'];
+export type AccountGetAllInputDTO = AccountOutputDTO['userId'];
 export type AccountGetterDTO = AccountOutputDTO['id'];

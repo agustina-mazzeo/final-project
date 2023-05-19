@@ -10,8 +10,8 @@ export class TransactionReadRepository implements ITransactionReadRepository {
     const where: Prisma.TransactionWhereInput = {
       AND: {
         OR: {
-          account_from_id: { in: usersAccountsId },
-          account_to_id: { in: usersAccountsId },
+          accountFromId: { in: usersAccountsId },
+          accountToId: { in: usersAccountsId },
         },
         ...addFilters(filters),
       },
@@ -19,8 +19,8 @@ export class TransactionReadRepository implements ITransactionReadRepository {
     try {
       const transactions = await prisma.transaction.findMany({ where });
       return transactions.map(transaction => {
-        const created_at = transaction.created_at.toISOString();
-        return { ...transaction, created_at };
+        const createdAt = transaction.createdAt.toISOString();
+        return { ...transaction, createdAt };
       }) as TransactionModelDTO[];
     } catch (error: any) {
       throw new InternalError('Error trying to get users transactions');
@@ -30,15 +30,15 @@ export class TransactionReadRepository implements ITransactionReadRepository {
   public getUsersTransactions = async (usersAccounts: number[]): Promise<TransactionModelDTO[]> => {
     const where: Prisma.TransactionWhereInput = {
       OR: {
-        account_from_id: { in: usersAccounts },
-        account_to_id: { in: usersAccounts },
+        accountFromId: { in: usersAccounts },
+        accountToId: { in: usersAccounts },
       },
     };
     try {
       const transactions = await prisma.transaction.findMany({ where });
       return transactions.map(transaction => {
-        const created_at = transaction.created_at.toISOString();
-        return { ...transaction, created_at };
+        const createdAt = transaction.createdAt.toISOString();
+        return { ...transaction, createdAt };
       }) as TransactionModelDTO[];
     } catch (error: any) {
       throw new InternalError('Error trying to get users transactions');

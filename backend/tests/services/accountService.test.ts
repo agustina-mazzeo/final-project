@@ -39,10 +39,10 @@ describe('AccountService', () => {
 
   describe('create', () => {
     it('should call create method in accountsRepository with correct arguments', async () => {
-      const user_id = '1';
+      const userId = '1';
       const currency = 'USD';
       const user: UserOutputDTO = {
-        id: user_id,
+        id: userId,
         email: 'someemail',
         password: 'somepass',
       };
@@ -51,18 +51,18 @@ describe('AccountService', () => {
 
       const newAccount: AccountOutputDTO = {
         id: Math.random(),
-        user_id,
+        userId,
         currency,
         balance: 0,
       };
       const create = accountWriteRepositoryStub.create.resolves(newAccount);
 
-      const createdAccount = await accountWriteService.create({ currency, user_id });
+      const createdAccount = await accountWriteService.create({ currency, userId });
 
       should.exist(createdAccount);
       should(createdAccount).deepEqual(newAccount);
-      should(create.calledOnceWithExactly({ user_id, currency })).be.true();
-      should(getById.calledOnceWithExactly(user_id)).be.true();
+      should(create.calledOnceWithExactly({ userId, currency })).be.true();
+      should(getById.calledOnceWithExactly(userId)).be.true();
     });
 
     it('should throw an error when invalid userId is provided', async () => {
@@ -71,7 +71,7 @@ describe('AccountService', () => {
       const getById = userReadRepositoryStub.getByID.resolves(undefined);
 
       try {
-        await accountWriteService.create({ currency, user_id: userId });
+        await accountWriteService.create({ currency, userId: userId });
         sinon.assert.fail();
       } catch (error: any) {
         should.exist(error);
@@ -87,7 +87,7 @@ describe('AccountService', () => {
       const userId = '1';
       const account: AccountOutputDTO = {
         id: 1,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: 13,
       };
@@ -121,19 +121,19 @@ describe('AccountService', () => {
       const accounts: AccountOutputDTO[] = [
         {
           id: 1,
-          user_id: userId,
+          userId: userId,
           currency: 'UYU',
           balance: 13,
         },
         {
           id: 2,
-          user_id: userId,
+          userId: userId,
           currency: 'USD',
           balance: 76,
         },
         {
           id: 3,
-          user_id: userId,
+          userId: userId,
           currency: 'EUR',
           balance: 83.02335801106693,
         },
@@ -153,7 +153,7 @@ describe('AccountService', () => {
       const id = 1;
       const account: AccountOutputDTO = {
         id,
-        user_id: '0.5069248488856752',
+        userId: '0.5069248488856752',
         currency: 'UYU',
         balance: 13,
       };
@@ -185,7 +185,7 @@ describe('AccountService', () => {
     it('should update and return the updated account', async () => {
       const account: AccountOutputDTO = {
         id: 1,
-        user_id: '0.5069248488856752',
+        userId: '0.5069248488856752',
         currency: 'UYU',
         balance: 13,
       };
@@ -207,13 +207,13 @@ describe('AccountService', () => {
       const account_to_id = 3;
       const account_from: AccountOutputDTO = {
         id: account_from_id,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: account_to_id,
-        user_id: userId,
+        userId: userId,
         currency: 'USD',
         balance: 10,
       };
@@ -221,13 +221,13 @@ describe('AccountService', () => {
       const account_to_updated_balance = 10.5;
       const account_from_updated: AccountOutputDTO = {
         id: account_from_id,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: account_from_updated_balance,
       };
       const account_to_updated: AccountOutputDTO = {
         id: account_to_id,
-        user_id: userId,
+        userId: userId,
         currency: 'USD',
         balance: account_to_updated_balance,
       };
@@ -254,25 +254,25 @@ describe('AccountService', () => {
       const amount = 1;
       const account_from: AccountOutputDTO = {
         id: 2,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: 3,
-        user_id: '4',
+        userId: '4',
         currency: 'USD',
         balance: 10,
       };
       const account_from_updated: AccountOutputDTO = {
         id: 2,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: 8.99,
       };
       const account_to_updated: AccountOutputDTO = {
         id: 3,
-        user_id: '4',
+        userId: '4',
         currency: 'USD',
         balance: 10.5,
       };
@@ -291,7 +291,7 @@ describe('AccountService', () => {
       should(update.calledTwice).be.true();
       should(update.calledWith(account_from_updated));
       should(update.calledWith(account_from_updated));
-      should(result.account_from.user_id).not.be.equal(result.account_to.user_id);
+      should(result.account_from.userId).not.be.equal(result.account_to.userId);
       should(result.account_to).deepEqual(account_to_updated);
       should(result.account_from).deepEqual(account_from_updated);
     });
@@ -301,13 +301,13 @@ describe('AccountService', () => {
       const amount = 10;
       const account_from: AccountOutputDTO = {
         id: 2,
-        user_id: userId,
+        userId: userId,
         currency: 'UYU',
         balance: 10,
       };
       const account_to: AccountOutputDTO = {
         id: 3,
-        user_id: '4',
+        userId: '4',
         currency: 'USD',
         balance: 10,
       };

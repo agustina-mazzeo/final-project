@@ -9,13 +9,7 @@ export const transactionMutations = {
     try {
       const { transfer } = (await validateArgs(transactionInputSchema, args)) as TransactionInput;
       const userId = contextValue.userId;
-      const newTransfer = await contextValue.dataSources.transactionWriteService.create({ userId, transfer: transferToDTO(transfer) });
-      return {
-        ...newTransfer,
-        createdAt: newTransfer.created_at,
-        accountFromId: newTransfer.account_from_id,
-        accountToId: newTransfer.account_to_id,
-      };
+      return await contextValue.dataSources.transactionWriteService.create({ userId, transfer: transferToDTO(transfer) });
     } catch (error: any) {
       if (error instanceof CustomError)
         throw new GraphQLError(error.message, {

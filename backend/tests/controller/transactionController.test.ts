@@ -51,8 +51,8 @@ describe('TransactionController', () => {
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
       const next = sinon.spy();
       const expectedTransactions: TransactionOutputDTO[] = [
-        { id: '1', account_from_id: 12345, account_to_id: 67890, amount: 100, created_at: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
-        { id: '2', account_from_id: 67890, account_to_id: 12345, amount: 200, created_at: '2023-04-12T14:45:00.000Z', description: 'Transaction 2' },
+        { id: '1', accountFromId: 12345, accountToId: 67890, amount: 100, createdAt: '2023-04-13T09:30:00.000Z', description: 'Transaction 1' },
+        { id: '2', accountFromId: 67890, accountToId: 12345, amount: 200, createdAt: '2023-04-12T14:45:00.000Z', description: 'Transaction 2' },
       ];
 
       const getAll = transactionReadServiceStub.getAll.resolves(expectedTransactions);
@@ -107,9 +107,9 @@ describe('TransactionController', () => {
       const next = sinon.spy();
       const expectedTransaction = {
         id: '0.6359607642103695',
-        created_at: new Date().toISOString(),
-        account_from_id: 1,
-        account_to_id: 3,
+        createdAt: new Date().toISOString(),
+        accountFromId: 1,
+        accountToId: 3,
         amount: 1,
         description: 'some description',
       };

@@ -11,8 +11,8 @@ export const queryToDTO = ({ accountFrom, from, to }: QueryInput['query']) => {
 
 export const transferToDTO = ({ accountFrom, accountTo, amount, description }: TransactionInput['transfer']) => {
   const result: TransacitonInputDTO = {
-    account_from_id: accountFrom,
-    account_to_id: accountTo,
+    accountFromId: accountFrom,
+    accountToId: accountTo,
     amount,
   };
   if (description) result.description = description;

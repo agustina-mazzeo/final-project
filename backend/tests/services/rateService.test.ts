@@ -36,8 +36,8 @@ describe('RateService', () => {
   describe('getAll', () => {
     it('should return all exchange rates', async () => {
       const exchangeRates: RateOutputDTO[] = [
-        { name: 'EUR', rates: { USD_TO: 1.2, USD_FROM: 0.83 }, created_at: 'date' },
-        { name: 'GBP', rates: { USD_TO: 1.4, USD_FROM: 0.71 }, created_at: 'date' },
+        { name: 'EUR', rates: { usdTo: 1.2, usdFrom: 0.83 }, createdAt: 'date' },
+        { name: 'GBP', rates: { usdTo: 1.4, usdFrom: 0.71 }, createdAt: 'date' },
       ];
       const getAll = rateReadRepositoryStub.getAll.resolves(exchangeRates);
 
@@ -52,7 +52,7 @@ describe('RateService', () => {
     it('should create a new exchange rate', async () => {
       const newRateName = 'ABC';
       const referenceRate: Rates = { USD: 1, EUR: 0.82, GBP: 0.71, ABC: 2 };
-      const newExchangeRate: RateOutputDTO = { name: newRateName, rates: { USD_FROM: 0.5, USD_TO: 2 }, created_at: 'date' };
+      const newExchangeRate: RateOutputDTO = { name: newRateName, rates: { usdFrom: 0.5, usdTo: 2 }, createdAt: 'date' };
       const create = rateWriteRepositoryStub.create.resolves(newExchangeRate);
 
       const createdRate = await rateWriteService.create({ referenceRate, name: newRateName });
@@ -66,8 +66,8 @@ describe('RateService', () => {
       const currency_from = 'EUR';
       const currency_to = 'ABC';
 
-      const rate_from: RateOutputDTO = { name: currency_from, rates: { USD_TO: 1.2, USD_FROM: 1 / 1.2 }, created_at: 'date' };
-      const rate_to: RateOutputDTO = { name: currency_to, rates: { USD_TO: 0.009, USD_FROM: 1 / 0.009 }, created_at: 'date' };
+      const rate_from: RateOutputDTO = { name: currency_from, rates: { usdTo: 1.2, usdFrom: 1 / 1.2 }, createdAt: 'date' };
+      const rate_to: RateOutputDTO = { name: currency_to, rates: { usdTo: 0.009, usdFrom: 1 / 0.009 }, createdAt: 'date' };
 
       const has = cacheInstanceStub.has.returns(true);
       const get = cacheInstanceStub.get;
@@ -82,15 +82,15 @@ describe('RateService', () => {
       should(has.calledTwice).be.true();
       should(get.calledTwice).be.true();
       should(updateRatesStub.notCalled).be.true();
-      should(result).equal(rate_from.rates.USD_FROM * rate_to.rates.USD_TO);
+      should(result).equal(rate_from.rates.usdFrom * rate_to.rates.usdTo);
     });
 
     it('should return the correct exchange rate multiplier if it is not stored in the cache', async () => {
       const currency_from = 'EUR';
       const currency_to = 'JPY';
 
-      const rate_from: RateOutputDTO = { name: currency_from, rates: { USD_TO: 1.2, USD_FROM: 1 / 1.2 }, created_at: 'date' };
-      const rate_to: RateOutputDTO = { name: currency_to, rates: { USD_TO: 0.009, USD_FROM: 1 / 0.009 }, created_at: 'date' };
+      const rate_from: RateOutputDTO = { name: currency_from, rates: { usdTo: 1.2, usdFrom: 1 / 1.2 }, createdAt: 'date' };
+      const rate_to: RateOutputDTO = { name: currency_to, rates: { usdTo: 0.009, usdFrom: 1 / 0.009 }, createdAt: 'date' };
 
       const has = cacheInstanceStub.has.returns(false);
       const get = cacheInstanceStub.get;
@@ -105,14 +105,14 @@ describe('RateService', () => {
       should(has.called).be.true();
       should(get.notCalled).be.true();
       should(updateRatesStub.calledOnce).be.true();
-      should(result).equal(rate_from.rates.USD_FROM * rate_to.rates.USD_TO);
+      should(result).equal(rate_from.rates.usdFrom * rate_to.rates.usdTo);
     });
 
     it('should throw an error if exchange rate data is missing', async () => {
       const currency_from = 'EUR';
       const currency_to = 'JPY';
 
-      const rate_from: RateOutputDTO = { name: currency_from, rates: { USD_TO: 1.2, USD_FROM: 1 / 1.2 }, created_at: 'date' };
+      const rate_from: RateOutputDTO = { name: currency_from, rates: { usdTo: 1.2, usdFrom: 1 / 1.2 }, createdAt: 'date' };
       const has = cacheInstanceStub.has.returns(true);
       const get = cacheInstanceStub.get;
       get.withArgs(currency_from).returns(rate_from);

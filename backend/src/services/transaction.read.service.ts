@@ -23,9 +23,9 @@ export class TransactionReadService implements ITransactionReadService {
         value: any;
         operator: operators;
       }[] = [];
-      if (queryParams.account_from_id) filters.push({ value: queryParams.account_from_id, filterBy: 'account_from_id', operator: operators.equal });
-      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'created_at', operator: operators.gte });
-      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'created_at', operator: operators.lte });
+      if (queryParams.accountFromId) filters.push({ value: queryParams.accountFromId, filterBy: 'accountFromId', operator: operators.equal });
+      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'createdAt', operator: operators.gte });
+      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'createdAt', operator: operators.lte });
 
       const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
       return filteredTransactions;

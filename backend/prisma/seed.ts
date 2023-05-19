@@ -5,18 +5,18 @@ const prisma = new PrismaClient();
 const rates = [
   {
     name: 'USD',
-    USD_FROM: 1,
-    USD_TO: 1,
+    usdFrom: 1,
+    usdTo: 1,
   },
   {
     name: 'EUR',
-    USD_FROM: 1 / 0.91021,
-    USD_TO: 0.91021,
+    usdFrom: 1 / 0.91021,
+    usdTo: 0.91021,
   },
   {
     name: 'UYU',
-    USD_FROM: 1 / 38.967787,
-    USD_TO: 38.967787,
+    usdFrom: 1 / 38.967787,
+    usdTo: 38.967787,
   },
 ];
 

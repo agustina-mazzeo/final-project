@@ -26,9 +26,9 @@ export class RateWriteService implements IRateWriteService {
   };
 
   private createRate = (referenceRate: Rates, name: string) => {
-    if (name === BASE) return { USD_TO: 1, USD_FROM: 1 };
+    if (name === BASE) return { usdTo: 1, usdFrom: 1 };
     else {
-      return { USD_TO: referenceRate[name], USD_FROM: 1 / referenceRate[name] };
+      return { usdTo: referenceRate[name], usdFrom: 1 / referenceRate[name] };
     }
   };
 
@@ -44,7 +44,7 @@ export class RateWriteService implements IRateWriteService {
         rate_from = lastRates[currency_from];
         rate_to = lastRates[currency_to];
       }
-      if (rate_from && rate_to) return rate_from.rates.USD_FROM * rate_to.rates.USD_TO;
+      if (rate_from && rate_to) return rate_from.rates.usdFrom * rate_to.rates.usdTo;
       else throw new ValidationError('Could not make transfer');
     } catch (error: any) {
       throw error;

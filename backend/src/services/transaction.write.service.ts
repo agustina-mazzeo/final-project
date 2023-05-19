@@ -17,11 +17,11 @@ export class TransactionWriteService implements ITransactionWriteService {
       if (!id) throw new UnauthorizedError('Invalid Credentials');
       const amount = transfer.amount;
       const userAccounts = await this.accountReadService.getAll(id);
-      const account_from = userAccounts.find(({ id }) => transfer.account_from_id === id);
+      const account_from = userAccounts.find(({ id }) => transfer.accountFromId === id);
       if (!account_from) {
         throw new ValidationError('Could not make transfer');
       }
-      const account_to = await this.accountReadService.getByID(transfer.account_to_id); //throws
+      const account_to = await this.accountReadService.getByID(transfer.accountToId); //throws
 
       const newTransaction = await prisma.$transaction(async prisma => {
         await this.accountWriteService.updateAccounts(account_from, account_to, amount, id, prisma); //throws

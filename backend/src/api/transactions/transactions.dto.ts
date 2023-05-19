@@ -2,16 +2,16 @@ import { TransactionsQuery } from './transactions.schema';
 import { TransferBody } from './transactions.schema';
 
 export type TransacitonInputDTO = {
-  account_from_id: number;
-  account_to_id: number;
+  accountFromId: number;
+  accountToId: number;
   amount: number;
   description?: string | undefined;
 };
 
 export const transactionToDTO = ({ account_from, account_to, amount, description }: TransferBody): TransacitonInputDTO => {
   const result: TransacitonInputDTO = {
-    account_to_id: account_to,
-    account_from_id: account_from,
+    accountToId: account_to,
+    accountFromId: account_from,
     amount,
   };
   if (description) result.description = description;
@@ -19,14 +19,14 @@ export const transactionToDTO = ({ account_from, account_to, amount, description
 };
 
 export type QueryParamsDTO = {
-  account_from_id?: number;
+  accountFromId?: number;
   from?: string;
   to?: string;
 };
 
 export const queryToDTO = ({ account_from, from, to }: TransactionsQuery): QueryParamsDTO => {
   const result: QueryParamsDTO = {};
-  if (account_from) result.account_from_id = account_from;
+  if (account_from) result.accountFromId = account_from;
   if (from) result.from = from;
   if (to) result.to = to;
   return result;
