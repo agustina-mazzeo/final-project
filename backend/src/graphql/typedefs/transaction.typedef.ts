@@ -8,7 +8,7 @@ type Transaction {
     description: String
 }
 
-input QueryParamsInput {
+input QueryInput {
     accountFrom: Int
     from: String
     to: String

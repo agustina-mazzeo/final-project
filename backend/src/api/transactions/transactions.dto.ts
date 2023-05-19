@@ -28,6 +28,6 @@ export const queryToDTO = ({ account_from, from, to }: TransactionsQuery): Query
   const result: QueryParamsDTO = {};
   if (account_from) result.account_from_id = account_from;
   if (from) result.from = from;
-  if (to) result.to = from;
+  if (to) result.to = to;
   return result;
 };

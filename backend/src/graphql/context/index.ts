@@ -1,7 +1,21 @@
 import { Request } from 'express';
 import { decodeAuthHeader } from '../utils/helpers';
-import { IAccountReadService, IRateReadService, IUserReadService, IUserWriteService } from '../../services/interfaces';
-import { rateReadService, userReadService, userWriteService, accountReadService } from './dataSources';
+import {
+  IAccountReadService,
+  IRateReadService,
+  ITransactionReadService,
+  ITransactionWriteService,
+  IUserReadService,
+  IUserWriteService,
+} from '../../services/interfaces';
+import {
+  rateReadService,
+  userReadService,
+  userWriteService,
+  accountReadService,
+  transactionReadService,
+  transactionWriteService,
+} from './dataSources';
 
 export interface Context {
   userId: string | undefined;
@@ -10,6 +24,8 @@ export interface Context {
     userReadService: IUserReadService;
     userWriteService: IUserWriteService;
     accountReadService: IAccountReadService;
+    transactionReadService: ITransactionReadService;
+    transactionWriteService: ITransactionWriteService;
   };
 }
 
@@ -18,6 +34,6 @@ export const context = async ({ req }: { req: Request }): Promise<Context> => {
 
   return {
     userId: token?.id,
-    dataSources: { rateReadService, userReadService, userWriteService, accountReadService },
+    dataSources: { rateReadService, userReadService, userWriteService, accountReadService, transactionReadService, transactionWriteService },
   };
 };
