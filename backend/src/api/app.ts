@@ -1,15 +1,11 @@
-import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import passport from 'passport';
-import { context } from '../graphql/context';
-import { expressMiddleware } from '@apollo/server/express4';
 import errorManager from './middleware/errorManager';
-import { indexRouter } from './routes';
+import { apiRouter, graphqlRouter } from './routes';
 import { cronJob } from '../cron/cron';
 import swaggerUi from 'swagger-ui-express';
 import { openapiSpec } from '../swagger';
-import { server } from '../graphql';
 
 export class App {
   public app: express.Application;
@@ -38,7 +34,7 @@ export class App {
   };
 
   private setRoutes = () => {
-    this.app.use('/api', indexRouter);
+    this.app.use('/api', apiRouter);
   };
 
   private setErrorManager = () => {
@@ -46,12 +42,7 @@ export class App {
   };
 
   private startGraphQL = async () => {
-    try {
-      await server.start();
-      this.app.use('/graphql', cors<cors.CorsRequest>(), json(), expressMiddleware(server, { context }));
-    } catch (error) {
-      console.log(error);
-    }
+    this.app.use('/graphql', graphqlRouter);
   };
   public start = () => {
     this.app.listen(this.port, async () => {

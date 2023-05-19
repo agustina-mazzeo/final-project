@@ -2,13 +2,14 @@ import { Router } from 'express';
 import { TransactionRoutes } from './transaction.routes';
 import { UserRoutes } from './user.routes';
 import { RatesRoutes } from './rates.routes';
+export { graphqlRouter } from '../../graphql';
 
 const transactionsRouter = new TransactionRoutes().router;
 const userRouter = new UserRoutes().router;
 const ratesRouter = new RatesRoutes().router;
 
-export const indexRouter = Router();
+export const apiRouter = Router();
 
-indexRouter.use(userRouter);
-indexRouter.use(transactionsRouter);
-indexRouter.use(ratesRouter);
+apiRouter.use(userRouter);
+apiRouter.use(transactionsRouter);
+apiRouter.use(ratesRouter);
