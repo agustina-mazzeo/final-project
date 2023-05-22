@@ -3,6 +3,7 @@ import UserController from '../user/user.controller';
 import { loginUserSchema } from '../user/user.schema';
 import validateRequest from '../middleware/validateRequest';
 import { authJwt, loginLocal, signupLocal } from '../middleware/authPassport';
+import { authorize } from '../middleware/authRoles';
 import { AccountReadService, UserReadService } from '../../services';
 import { AccountReadRepository, UserReadRepository } from '../../repositories';
 
@@ -192,7 +193,7 @@ export class UserRoutes {
      *             example:
      *               errors: An error occurred while retrieving users
      */
-    this.router.get(this.path, this.user.getUsers);
+    this.router.get(this.path, authJwt, authorize('ADMIN'), this.user.getUsers);
 
     /**
      * @openapi

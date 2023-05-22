@@ -54,8 +54,8 @@ const jwtOpts = {
 
 const jwtStrategy = new JWTStrategy(jwtOpts, async (token, done) => {
   try {
-    const { id } = await userReadService.getByID(token.id);
-    return done(null, id);
+    //const { id, role } = await userReadService.getByID(token.id);
+    return done(null, { id: token.id, role: token.role });
   } catch (error: any) {
     if (error instanceof UnauthorizedError) return done(new UnauthorizedError(error.message));
     return done(new InternalError('Internal error'));

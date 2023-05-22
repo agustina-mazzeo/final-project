@@ -16,9 +16,11 @@ import {
   transactionReadService,
   transactionWriteService,
 } from './dataSources';
+import { ROLE } from '../../utils/helpers';
 
 export interface Context {
   userId: string | undefined;
+  role: ROLE | undefined;
   dataSources: {
     rateReadService: IRateReadService;
     userReadService: IUserReadService;
@@ -34,6 +36,7 @@ export const context = async ({ req }: { req: Request }): Promise<Context> => {
 
   return {
     userId: token?.id,
+    role: token?.role as ROLE | undefined,
     dataSources: { rateReadService, userReadService, userWriteService, accountReadService, transactionReadService, transactionWriteService },
   };
 };

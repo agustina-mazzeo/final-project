@@ -18,6 +18,6 @@ export interface TokenData {
 }
 
 export interface DataStoredInToken {
-  email: string;
+  role: string;
   id: string;
 }

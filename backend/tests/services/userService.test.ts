@@ -38,8 +38,8 @@ describe('UserService', () => {
   describe('getAll', () => {
     it('should return an array of users', async () => {
       const users: UserOutputDTO[] = [
-        { id: '1', email: 'test1@example.com', password: 'hashedPassword1' },
-        { id: '2', email: 'test2@example.com', password: 'hashedPassword2' },
+        { id: '1', email: 'test1@example.com', password: 'hashedPassword1', role: 'USER' },
+        { id: '2', email: 'test2@example.com', password: 'hashedPassword2', role: 'USER' },
       ];
 
       const getAll = userReadRepositoryStub.getAll.resolves(users);
@@ -54,7 +54,7 @@ describe('UserService', () => {
   describe('getByEmail', () => {
     it('should return the user that matches the email', async () => {
       const email = 'test@example.com';
-      const user: UserOutputDTO = { id: '1', email, password: 'hashedPassword1' };
+      const user: UserOutputDTO = { id: '1', email, password: 'hashedPassword1', role: 'USER' };
 
       const getByEmail = userReadRepositoryStub.getByEmail.resolves(user);
 
@@ -82,7 +82,7 @@ describe('UserService', () => {
   describe('getByID', () => {
     it('should return the user that matches the id', async () => {
       const id = '1';
-      const user: UserOutputDTO = { id, email: 'test@example.com', password: 'hashedPassword1' };
+      const user: UserOutputDTO = { id, email: 'test@example.com', password: 'hashedPassword1', role: 'USER' };
 
       const getByID = userReadRepositoryStub.getByID.resolves(user);
 
@@ -118,6 +118,7 @@ describe('UserService', () => {
         id: '1',
         email: user.email,
         password: hashedPassword,
+        role: 'USER',
       };
 
       const getByEmail = userReadRepositoryStub.getByEmail.resolves(undefined);
@@ -142,6 +143,7 @@ describe('UserService', () => {
         id: '1',
         email: user.email,
         password: 'hashedPassword',
+        role: 'USER',
       };
 
       const getByEmail = userReadRepositoryStub.getByEmail.resolves(existingUser);

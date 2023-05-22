@@ -8,8 +8,8 @@ export const transactionQueries = {
   transactions: async (parent: undefined, args: QueryInput, contextValue: Context) => {
     try {
       const { query } = (await validateArgs(queryInputSchema, args)) as QueryInput;
-      const userId = contextValue.userId;
-      return await contextValue.dataSources.transactionReadService.getAll({ queryParams: queryToDTO(query), userId });
+      const user = { id: contextValue.userId, role: contextValue.role };
+      return await contextValue.dataSources.transactionReadService.getAll({ queryParams: queryToDTO(query), user });
     } catch (error: any) {
       if (error instanceof CustomError)
         throw new GraphQLError(error.message, {

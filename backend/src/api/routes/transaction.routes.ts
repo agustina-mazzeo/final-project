@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import validateRequest from '../middleware/validateRequest';
 import { authJwt } from '../middleware/authPassport';
+import { authorize } from '../middleware/authRoles';
 import { TransactionsController } from '../transactions/transactions.controller';
 import { transactionsSchema, transferSchema } from '../transactions/transactions.schema';
 import { AccountReadService, AccountWriteService, RateWriteService, TransactionReadService, TransactionWriteService } from '../../services';
@@ -154,5 +155,7 @@ export class TransactionRoutes {
      *               errors: An error occurred while creating the transaction
      */
     this.router.post(this.pathTransfer, validateRequest(transferSchema), this.transactionsController.createTransfer);
+
+    this.router.get(`${this.path}/all`, authorize('ADMIN'), this.transactionsController.getTransactions);
   };
 }

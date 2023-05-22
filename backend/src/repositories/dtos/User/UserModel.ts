@@ -3,4 +3,5 @@ export type UserModelDTO = {
   name?: string;
   email: string;
   password: string;
+  role: string;
 };

@@ -7,16 +7,19 @@ import { IAccountReadService, ITransactionReadService } from './interfaces';
 export class TransactionReadService implements ITransactionReadService {
   constructor(private transactionReadRepository: ITransactionReadRepository, private accountReadService: IAccountReadService) {}
 
-  public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
+  public getAll = async ({ user, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
-      if (!userId) throw new UnauthorizedError('Invalid Credentials');
-      const userAccounts = await this.accountReadService.getAll(userId);
-      if (userAccounts.length === 0) {
-        throw new NotFoundError("Couldn't get user's transactions");
+      if (!user) throw new UnauthorizedError('Invalid Credentials');
+      let usersAccountsId = undefined;
+      if (user.role !== 'ADMIN') {
+        const userAccounts = await this.accountReadService.getAll(user.id);
+        if (userAccounts.length === 0) {
+          throw new NotFoundError("Couldn't get user's transactions");
+        }
+        usersAccountsId = userAccounts.map(({ id }) => {
+          return id;
+        });
       }
-      const usersAccountsId = userAccounts.map(({ id }) => {
-        return id;
-      });
 
       const filters: {
         filterBy: keyof TransactionOutputDTO;

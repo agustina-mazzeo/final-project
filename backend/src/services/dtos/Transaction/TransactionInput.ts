@@ -1,3 +1,4 @@
+import { ROLE } from '../../../utils/helpers';
 import { TransactionOutputDTO } from './TransactionOutput';
 
 export type TransactionInputDTO = {
@@ -5,7 +6,7 @@ export type TransactionInputDTO = {
   transfer: Pick<TransactionOutputDTO, 'accountFromId' | 'accountToId' | 'amount' | 'description'>;
 };
 export type TransactionGetAllDTO = {
-  userId: string | undefined;
+  user: { id: string | undefined; role: ROLE | undefined };
   queryParams: {
     from?: string;
     to?: string;

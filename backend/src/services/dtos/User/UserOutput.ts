@@ -3,4 +3,5 @@ export type UserOutputDTO = {
   name?: string;
   email: string;
   password: string;
+  role: string;
 };

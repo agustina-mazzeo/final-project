@@ -45,6 +45,7 @@ describe('AccountService', () => {
         id: userId,
         email: 'someemail',
         password: 'somepass',
+        role: 'USER',
       };
 
       const getById = userReadRepositoryStub.getByID.resolves(user);
@@ -91,7 +92,7 @@ describe('AccountService', () => {
         currency: 'UYU',
         balance: 13,
       };
-      const user: UserOutputDTO = { id: userId, email: 'test@example.com', password: 'password' };
+      const user: UserOutputDTO = { id: userId, email: 'test@example.com', password: 'password', role: 'USER' };
 
       const getByID = userReadRepositoryStub.getByID.resolves(user);
       const create = accountWriteRepositoryStub.create.resolves(account);

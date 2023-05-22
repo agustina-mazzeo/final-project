@@ -6,9 +6,9 @@ dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
-export function createToken(user: UserOutputDTO): TokenData {
+export function createToken({ id, role }: UserOutputDTO): TokenData {
   const expiresIn = `${1000 * 60 * 60}`; //1 hour
-  const payload: DataStoredInToken = { id: user.id, email: user.email };
+  const payload: DataStoredInToken = { id, role };
   const token = sign(payload, SECRET_KEY, { expiresIn });
   return { expiresIn, token };
 }
