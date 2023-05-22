@@ -13,7 +13,7 @@ export class TransactionWriteRepository implements ITransactionWriteRepository {
           ...transfer,
         },
       });
-      return { ...createdTransaction, created_at: createdTransaction.created_at.toISOString() } as TransactionModelDTO;
+      return { ...createdTransaction, createdAt: createdTransaction.createdAt.toISOString() } as TransactionModelDTO;
     } catch (error: any) {
       console.log(error);
       throw new InternalError('Error trying to make transfer');

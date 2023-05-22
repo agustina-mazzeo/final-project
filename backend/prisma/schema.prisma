@@ -15,33 +15,33 @@ model User {
 }
 
 model Account {
-  id                Int           @id @default(autoincrement())
-  user_id           String
-  user              User          @relation(fields: [user_id], references: [id])
-  currency          String
-  balance           Float
-  created_at        DateTime      @default(now())
-  transactions_from Transaction[] @relation("From")
-  transactions_to   Transaction[] @relation("To")
+  id               Int           @id @default(autoincrement())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  currency         String
+  balance          Float
+  createdAt        DateTime      @default(now())
+  transactionsFrom Transaction[] @relation("From")
+  transactionsTo   Transaction[] @relation("To")
 }
 
 model Transaction {
-  id              String   @id @default(uuid())
-  account_from_id Int
-  account_to_id   Int
-  amount          Float
-  description     String?
-  account_from    Account  @relation("From", fields: [account_from_id], references: [id])
-  account_to      Account  @relation("To", fields: [account_to_id], references: [id])
-  created_at      DateTime @default(now())
+  id            String   @id @default(uuid())
+  accountFromId Int
+  accountToId   Int
+  amount        Float
+  description   String?
+  accountFrom   Account  @relation("From", fields: [accountFromId], references: [id])
+  accountTo     Account  @relation("To", fields: [accountToId], references: [id])
+  createdAt     DateTime @default(now())
 }
 
 model Rate {
-  id         String   @id @default(uuid())
-  created_at DateTime @default(now())
-  name       String
-  USD_FROM   Float
-  USD_TO     Float
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String
+  usdFrom   Float
+  usdTo     Float
 
-  @@index([created_at])
+  @@index([createdAt])
 }

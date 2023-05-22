@@ -3,6 +3,6 @@ type Query {
     rates: [Rate!]!
     users: [User!]!
     accounts: [Account!]!
-    transactions(params: QueryParamsInput): [Transaction!]!
+    transactions(query: QueryInput): [Transaction!]!
 }
 `;

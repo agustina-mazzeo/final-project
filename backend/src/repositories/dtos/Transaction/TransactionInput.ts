@@ -1,7 +1,7 @@
 import { operators } from '../../../utils/helpers';
 import { TransactionModelDTO } from './TransactionModel';
 
-export type TransactionInputDTO = Pick<TransactionModelDTO, 'account_from_id' | 'account_to_id' | 'amount' | 'description'>;
+export type TransactionInputDTO = Pick<TransactionModelDTO, 'accountFromId' | 'accountToId' | 'amount' | 'description'>;
 
 export type TransactionGetAllInputDTO = {
   usersAccountsId: number[];

@@ -11,20 +11,20 @@ export class AccountWriteService implements IAccountWriteService {
     private rateWriteService: IRateWriteService,
   ) {}
 
-  public create = async ({ currency, user_id }: AccountCreateInputDTO): Promise<AccountOutputDTO> => {
+  public create = async ({ currency, userId }: AccountCreateInputDTO): Promise<AccountOutputDTO> => {
     try {
-      const user = await this.userReadRepository.getByID(user_id);
-      if (user) return this.accountWriteRepository.create({ user_id, currency });
+      const user = await this.userReadRepository.getByID(userId);
+      if (user) return this.accountWriteRepository.create({ userId, currency });
       else throw new ValidationError('Invalid credentials');
     } catch (error: any) {
       throw error;
     }
   };
 
-  public createUsersAccounts = async (user_id: string): Promise<void> => {
+  public createUsersAccounts = async (userId: string): Promise<void> => {
     try {
       for (const currency of currencies) {
-        await this.create({ currency, user_id });
+        await this.create({ currency, userId });
       }
     } catch (error: any) {
       throw error;
@@ -48,7 +48,7 @@ export class AccountWriteService implements IAccountWriteService {
   ): Promise<{ account_from: AccountOutputDTO; account_to: AccountOutputDTO }> => {
     let amount_from = amount;
     //add comission
-    if (account_to.user_id !== userId) {
+    if (account_to.userId !== userId) {
       amount_from = addOnePercent(amount);
     }
     try {

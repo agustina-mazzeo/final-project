@@ -36,8 +36,8 @@ class UserController {
 
   public getAccounts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const user = req.user as UserOutputDTO;
-      const userAccounts = await this.accountReadService.getAll(user.id);
+      const userId = req.user as string;
+      const userAccounts = await this.accountReadService.getAll(userId);
       res.status(200).json({ data: userAccounts });
     } catch (error) {
       next(error);

@@ -1,9 +1,20 @@
-import { AccountReadService, AccountWriteService, RateReadService, RateWriteService, UserReadService, UserWriteService } from '../../services';
+import {
+  AccountReadService,
+  AccountWriteService,
+  RateReadService,
+  RateWriteService,
+  TransactionReadService,
+  TransactionWriteService,
+  UserReadService,
+  UserWriteService,
+} from '../../services';
 import {
   AccountReadRepository,
   AccountWriteRepository,
   RateReadRepository,
   RateWriteRepository,
+  TransactionReadRepository,
+  TransactionWriteRepository,
   UserReadRepository,
   UserWriteRepository,
 } from '../../repositories';
@@ -19,3 +30,7 @@ const accountWriteService = new AccountWriteService(accountWriteRepository, user
 export const userWriteService = new UserWriteService(userReadRepository, userWriteRepository, accountWriteService);
 const accountReadRepository = new AccountReadRepository();
 export const accountReadService = new AccountReadService(accountReadRepository);
+const transactionReadRepository = new TransactionReadRepository();
+export const transactionReadService = new TransactionReadService(transactionReadRepository, accountReadService);
+const transactionWriteRepository = new TransactionWriteRepository();
+export const transactionWriteService = new TransactionWriteService(transactionWriteRepository, accountWriteService, accountReadService);

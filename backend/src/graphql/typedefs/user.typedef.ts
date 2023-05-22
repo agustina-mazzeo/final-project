@@ -17,7 +17,7 @@ type UserOutput {
     name: String
 }
 
-input LoginInput {
+input UserLoginInput {
     email: String!
     password: String!
 }

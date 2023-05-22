@@ -7,5 +7,5 @@ export type RateCreateInputDTO = {
 
 export type RateUpdateInputDTO = {
   name: string;
-  rates: { USD_TO: number; USD_FROM: number };
+  rates: { usdTo: number; usdFrom: number };
 };

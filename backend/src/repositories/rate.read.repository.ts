@@ -9,8 +9,8 @@ export class RateReadRepository implements IRateReadRepository {
   public async getAll(): Promise<RateModelDTO[]> {
     try {
       const rates = await prisma.rate.findMany({ select: selectRateOptions });
-      return rates.map(({ name, USD_FROM, USD_TO, created_at }) => {
-        return { name, rates: { USD_FROM, USD_TO }, created_at: created_at.toISOString() };
+      return rates.map(({ name, usdFrom, usdTo, createdAt }) => {
+        return { name, rates: { usdFrom, usdTo }, createdAt: createdAt.toISOString() };
       });
     } catch (error: any) {
       console.log(error);
@@ -22,11 +22,11 @@ export class RateReadRepository implements IRateReadRepository {
     throw new ForbiddenError('Forbidden');
   };
 
-  public getLastRates = async ({ name: nameToGet, created_at }: RateGetterDTO): Promise<RateModelDTO[]> => {
+  public getLastRates = async ({ name: nameToGet, createdAt }: RateGetterDTO): Promise<RateModelDTO[]> => {
     try {
-      const rates = await prisma.rate.findMany({ select: selectRateOptions, where: { created_at: { gte: created_at }, name: nameToGet } });
-      return rates.map(({ name, USD_FROM, USD_TO, created_at }) => {
-        return { name, rates: { USD_FROM, USD_TO }, created_at: created_at.toISOString() };
+      const rates = await prisma.rate.findMany({ select: selectRateOptions, where: { createdAt: { gte: createdAt }, name: nameToGet } });
+      return rates.map(({ name, usdFrom, usdTo, createdAt }) => {
+        return { name, rates: { usdFrom, usdTo }, createdAt: createdAt.toISOString() };
       });
     } catch (error: any) {
       console.log(error);

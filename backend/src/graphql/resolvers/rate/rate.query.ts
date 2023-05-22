@@ -6,8 +6,8 @@ export const rateQueries = {
   rates: async (parent: undefined, args: Record<string, any>, contextValue: Context) => {
     try {
       const rates = await contextValue.dataSources.rateReadService.getAll();
-      return rates.map(({ name, created_at, rates }) => {
-        return { name, createdAt: created_at, conversion: { usdFrom: rates.USD_FROM, usdTo: rates.USD_TO } };
+      return rates.map(({ name, createdAt, rates: { usdFrom, usdTo } }) => {
+        return { name, createdAt, conversion: { usdFrom, usdTo } };
       });
     } catch (error: any) {
       if (error instanceof CustomError)
