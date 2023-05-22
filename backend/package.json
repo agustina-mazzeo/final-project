@@ -13,7 +13,8 @@
     "start": "npm run build && node dist/src/server.js",
     "doc": "npm run build && node dist/src/swagger.js",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepare": "cd .. && husky install backend/.husky"
   },
   "keywords": [],
   "author": "",
@@ -61,6 +62,7 @@
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "nyc": "^15.1.0",
