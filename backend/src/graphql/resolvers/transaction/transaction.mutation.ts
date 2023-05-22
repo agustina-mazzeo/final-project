@@ -5,7 +5,7 @@ import { validateArgs, TransactionInput, transactionInputSchema } from '../../va
 import { transferToDTO } from './transaction.dto';
 
 export const transactionMutations = {
-  newTransfer: async (parent: undefined, args: TransactionInput, contextValue: Context) => {
+  transfer: async (parent: undefined, args: TransactionInput, contextValue: Context) => {
     try {
       const { transfer } = (await validateArgs(transactionInputSchema, args)) as TransactionInput;
       const userId = contextValue.userId;
