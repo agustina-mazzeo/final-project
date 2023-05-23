@@ -1,3 +1,4 @@
+import { TransactionOutputDTO } from '../../services/dtos';
 import { TransactionsQuery } from './transactions.schema';
 import { TransferBody } from './transactions.schema';
 
@@ -22,10 +23,18 @@ export type QueryParamsDTO = {
   accountFromId?: number;
   from?: string;
   to?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: keyof TransactionOutputDTO;
+  orderBy?: 'desc' | 'asc';
 };
 
-export const queryToDTO = ({ account_from, from, to }: TransactionsQuery): QueryParamsDTO => {
+export const queryToDTO = ({ account_from, from, to, page_number, page_size, order_by, sort_by }: TransactionsQuery): QueryParamsDTO => {
   const result: QueryParamsDTO = {};
+  if (order_by) result.orderBy = order_by;
+  if (sort_by) result.sortBy = sort_by as keyof TransactionOutputDTO;
+  if (page_number) result.pageNumber = page_number;
+  if (page_size) result.pageSize = page_size;
   if (account_from) result.accountFromId = account_from;
   if (from) result.from = from;
   if (to) result.to = to;

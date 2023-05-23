@@ -11,5 +11,9 @@ export type TransactionGetAllDTO = {
     from?: string;
     to?: string;
     accountFromId?: number;
+    pageSize?: number;
+    pageNumber?: number;
+    sortBy?: keyof TransactionOutputDTO;
+    orderBy?: 'asc' | 'desc';
   };
 };

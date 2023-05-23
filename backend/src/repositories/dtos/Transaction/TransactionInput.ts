@@ -6,4 +6,5 @@ export type TransactionInputDTO = Pick<TransactionModelDTO, 'accountFromId' | 'a
 export type TransactionGetAllInputDTO = {
   usersAccountsId?: number[];
   filters: { filterBy: keyof TransactionModelDTO; value: any; operator: operators }[];
+  sorting: { pageNumber?: number; pageSize?: number; sortBy?: keyof TransactionModelDTO; orderBy?: 'desc' | 'asc' };
 };

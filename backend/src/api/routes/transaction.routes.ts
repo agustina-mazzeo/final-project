@@ -156,6 +156,6 @@ export class TransactionRoutes {
      */
     this.router.post(this.pathTransfer, validateRequest(transferSchema), this.transactionsController.createTransfer);
 
-    this.router.get(`${this.path}/all`, authorize('ADMIN'), this.transactionsController.getTransactions);
+    this.router.get(`${this.path}/all`, authorize('ADMIN'), validateRequest(transactionsSchema), this.transactionsController.getTransactions);
   };
 }

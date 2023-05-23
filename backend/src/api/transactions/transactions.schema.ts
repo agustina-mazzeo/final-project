@@ -1,10 +1,14 @@
-import { object, string, coerce, TypeOf } from 'zod';
+import { z, object, string, coerce, TypeOf } from 'zod';
 
 export const transactionsSchema = object({
   query: object({
     from: string().datetime({ message: 'Expected a DateString' }).optional(),
     to: string().datetime({ message: 'Expected a DateString' }).optional(),
     account_from: coerce.number({ invalid_type_error: 'Account must be a positive number' }).positive({ message: 'Invalid Account' }).optional(),
+    page_number: coerce.number({ invalid_type_error: 'Page number must be a positive number' }).positive({ message: 'Invalid Page' }).optional(),
+    page_size: coerce.number({ invalid_type_error: 'Page Size must be a positive number' }).positive({ message: 'Invalid Page' }).optional(),
+    sort_by: string().optional(),
+    order_by: z.union([z.literal('asc'), z.literal('desc')]).optional(),
   }).strict(),
 });
 

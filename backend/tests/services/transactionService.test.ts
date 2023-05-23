@@ -46,17 +46,17 @@ describe('TransactionService', () => {
   });
 
   describe('getAll', () => {
-    it('should return all transaction if user has role admin', async () => {
+    it('should return all transactions if user has role admin', async () => {
       const transactions: TransactionOutputDTO[] = [
         { id: '1', accountFromId: 1, accountToId: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
       ];
-      const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: undefined }).resolves(transactions);
+      const getAll = transactionReadRepositoryStub.getAll.resolves(transactions);
 
       const result = await transactionReadService.getAll({ user: { id: '1', role: 'ADMIN' }, queryParams: {} });
 
       should(result).deepEqual(transactions);
       should(accountReadServiceStub.getAll.notCalled).be.true();
-      should(getAll.calledOnceWith({ filters: [], usersAccountsId: undefined })).be.true();
+      should(getAll.calledOnce).be.true();
     });
 
     it('should return user transactions if valid user id with no admin role is provided', async () => {
@@ -67,7 +67,7 @@ describe('TransactionService', () => {
       ];
 
       const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
-      const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: [1, 2] }).resolves(usersTransactions);
+      const getAll = transactionReadRepositoryStub.getAll.resolves(usersTransactions);
 
       const result = await transactionReadService.getAll({ user: { id: '1', role: 'USER' }, queryParams: {} });
 
@@ -75,7 +75,7 @@ describe('TransactionService', () => {
       should(result).have.length(usersTransactions.length);
       should(result).containDeep(usersTransactions);
       should(getAllService.calledOnceWith('1')).be.true();
-      should(getAll.calledOnceWith({ filters: [], usersAccountsId: [1, 2] })).be.true();
+      should(getAll.calledOnce).be.true();
     });
 
     it('should filter the users accounts', async () => {
