@@ -16,11 +16,11 @@ import {
   transactionReadService,
   transactionWriteService,
 } from './dataSources';
-import { ROLE } from '../../utils/helpers';
+import { ClientRole } from '../../utils/helpers';
 
 export interface Context {
   userId: string | undefined;
-  role: ROLE | undefined;
+  role: ClientRole | undefined;
   dataSources: {
     rateReadService: IRateReadService;
     userReadService: IUserReadService;
@@ -33,10 +33,9 @@ export interface Context {
 
 export const context = async ({ req }: { req: Request }): Promise<Context> => {
   const token = req && req.headers.authorization ? decodeAuthHeader(req.headers.authorization) : null;
-
   return {
     userId: token?.id,
-    role: token?.role as ROLE | undefined,
+    role: token?.role as ClientRole | undefined,
     dataSources: { rateReadService, userReadService, userWriteService, accountReadService, transactionReadService, transactionWriteService },
   };
 };

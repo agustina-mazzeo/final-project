@@ -4,7 +4,7 @@ import { userToResponseDTO } from './user.dto';
 import { createToken } from '../utils/helpers';
 import { UserOutputDTO } from '../../services/dtos';
 import { IAccountReadService, IUserReadService } from '../../services/interfaces';
-import { ROLE } from '../../utils/helpers';
+import { ClientRole } from '../../utils/helpers';
 
 class UserController {
   constructor(private userReadService: IUserReadService, private accountReadService: IAccountReadService) {}
@@ -37,7 +37,7 @@ class UserController {
 
   public getAccounts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { id: userId } = req.user as { id: string; role: ROLE };
+      const { id: userId } = req.user as { id: string; role: ClientRole };
       const userAccounts = await this.accountReadService.getAll(userId);
       res.status(200).json({ data: userAccounts });
     } catch (error) {

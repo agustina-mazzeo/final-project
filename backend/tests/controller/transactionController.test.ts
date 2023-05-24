@@ -12,7 +12,7 @@ import {
 import { AccountReadService, AccountWriteService, RateWriteService, TransactionReadService, TransactionWriteService } from '../../src/services';
 import { TransactionOutputDTO } from '../../src/services/dtos';
 import { ITransactionReadService, ITransactionWriteService } from '../../src/services/interfaces';
-import { ROLE } from '../../src/utils/helpers';
+import { ClientRole } from '../../src/utils/helpers';
 
 describe('TransactionController', () => {
   const transactionReadRepository = new TransactionReadRepository();
@@ -46,7 +46,7 @@ describe('TransactionController', () => {
   describe('getTransactions', () => {
     it('should call transactionsService.getAll with correct parameters', async () => {
       const req = {
-        user: { id: '1', role: 'USER' as ROLE },
+        user: { id: '1', role: 'USER' as ClientRole },
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
@@ -72,7 +72,7 @@ describe('TransactionController', () => {
 
     it('should call next with error if transactionsService.getAll throws an error', async () => {
       const req = {
-        user: { id: '1', role: 'USER' as ROLE },
+        user: { id: '1', role: 'USER' as ClientRole },
         query: {},
       };
       const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };

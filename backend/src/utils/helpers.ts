@@ -41,4 +41,4 @@ export const addOnePercent = (num: number): number => {
   return num + onePercent; // Add 1% to the input number
 };
 
-export type ROLE = Role;
+export type ClientRole = Role;

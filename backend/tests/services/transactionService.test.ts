@@ -13,7 +13,7 @@ import {
   UserReadRepository,
 } from '../../src/repositories';
 import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
-import { ROLE } from '../../src/utils/helpers';
+import { ClientRole } from '../../src/utils/helpers';
 
 describe('TransactionService', () => {
   const rateWriteRepository = new RateWriteRepository();
@@ -99,7 +99,7 @@ describe('TransactionService', () => {
 
     it('should throw an error if user has no accounts', async () => {
       const getAll = accountReadServiceStub.getAll.withArgs('1').resolves([]);
-      const user = { id: '1', role: 'USER' as ROLE };
+      const user = { id: '1', role: 'USER' as ClientRole };
       try {
         await transactionReadService.getAll({ queryParams: {}, user });
         sinon.assert.fail();
@@ -111,7 +111,7 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if a user id is not provided or non valid', async () => {
-      const user = undefined as unknown as { id: string; role: ROLE };
+      const user = undefined as unknown as { id: string; role: ClientRole };
       try {
         await transactionReadService.getAll({ queryParams: {}, user });
         sinon.assert.fail();
