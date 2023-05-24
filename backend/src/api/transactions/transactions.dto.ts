@@ -1,13 +1,9 @@
+import { Pagination, Sorting, Filters, Transaction } from '../../interfaces';
 import { TransactionOutputDTO } from '../../services/dtos';
 import { TransactionsQuery } from './transactions.schema';
 import { TransferBody } from './transactions.schema';
 
-export type TransacitonInputDTO = {
-  accountFromId: number;
-  accountToId: number;
-  amount: number;
-  description?: string | undefined;
-};
+export type TransacitonInputDTO = Transaction;
 
 export const transactionToDTO = ({ account_from, account_to, amount, description }: TransferBody): TransacitonInputDTO => {
   const result: TransacitonInputDTO = {
@@ -19,15 +15,7 @@ export const transactionToDTO = ({ account_from, account_to, amount, description
   return result;
 };
 
-export type QueryParamsDTO = {
-  accountFromId?: number;
-  from?: string;
-  to?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  sortBy?: keyof TransactionOutputDTO;
-  orderBy?: 'desc' | 'asc';
-};
+export type QueryParamsDTO = Sorting & Pagination & Filters;
 
 export const queryToDTO = ({ account_from, from, to, page_number, page_size, order_by, sort_by }: TransactionsQuery): QueryParamsDTO => {
   const result: QueryParamsDTO = {};

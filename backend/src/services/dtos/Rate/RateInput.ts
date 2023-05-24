@@ -1,3 +1,5 @@
+import { ExchangeRate } from '../../../interfaces';
+
 export type RateCreateInputDTO = {
   name: string;
   referenceRate: {
@@ -5,7 +7,4 @@ export type RateCreateInputDTO = {
   };
 };
 
-export type RateUpdateInputDTO = {
-  name: string;
-  rates: { usdTo: number; usdFrom: number };
-};
+export type RateUpdateInputDTO = ExchangeRate;

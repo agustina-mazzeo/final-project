@@ -1,5 +1,4 @@
 export interface User {
-  id: number;
   name?: string;
   email: string;
   password: string;
@@ -7,7 +6,7 @@ export interface User {
 
 export interface Account {
   id: number;
-  user_id: number;
+  userId: string;
   currency: string;
   balance: number;
 }

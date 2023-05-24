@@ -1,8 +1,22 @@
 export interface Transaction {
-  id: number;
-  createdAt: string;
-  account_from: number;
-  account_to: number;
+  accountFromId: number;
+  accountToId: number;
   amount: number;
   description?: string;
+}
+
+export interface Pagination {
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+export interface Sorting {
+  sortBy?: keyof (Transaction & { createdAt: string; id: string });
+  orderBy?: 'desc' | 'asc';
+}
+
+export interface Filters {
+  from?: string;
+  to?: string;
+  accountFromId?: number;
 }
