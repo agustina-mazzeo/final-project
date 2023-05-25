@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  bank_database:
+    container_name: bank_database
+    hostname: bank_database
+    image: postgres
+    volumes:
+      - ./volume:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=bank_database
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=4gu5!
+    ports:
+      - 54321:5432
+    restart: unless-stopped
+
+  bank_api:
+    container_name: bank_api
+    hostname: bank_api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 54322:3000
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+    #environment:
+    #  NODE_ENV: ${BANK_ENVIRONMENT}
+    depends_on:
+      - bank_database
