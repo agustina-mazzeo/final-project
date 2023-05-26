@@ -1,3 +1,4 @@
+import { Filters, Sorting, Pagination } from '../../../interfaces';
 import { ClientRole } from '../../../utils/helpers';
 import { TransactionOutputDTO } from './TransactionOutput';
 
@@ -7,9 +8,5 @@ export type TransactionInputDTO = {
 };
 export type TransactionGetAllDTO = {
   user: { id: string | undefined; role: ClientRole | undefined };
-  queryParams: {
-    from?: string;
-    to?: string;
-    accountFromId?: number;
-  };
+  queryParams: Filters & Sorting & Pagination;
 };

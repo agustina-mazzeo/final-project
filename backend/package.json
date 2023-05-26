@@ -7,10 +7,10 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
+    "dev": "NODE_ENV=development nodemon",
     "build": "tsc",
     "test": "set TS_NODE_COMPILER_OPTIONS={\"module\": \"commonjs\" } &&  nyc mocha -r ts-node/register 'tests/**/*.ts'",
-    "dev": "nodemon",
-    "start": "npm run build && node dist/src/server.js",
+    "start": "npm run build && NODE_ENV=production node dist/src/server.js",
     "doc": "npm run build && node dist/src/swagger.js",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix",

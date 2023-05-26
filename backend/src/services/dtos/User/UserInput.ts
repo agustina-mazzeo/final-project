@@ -1,5 +1,6 @@
+import { User } from '../../../interfaces';
 import { UserOutputDTO } from './UserOutput';
 
-export type UserCreateInputDTO = { email: string; password: string; name?: string };
+export type UserCreateInputDTO = User;
 
 export type UserGetterDTO = UserOutputDTO['id'];

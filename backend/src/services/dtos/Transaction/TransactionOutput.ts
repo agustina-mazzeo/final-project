@@ -1,8 +1,6 @@
-export type TransactionOutputDTO = {
+import { Transaction } from '../../../interfaces';
+
+export type TransactionOutputDTO = Transaction & {
   id: string;
-  accountFromId: number;
-  accountToId: number;
-  amount: number;
-  description?: string;
   createdAt: string;
 };

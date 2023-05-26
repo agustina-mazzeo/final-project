@@ -1,6 +1,3 @@
-export type AccountModelDTO = {
-  id: number;
-  userId: string;
-  currency: string;
-  balance: number;
-};
+import { Account } from '../../../interfaces';
+
+export type AccountModelDTO = Account;
