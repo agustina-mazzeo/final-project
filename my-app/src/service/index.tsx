@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://decemberbank.inhouse.decemberlabs.com/api";
+const baseURL = "https://api.decemberbank.inhouse.decemberlabs.com/api";
 
 export const axiosClient = axios.create({
   baseURL,
