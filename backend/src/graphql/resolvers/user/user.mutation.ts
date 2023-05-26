@@ -1,7 +1,7 @@
 import { CustomError, UnauthorizedError } from '../../../interfaces';
 import { createToken } from '../../../api/utils/helpers';
 import { Context } from '../../context';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { GraphQLError } from 'graphql';
 import { UserCreateInput, userCreateInputSchema, validateArgs, UserLoginInput, userLoginInputSchema } from '../../validation/';
 

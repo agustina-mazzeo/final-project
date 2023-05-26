@@ -1,4 +1,4 @@
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { ForbiddenError, ValidationError } from '../interfaces';
 import { IAccountWriteService, IUserWriteService } from './interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../repositories/interfaces';

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import should from 'should';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { ForbiddenError, UnauthorizedError, ValidationError } from '../../src/interfaces';
 import { IAccountWriteService, IUserReadService, IUserWriteService } from '../../src/services/interfaces';
 import { IUserReadRepository, IUserWriteRepository } from '../../src/repositories/interfaces';

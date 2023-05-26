@@ -22,11 +22,25 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - 54322:3000
+      - 3001:3001
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
     restart: unless-stopped
     #environment:
     #  NODE_ENV: ${BANK_ENVIRONMENT}
+    depends_on:
+      - bank_database
+
+  bank_web:
+    container_name: bank_web
+    hostname: bank_web
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./my-app:/app/frontend
+    restart: unless-stopped
     depends_on:
       - bank_database
