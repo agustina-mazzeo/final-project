@@ -11,6 +11,7 @@ model User {
   id       String    @id @default(uuid())
   email    String    @unique
   password String
+  role     Role      @default(USER)
   accounts Account[]
 }
 
@@ -44,4 +45,9 @@ model Rate {
   usdTo     Float
 
   @@index([createdAt])
+}
+
+enum Role {
+  ADMIN
+  USER
 }

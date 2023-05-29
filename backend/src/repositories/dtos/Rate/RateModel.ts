@@ -1,8 +1,5 @@
-export type RateModelDTO = {
-  name: string;
-  rates: {
-    usdFrom: number;
-    usdTo: number;
-  };
+import { ExchangeRate } from '../../../interfaces';
+
+export type RateModelDTO = ExchangeRate & {
   createdAt: string;
 };

@@ -1,5 +1,5 @@
-export type RateOutputDTO = {
-  name: string;
-  rates: { usdTo: number; usdFrom: number };
+import { ExchangeRate } from '../../../interfaces';
+
+export type RateOutputDTO = ExchangeRate & {
   createdAt: string;
 };

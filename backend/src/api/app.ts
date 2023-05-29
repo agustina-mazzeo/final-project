@@ -7,9 +7,11 @@ import { openapiSpec } from '../swagger';
 export class App {
   public app: express.Application;
   public port: string | number;
+  private node_env: string | undefined;
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3000;
+    this.node_env = process.env.NODE_ENV;
     this.startCronJob();
     this.setRoutes();
     this.setSwaggerDocs();
@@ -30,6 +32,7 @@ export class App {
   public start = () => {
     this.app.listen(this.port, async () => {
       console.log(`Listening on port ${this.port}`);
+      console.log(`Running in ${this.node_env} mode`);
     });
   };
 }

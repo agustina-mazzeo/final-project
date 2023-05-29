@@ -7,27 +7,38 @@ import { IAccountReadService, ITransactionReadService } from './interfaces';
 export class TransactionReadService implements ITransactionReadService {
   constructor(private transactionReadRepository: ITransactionReadRepository, private accountReadService: IAccountReadService) {}
 
-  public getAll = async ({ userId, queryParams }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
+  public getAll = async ({
+    user,
+    queryParams: { accountFromId, from, to, pageNumber, pageSize, orderBy, sortBy },
+  }: TransactionGetAllDTO): Promise<TransactionOutputDTO[]> => {
     try {
-      if (!userId) throw new UnauthorizedError('Invalid Credentials');
-      const userAccounts = await this.accountReadService.getAll(userId);
-      if (userAccounts.length === 0) {
-        throw new NotFoundError("Couldn't get user's transactions");
+      if (!user) throw new UnauthorizedError('Invalid Credentials');
+      let usersAccountsId: number[] | undefined = undefined;
+      if (user.role !== 'ADMIN') {
+        const userAccounts = await this.accountReadService.getAll(user.id);
+        if (userAccounts.length === 0) {
+          throw new NotFoundError("Couldn't get user's transactions");
+        }
+        usersAccountsId = userAccounts.map(({ id }) => {
+          return id;
+        });
       }
-      const usersAccountsId = userAccounts.map(({ id }) => {
-        return id;
-      });
 
       const filters: {
         filterBy: keyof TransactionOutputDTO;
         value: any;
         operator: operators;
       }[] = [];
-      if (queryParams.accountFromId) filters.push({ value: queryParams.accountFromId, filterBy: 'accountFromId', operator: operators.equal });
-      if (queryParams.from) filters.push({ value: queryParams.from, filterBy: 'createdAt', operator: operators.gte });
-      if (queryParams.to) filters.push({ value: queryParams.to, filterBy: 'createdAt', operator: operators.lte });
+      if (accountFromId) filters.push({ value: accountFromId, filterBy: 'accountFromId', operator: operators.equal });
+      if (from) filters.push({ value: from, filterBy: 'createdAt', operator: operators.gte });
+      if (to) filters.push({ value: to, filterBy: 'createdAt', operator: operators.lte });
+      const sorting = { pageNumber, pageSize, orderBy, sortBy };
 
-      const filteredTransactions = await this.transactionReadRepository.getAll({ filters, usersAccountsId });
+      const filteredTransactions = await this.transactionReadRepository.getAll({
+        filters,
+        usersAccountsId,
+        sorting,
+      });
       return filteredTransactions;
     } catch (error: any) {
       throw error;

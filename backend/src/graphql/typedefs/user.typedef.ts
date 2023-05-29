@@ -4,6 +4,7 @@ type User {
     name: String
     email: String!
     password: String!
+    role: String!
 }
 
 input UserCreateInput {

@@ -1,6 +1,6 @@
-export type UserOutputDTO = {
+import { User } from '../../../interfaces';
+
+export type UserOutputDTO = User & {
   id: string;
-  name?: string;
-  email: string;
-  password: string;
+  role: string;
 };

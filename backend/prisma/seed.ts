@@ -37,6 +37,20 @@ const rates = [
       },
     },
   });
+  await prisma.user.create({
+    data: {
+      email: 'testingAdmin@decemberlabs.com',
+      password: await hash('decemberlabs', 10),
+      role: 'ADMIN',
+      accounts: {
+        create: [
+          { currency: 'USD', balance: 100 },
+          { currency: 'EUR', balance: 100 },
+          { currency: 'UYU', balance: 100 },
+        ],
+      },
+    },
+  });
 })();
 
 console.log('Seeding complete.');

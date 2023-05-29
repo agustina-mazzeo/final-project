@@ -13,6 +13,7 @@ import {
   UserReadRepository,
 } from '../../src/repositories';
 import { AccountOutputDTO, TransactionInputDTO, TransactionOutputDTO } from '../../src/services/dtos';
+import { ClientRole } from '../../src/utils/helpers';
 
 describe('TransactionService', () => {
   const rateWriteRepository = new RateWriteRepository();
@@ -45,7 +46,20 @@ describe('TransactionService', () => {
   });
 
   describe('getAll', () => {
-    it('should return user transactions if valid user id is provided', async () => {
+    it('should return all transactions if user has role admin', async () => {
+      const transactions: TransactionOutputDTO[] = [
+        { id: '1', accountFromId: 1, accountToId: 2, amount: 1, createdAt: new Date('2022-01-01').toISOString() },
+      ];
+      const getAll = transactionReadRepositoryStub.getAll.resolves(transactions);
+
+      const result = await transactionReadService.getAll({ user: { id: '1', role: 'ADMIN' }, queryParams: {} });
+
+      should(result).deepEqual(transactions);
+      should(accountReadServiceStub.getAll.notCalled).be.true();
+      should(getAll.calledOnce).be.true();
+    });
+
+    it('should return user transactions if valid user id with no admin role is provided', async () => {
       const userAccounts = [{ id: 1 }, { id: 2 }];
 
       const usersTransactions: TransactionOutputDTO[] = [
@@ -53,15 +67,15 @@ describe('TransactionService', () => {
       ];
 
       const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
-      const getAll = transactionReadRepositoryStub.getAll.withArgs({ filters: [], usersAccountsId: [1, 2] }).resolves(usersTransactions);
+      const getAll = transactionReadRepositoryStub.getAll.resolves(usersTransactions);
 
-      const result = await transactionReadService.getAll({ userId: '1', queryParams: {} });
+      const result = await transactionReadService.getAll({ user: { id: '1', role: 'USER' }, queryParams: {} });
 
       should(result).be.an.Array();
       should(result).have.length(usersTransactions.length);
       should(result).containDeep(usersTransactions);
       should(getAllService.calledOnceWith('1')).be.true();
-      should(getAll.calledOnceWith({ filters: [], usersAccountsId: [1, 2] })).be.true();
+      should(getAll.calledOnce).be.true();
     });
 
     it('should filter the users accounts', async () => {
@@ -74,7 +88,7 @@ describe('TransactionService', () => {
       const getAllService = accountReadServiceStub.getAll.withArgs('1').resolves(userAccounts as AccountOutputDTO[]);
       const getAll = transactionReadRepositoryStub.getAll.resolves(filteredUsersTransactions);
 
-      const result = await transactionReadService.getAll({ userId: '1', queryParams: { accountFromId: 1 } });
+      const result = await transactionReadService.getAll({ user: { id: '1', role: 'USER' }, queryParams: { accountFromId: 1 } });
 
       should(result).be.an.Array();
       should(result).have.length(filteredUsersTransactions.length);
@@ -85,9 +99,9 @@ describe('TransactionService', () => {
 
     it('should throw an error if user has no accounts', async () => {
       const getAll = accountReadServiceStub.getAll.withArgs('1').resolves([]);
-      const userId = '1';
+      const user = { id: '1', role: 'USER' as ClientRole };
       try {
-        await transactionReadService.getAll({ queryParams: {}, userId });
+        await transactionReadService.getAll({ queryParams: {}, user });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(NotFoundError);
@@ -97,9 +111,9 @@ describe('TransactionService', () => {
     });
 
     it('should throw an error if a user id is not provided or non valid', async () => {
-      const userId = undefined as unknown as string;
+      const user = undefined as unknown as { id: string; role: ClientRole };
       try {
-        await transactionReadService.getAll({ queryParams: {}, userId });
+        await transactionReadService.getAll({ queryParams: {}, user });
         sinon.assert.fail();
       } catch (error: any) {
         should(error).be.an.instanceOf(UnauthorizedError);
